@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
+import { Routes, Route, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactFlowProvider } from '@xyflow/react';
 
@@ -18,12 +19,19 @@ const queryClient = new QueryClient({
   },
 });
 
-function AppContent() {
-  const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
-  const [currentLine, setCurrentLine] = useState<string | null>(null);
-  const [treeRoot, setTreeRoot] = useState('person:adam');
+function GenealogyPage() {
+  const { personId } = useParams<{ personId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const { data: treeData, isLoading: treeLoading } = useQuery<TreeResponse>({
+  const selectedPersonId = personId ? `person:${personId}` : null;
+  const currentLine = searchParams.get('line');
+
+  // Derive tree root: if a line filter is active, the line endpoint handles rooting.
+  // Otherwise root on the selected person, or adam by default.
+  const treeRoot = selectedPersonId ?? 'person:adam';
+
+  const { data: treeData, isLoading: treeLoading, isError: treeError, refetch: retryTree } = useQuery<TreeResponse>({
     queryKey: ['tree', treeRoot, currentLine],
     queryFn: () => {
       if (currentLine) {
@@ -38,35 +46,55 @@ function AppContent() {
     queryFn: fetchStats,
   });
 
-  const handleNodeClick = useCallback((personId: string) => {
-    setSelectedPersonId(personId);
-  }, []);
+  const handleNodeClick = useCallback((nodeId: string) => {
+    const shortId = nodeId.replace(/^person:/, '');
+    const params = currentLine ? `?line=${currentLine}` : '';
+    navigate(`/person/${shortId}${params}`);
+  }, [navigate, currentLine]);
 
-  const handleNavigate = useCallback((personId: string) => {
-    setSelectedPersonId(personId);
-    // If navigating to a person, re-root the tree on them
-    setTreeRoot(personId);
-    setCurrentLine(null);
-  }, []);
+  const handleNavigate = useCallback((nodeId: string) => {
+    const shortId = nodeId.replace(/^person:/, '');
+    // Navigating to a person clears the line filter — we're re-rooting on them
+    navigate(`/person/${shortId}`);
+  }, [navigate]);
 
   const handleSearchSelect = useCallback((id: string) => {
-    setSelectedPersonId(id);
     if (id.startsWith('person:')) {
-      setTreeRoot(id);
-      setCurrentLine(null);
+      const shortId = id.replace(/^person:/, '');
+      navigate(`/person/${shortId}`);
     }
-  }, []);
+  }, [navigate]);
 
   const handleLineChange = useCallback((line: string | null) => {
-    setCurrentLine(line);
-    if (!line) {
-      setTreeRoot('person:adam');
+    if (line) {
+      setSearchParams({ line });
+    } else {
+      setSearchParams({});
     }
-  }, []);
+    // When changing line filter, go back to root view
+    if (selectedPersonId) {
+      navigate(line ? `/?line=${line}` : '/');
+    }
+  }, [setSearchParams, navigate, selectedPersonId]);
 
   const handleCloseDetail = useCallback(() => {
-    setSelectedPersonId(null);
-  }, []);
+    const params = currentLine ? `?line=${currentLine}` : '';
+    navigate(`/${params}`);
+  }, [navigate, currentLine]);
+
+  const handleHomeClick = useCallback(() => {
+    navigate('/');
+  }, [navigate]);
+
+  // Sync document title
+  useEffect(() => {
+    if (selectedPersonId && treeData) {
+      const node = treeData.nodes.find(n => n.id === selectedPersonId);
+      document.title = node ? `${node.data.name_english} — Lamp` : 'Lamp';
+    } else {
+      document.title = 'Lamp';
+    }
+  }, [selectedPersonId, treeData]);
 
   return (
     <div className="h-screen flex flex-col" style={{ backgroundColor: 'var(--color-bg)' }}>
@@ -77,11 +105,7 @@ function AppContent() {
       >
         <div className="flex items-center gap-4">
           <button
-            onClick={() => {
-              setTreeRoot('person:adam');
-              setCurrentLine(null);
-              setSelectedPersonId(null);
-            }}
+            onClick={handleHomeClick}
             className="flex items-center gap-2 cursor-pointer"
           >
             <h1 className="text-xl font-semibold" style={{ color: 'var(--color-accent)' }}>
@@ -107,6 +131,8 @@ function AppContent() {
           <GenealogyTree
             treeData={treeData}
             isLoading={treeLoading}
+            isError={treeError}
+            onRetry={() => retryTree()}
             onNodeClick={handleNodeClick}
             selectedNodeId={selectedPersonId}
           />
@@ -127,7 +153,10 @@ function AppContent() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AppContent />
+      <Routes>
+        <Route path="/" element={<GenealogyPage />} />
+        <Route path="/person/:personId" element={<GenealogyPage />} />
+      </Routes>
     </QueryClientProvider>
   );
 }

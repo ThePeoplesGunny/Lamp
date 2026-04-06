@@ -53,4 +53,5 @@ scripts/
 - Phase 1A complete: data models, GraphStore, seed data (111 persons, 18 nations, 148 edges), 13 integrity tests passing
 - Phase 1B complete: all genealogy API endpoints, 14 API tests passing (27 total)
 - Phase 1C complete: full frontend — genealogy tree, person detail, search, line filters
-- Next: Phase 1D — polish (URL routing, error states, final verification)
+- Phase 1D complete: URL routing (react-router-dom), error states (inline retry + error boundary), final verification
+- Next: Phase 2 (TBD)

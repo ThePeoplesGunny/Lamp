@@ -20,6 +20,8 @@ import type { TreeResponse } from '../../types';
 interface GenealogyTreeProps {
   treeData: TreeResponse | undefined;
   isLoading: boolean;
+  isError?: boolean;
+  onRetry?: () => void;
   onNodeClick?: (personId: string) => void;
   selectedNodeId?: string | null;
 }
@@ -70,6 +72,8 @@ function applyDagreLayout(treeData: TreeResponse) {
 export default function GenealogyTree({
   treeData,
   isLoading,
+  isError,
+  onRetry,
   onNodeClick,
   selectedNodeId,
 }: GenealogyTreeProps) {
@@ -105,6 +109,29 @@ export default function GenealogyTree({
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-text-secondary">Loading genealogy...</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-text-secondary mb-2">Failed to load genealogy data</div>
+          {onRetry && (
+            <button
+              onClick={onRetry}
+              className="px-3 py-1.5 text-sm rounded border cursor-pointer transition-colors"
+              style={{
+                borderColor: 'var(--color-accent)',
+                color: 'var(--color-accent)',
+                backgroundColor: 'transparent',
+              }}
+            >
+              Retry
+            </button>
+          )}
+        </div>
       </div>
     );
   }

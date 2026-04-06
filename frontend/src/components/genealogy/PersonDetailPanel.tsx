@@ -57,7 +57,7 @@ function RelatedList({
 }
 
 export default function PersonDetailPanel({ personId, onClose, onNavigate }: PersonDetailPanelProps) {
-  const { data: person, isLoading } = useQuery<PersonDetail>({
+  const { data: person, isLoading, isError, refetch } = useQuery<PersonDetail>({
     queryKey: ['person', personId],
     queryFn: () => fetchPerson(personId!),
     enabled: !!personId,
@@ -86,6 +86,23 @@ export default function PersonDetailPanel({ personId, onClose, onNavigate }: Per
 
       {isLoading && (
         <div className="p-4 text-text-secondary text-sm">Loading...</div>
+      )}
+
+      {isError && (
+        <div className="p-4 text-center">
+          <div className="text-text-secondary text-sm mb-2">Failed to load person</div>
+          <button
+            onClick={() => refetch()}
+            className="px-3 py-1.5 text-sm rounded border cursor-pointer transition-colors"
+            style={{
+              borderColor: 'var(--color-accent)',
+              color: 'var(--color-accent)',
+              backgroundColor: 'transparent',
+            }}
+          >
+            Retry
+          </button>
+        </div>
       )}
 
       {person && (
