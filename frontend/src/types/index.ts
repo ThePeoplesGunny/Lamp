@@ -104,6 +104,24 @@ export interface NationDetail {
   notes?: string;
 }
 
+/** Chronology person for timeline */
+export interface ChronologyPerson {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  sex: string;
+  birth_year_am: number;
+  death_year_am: number;
+  age_at_death?: number;
+  generation: number;
+}
+
+/** Chronology response from /api/v1/genealogy/chronology */
+export interface ChronologyResponse {
+  persons: ChronologyPerson[];
+  year_range: { min: number; max: number };
+}
+
 /** Graph stats */
 export interface GraphStats {
   persons: number;

@@ -3,12 +3,13 @@ import { Routes, Route, useParams, useNavigate, useSearchParams } from 'react-ro
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { ReactFlowProvider } from '@xyflow/react';
 
+import AppLayout from './components/layout/AppLayout';
 import GenealogyTree from './components/genealogy/GenealogyTree';
 import PersonDetailPanel from './components/genealogy/PersonDetailPanel';
-import SearchBar from './components/common/SearchBar';
 import LineageFilter from './components/genealogy/LineageFilter';
-import { fetchTree, fetchStats } from './api/client';
-import type { TreeResponse, GraphStats } from './types';
+import TimelinePage from './components/timeline/TimelinePage';
+import { fetchTree } from './api/client';
+import type { TreeResponse } from './types';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,9 +27,6 @@ function GenealogyPage() {
 
   const selectedPersonId = personId ? `person:${personId}` : null;
   const currentLine = searchParams.get('line');
-
-  // Derive tree root: if a line filter is active, the line endpoint handles rooting.
-  // Otherwise root on the selected person, or adam by default.
   const treeRoot = selectedPersonId ?? 'person:adam';
 
   const { data: treeData, isLoading: treeLoading, isError: treeError, refetch: retryTree } = useQuery<TreeResponse>({
@@ -41,11 +39,6 @@ function GenealogyPage() {
     },
   });
 
-  const { data: stats } = useQuery<GraphStats>({
-    queryKey: ['stats'],
-    queryFn: fetchStats,
-  });
-
   const handleNodeClick = useCallback((nodeId: string) => {
     const shortId = nodeId.replace(/^person:/, '');
     const params = currentLine ? `?line=${currentLine}` : '';
@@ -54,15 +47,7 @@ function GenealogyPage() {
 
   const handleNavigate = useCallback((nodeId: string) => {
     const shortId = nodeId.replace(/^person:/, '');
-    // Navigating to a person clears the line filter — we're re-rooting on them
     navigate(`/person/${shortId}`);
-  }, [navigate]);
-
-  const handleSearchSelect = useCallback((id: string) => {
-    if (id.startsWith('person:')) {
-      const shortId = id.replace(/^person:/, '');
-      navigate(`/person/${shortId}`);
-    }
   }, [navigate]);
 
   const handleLineChange = useCallback((line: string | null) => {
@@ -71,7 +56,6 @@ function GenealogyPage() {
     } else {
       setSearchParams({});
     }
-    // When changing line filter, go back to root view
     if (selectedPersonId) {
       navigate(line ? `/?line=${line}` : '/');
     }
@@ -82,11 +66,6 @@ function GenealogyPage() {
     navigate(`/${params}`);
   }, [navigate, currentLine]);
 
-  const handleHomeClick = useCallback(() => {
-    navigate('/');
-  }, [navigate]);
-
-  // Sync document title
   useEffect(() => {
     if (selectedPersonId && treeData) {
       const node = treeData.nodes.find(n => n.id === selectedPersonId);
@@ -97,36 +76,12 @@ function GenealogyPage() {
   }, [selectedPersonId, treeData]);
 
   return (
-    <div className="h-screen flex flex-col" style={{ backgroundColor: 'var(--color-bg)' }}>
-      {/* Header */}
-      <header
-        className="border-b px-4 py-2.5 flex items-center justify-between flex-shrink-0"
-        style={{ borderColor: 'var(--color-border)' }}
-      >
-        <div className="flex items-center gap-4">
-          <button
-            onClick={handleHomeClick}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <h1 className="text-xl font-semibold" style={{ color: 'var(--color-accent)' }}>
-              Lamp
-            </h1>
-          </button>
+    <>
+      {/* Line filter floats in the tree area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="px-4 py-2 flex-shrink-0">
           <LineageFilter currentLine={currentLine} onLineChange={handleLineChange} />
         </div>
-
-        <div className="flex items-center gap-4">
-          <SearchBar onSelect={handleSearchSelect} />
-          {stats && (
-            <div className="text-xs text-text-secondary hidden sm:block">
-              {stats.persons} persons · {stats.nations} nations · {stats.edges} links
-            </div>
-          )}
-        </div>
-      </header>
-
-      {/* Main content */}
-      <div className="flex-1 flex overflow-hidden">
         <ReactFlowProvider>
           <GenealogyTree
             treeData={treeData}
@@ -137,16 +92,16 @@ function GenealogyPage() {
             selectedNodeId={selectedPersonId}
           />
         </ReactFlowProvider>
-
-        {selectedPersonId && (
-          <PersonDetailPanel
-            personId={selectedPersonId}
-            onClose={handleCloseDetail}
-            onNavigate={handleNavigate}
-          />
-        )}
       </div>
-    </div>
+
+      {selectedPersonId && (
+        <PersonDetailPanel
+          personId={selectedPersonId}
+          onClose={handleCloseDetail}
+          onNavigate={handleNavigate}
+        />
+      )}
+    </>
   );
 }
 
@@ -154,8 +109,11 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Routes>
-        <Route path="/" element={<GenealogyPage />} />
-        <Route path="/person/:personId" element={<GenealogyPage />} />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<GenealogyPage />} />
+          <Route path="/person/:personId" element={<GenealogyPage />} />
+          <Route path="/timeline" element={<TimelinePage />} />
+        </Route>
       </Routes>
     </QueryClientProvider>
   );

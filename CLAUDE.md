@@ -54,4 +54,5 @@ scripts/
 - Phase 1B complete: all genealogy API endpoints, 14 API tests passing (27 total)
 - Phase 1C complete: full frontend — genealogy tree, person detail, search, line filters
 - Phase 1D complete: URL routing (react-router-dom), error states (inline retry + error boundary), final verification
-- Next: Phase 2 (TBD)
+- Phase 2A complete: chronology timeline — SVG lifespan bars, shared AppLayout with Tree/Timeline nav, /chronology API endpoint
+- Next: Phase 2B (TBD)

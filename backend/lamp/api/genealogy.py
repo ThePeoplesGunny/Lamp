@@ -204,6 +204,50 @@ def get_nations():
     return result
 
 
+@router.get("/chronology")
+def get_chronology():
+    """Get persons with chronology data for timeline visualization."""
+    store = get_store()
+
+    # Adam + all descendants with depth info
+    adam = store.get_node("person:adam")
+    if adam is None:
+        raise HTTPException(status_code=503, detail="Graph not loaded")
+
+    descendants = store.get_descendants("person:adam")
+
+    # Include Adam (depth 0) + descendants
+    candidates = [{"_depth": 0, **adam}] + descendants
+
+    # Filter to persons with complete chronology
+    persons = []
+    for p in candidates:
+        birth = p.get("birth_year_am")
+        death = p.get("death_year_am")
+        if birth is not None and death is not None:
+            persons.append({
+                "id": p["id"],
+                "name_english": p.get("name_english"),
+                "name_hebrew": p.get("name_hebrew"),
+                "sex": p.get("sex"),
+                "birth_year_am": birth,
+                "death_year_am": death,
+                "age_at_death": p.get("age_at_death"),
+                "generation": p.get("_depth", 0),
+            })
+
+    # Sort by birth year, then generation
+    persons.sort(key=lambda x: (x["birth_year_am"], x["generation"]))
+
+    year_min = min(p["birth_year_am"] for p in persons) if persons else 0
+    year_max = max(p["death_year_am"] for p in persons) if persons else 0
+
+    return {
+        "persons": persons,
+        "year_range": {"min": year_min, "max": year_max},
+    }
+
+
 @router.get("/stats")
 def get_stats():
     """Get summary counts for the graph."""
