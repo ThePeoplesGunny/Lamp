@@ -66,6 +66,17 @@ export default function AppLayout() {
             >
               Timeline
             </NavLink>
+            <NavLink
+              to="/places"
+              className="px-3 py-1 text-xs rounded border transition-colors"
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? 'var(--color-accent-dim)' : 'var(--color-bg-secondary)',
+                borderColor: isActive ? 'var(--color-accent)' : 'var(--color-border)',
+                color: isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+              })}
+            >
+              Places
+            </NavLink>
           </nav>
         </div>
 

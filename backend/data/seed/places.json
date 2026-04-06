@@ -1,0 +1,293 @@
+{
+  "places": [
+    {
+      "id": "place:eden",
+      "name_english": "Eden",
+      "name_hebrew": "עֵדֶן",
+      "name_hebrew_transliterated": "Eden",
+      "strongs": "H5731",
+      "meaning": "delight, pleasure",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 2, "verse": 8},
+        {"book": "GEN", "chapter": 2, "verse": 15}
+      ],
+      "notes": "Region where God planted the garden; east of an unspecified reference point"
+    },
+    {
+      "id": "place:garden_of_eden",
+      "name_english": "Garden of Eden",
+      "name_hebrew": "גַּן־עֵדֶן",
+      "name_hebrew_transliterated": "Gan-Eden",
+      "strongs": "H1588",
+      "meaning": "enclosed garden of delight",
+      "place_type": "garden",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 2, "verse": 8},
+        {"book": "GEN", "chapter": 3, "verse": 23, "verse_end": 24}
+      ],
+      "notes": "Where Adam and Eve were placed; guarded by cherubim after the fall"
+    },
+    {
+      "id": "place:land_of_nod",
+      "name_english": "Land of Nod",
+      "name_hebrew": "אֶרֶץ נוֹד",
+      "name_hebrew_transliterated": "Eretz Nod",
+      "strongs": "H5113",
+      "meaning": "land of wandering",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 4, "verse": 16}
+      ],
+      "notes": "East of Eden; where Cain settled after being driven out"
+    },
+    {
+      "id": "place:ararat",
+      "name_english": "Ararat",
+      "name_hebrew": "אֲרָרָט",
+      "name_hebrew_transliterated": "Ararat",
+      "strongs": "H780",
+      "meaning": "sacred land; curse of trembling",
+      "place_type": "mountain",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 8, "verse": 4}
+      ],
+      "notes": "Mountains where the ark came to rest after the Flood"
+    },
+    {
+      "id": "place:shinar",
+      "name_english": "Shinar",
+      "name_hebrew": "שִׁנְעָר",
+      "name_hebrew_transliterated": "Shinar",
+      "strongs": "H8152",
+      "meaning": "land of two rivers",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 10, "verse": 10},
+        {"book": "GEN", "chapter": 11, "verse": 2}
+      ],
+      "notes": "Plain in Mesopotamia; location of Babel and the tower; beginning of Nimrod's kingdom"
+    },
+    {
+      "id": "place:babel",
+      "name_english": "Babel",
+      "name_hebrew": "בָּבֶל",
+      "name_hebrew_transliterated": "Bavel",
+      "strongs": "H894",
+      "meaning": "confusion (by mixing)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 10, "verse": 10},
+        {"book": "GEN", "chapter": 11, "verse": 4, "verse_end": 9}
+      ],
+      "notes": "First city of Nimrod's kingdom; site of the tower and the confusion of languages"
+    },
+    {
+      "id": "place:nineveh",
+      "name_english": "Nineveh",
+      "name_hebrew": "נִינְוֵה",
+      "name_hebrew_transliterated": "Nineveh",
+      "strongs": "H5210",
+      "meaning": "abode of Ninus",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 10, "verse": 11, "verse_end": 12}
+      ],
+      "notes": "Built by Nimrod (or Asshur) in Assyria; later capital of the Assyrian Empire"
+    },
+    {
+      "id": "place:ur",
+      "name_english": "Ur of the Chaldees",
+      "name_hebrew": "אוּר כַּשְׂדִּים",
+      "name_hebrew_transliterated": "Ur Kasdim",
+      "strongs": "H218",
+      "meaning": "flame, light",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 11, "verse": 28},
+        {"book": "GEN", "chapter": 11, "verse": 31}
+      ],
+      "notes": "Birthplace of Abraham; Terah's family departed from here toward Canaan"
+    },
+    {
+      "id": "place:haran",
+      "name_english": "Haran",
+      "name_hebrew": "חָרָן",
+      "name_hebrew_transliterated": "Charan",
+      "strongs": "H2771",
+      "meaning": "parched, dry",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 11, "verse": 31, "verse_end": 32},
+        {"book": "GEN", "chapter": 12, "verse": 4, "verse_end": 5}
+      ],
+      "notes": "Where Terah settled and died; Abraham departed from here at God's call"
+    },
+    {
+      "id": "place:canaan",
+      "name_english": "Canaan",
+      "name_hebrew": "כְּנַעַן",
+      "name_hebrew_transliterated": "Kena'an",
+      "strongs": "H3667",
+      "meaning": "lowland, merchant",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 12, "verse": 5, "verse_end": 6},
+        {"book": "GEN", "chapter": 13, "verse": 12}
+      ],
+      "notes": "The promised land; territory of the Canaanite nations"
+    },
+    {
+      "id": "place:egypt",
+      "name_english": "Egypt",
+      "name_hebrew": "מִצְרַיִם",
+      "name_hebrew_transliterated": "Mitsrayim",
+      "strongs": "H4714",
+      "meaning": "double straits, distress",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 12, "verse": 10},
+        {"book": "GEN", "chapter": 46, "verse": 6, "verse_end": 7}
+      ],
+      "notes": "Named after Mizraim son of Ham; Abraham sojourned here; Jacob's family settled here"
+    },
+    {
+      "id": "place:hebron",
+      "name_english": "Hebron",
+      "name_hebrew": "חֶבְרוֹן",
+      "name_hebrew_transliterated": "Chevron",
+      "strongs": "H2275",
+      "meaning": "association, league",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 13, "verse": 18},
+        {"book": "GEN", "chapter": 23, "verse": 2},
+        {"book": "GEN", "chapter": 35, "verse": 27}
+      ],
+      "notes": "Also called Mamre; Abraham settled here by the oaks; burial site of the patriarchs (Cave of Machpelah)"
+    },
+    {
+      "id": "place:sodom",
+      "name_english": "Sodom",
+      "name_hebrew": "סְדֹם",
+      "name_hebrew_transliterated": "Sedom",
+      "strongs": "H5467",
+      "meaning": "burning, scorched",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 13, "verse": 12, "verse_end": 13},
+        {"book": "GEN", "chapter": 19, "verse": 24, "verse_end": 25}
+      ],
+      "notes": "In the Jordan plain; Lot settled here; destroyed by God with fire and brimstone"
+    },
+    {
+      "id": "place:beersheba",
+      "name_english": "Beersheba",
+      "name_hebrew": "בְּאֵר שֶׁבַע",
+      "name_hebrew_transliterated": "Be'er Sheva",
+      "strongs": "H884",
+      "meaning": "well of the oath, well of seven",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 21, "verse": 31, "verse_end": 33},
+        {"book": "GEN", "chapter": 26, "verse": 23, "verse_end": 33}
+      ],
+      "notes": "Abraham planted a tamarisk tree here; Isaac built an altar here; southern boundary of the promised land"
+    },
+    {
+      "id": "place:bethel",
+      "name_english": "Bethel",
+      "name_hebrew": "בֵּית־אֵל",
+      "name_hebrew_transliterated": "Beth-El",
+      "strongs": "H1008",
+      "meaning": "house of God",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 12, "verse": 8},
+        {"book": "GEN", "chapter": 28, "verse": 19},
+        {"book": "GEN", "chapter": 35, "verse": 1, "verse_end": 7}
+      ],
+      "notes": "Originally called Luz; Jacob's dream of the ladder; renamed Bethel; Abraham also built an altar here"
+    },
+    {
+      "id": "place:paddan_aram",
+      "name_english": "Paddan-aram",
+      "name_hebrew": "פַּדַּן אֲרָם",
+      "name_hebrew_transliterated": "Paddan Aram",
+      "strongs": "H6307",
+      "meaning": "field of Aram",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 25, "verse": 20},
+        {"book": "GEN", "chapter": 28, "verse": 2, "verse_end": 5}
+      ],
+      "notes": "Where Laban lived; Jacob worked here for 20 years; married Leah and Rachel here"
+    },
+    {
+      "id": "place:shechem",
+      "name_english": "Shechem",
+      "name_hebrew": "שְׁכֶם",
+      "name_hebrew_transliterated": "Shekhem",
+      "strongs": "H7927",
+      "meaning": "shoulder, ridge",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 12, "verse": 6},
+        {"book": "GEN", "chapter": 33, "verse": 18, "verse_end": 19}
+      ],
+      "notes": "First place Abraham stopped in Canaan; Jacob purchased land here"
+    },
+    {
+      "id": "place:goshen",
+      "name_english": "Goshen",
+      "name_hebrew": "גֹּשֶׁן",
+      "name_hebrew_transliterated": "Goshen",
+      "strongs": "H1657",
+      "meaning": "drawing near",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 45, "verse": 10},
+        {"book": "GEN", "chapter": 46, "verse": 28, "verse_end": 34},
+        {"book": "GEN", "chapter": 47, "verse": 6}
+      ],
+      "notes": "Region in Egypt where Jacob's family settled; best of the land of Egypt"
+    }
+  ],
+  "place_links": [
+    {"source": "person:adam", "target": "place:garden_of_eden", "type": "settled_at", "notes": "Placed in the garden to tend it"},
+    {"source": "person:eve", "target": "place:garden_of_eden", "type": "settled_at"},
+    {"source": "person:adam", "target": "place:eden", "type": "migrated_to", "notes": "Driven out of the garden"},
+    {"source": "person:eve", "target": "place:eden", "type": "migrated_to"},
+    {"source": "person:cain", "target": "place:land_of_nod", "type": "migrated_to", "notes": "Went out from the presence of the LORD"},
+    {"source": "person:noah", "target": "place:ararat", "type": "settled_at", "notes": "Ark rested on the mountains of Ararat"},
+    {"source": "person:nimrod", "target": "place:shinar", "type": "settled_at", "notes": "Beginning of his kingdom"},
+    {"source": "person:nimrod", "target": "place:babel", "type": "settled_at"},
+    {"source": "person:nimrod", "target": "place:nineveh", "type": "settled_at", "notes": "Built Nineveh in Assyria"},
+    {"source": "person:terah", "target": "place:ur", "type": "born_at"},
+    {"source": "person:abraham", "target": "place:ur", "type": "born_at"},
+    {"source": "person:terah", "target": "place:haran", "type": "migrated_to"},
+    {"source": "person:terah", "target": "place:haran", "type": "died_at"},
+    {"source": "person:abraham", "target": "place:haran", "type": "migrated_to", "notes": "Departed at God's call at age 75"},
+    {"source": "person:abraham", "target": "place:shechem", "type": "migrated_to", "notes": "First stop in Canaan"},
+    {"source": "person:abraham", "target": "place:bethel", "type": "settled_at", "notes": "Built an altar between Bethel and Ai"},
+    {"source": "person:abraham", "target": "place:egypt", "type": "migrated_to", "notes": "Sojourned during famine"},
+    {"source": "person:abraham", "target": "place:hebron", "type": "settled_at", "notes": "Settled by the oaks of Mamre"},
+    {"source": "person:abraham", "target": "place:beersheba", "type": "settled_at"},
+    {"source": "person:abraham", "target": "place:hebron", "type": "died_at"},
+    {"source": "person:lot", "target": "place:sodom", "type": "settled_at", "notes": "Chose the well-watered Jordan plain"},
+    {"source": "person:isaac", "target": "place:beersheba", "type": "settled_at", "notes": "Built an altar and dug a well"},
+    {"source": "person:isaac", "target": "place:hebron", "type": "died_at", "notes": "Died at Mamre/Hebron at age 180"},
+    {"source": "person:jacob", "target": "place:beersheba", "type": "born_at"},
+    {"source": "person:jacob", "target": "place:paddan_aram", "type": "migrated_to", "notes": "Fled from Esau to Laban"},
+    {"source": "person:jacob", "target": "place:bethel", "type": "settled_at", "notes": "Dream of the ladder; renamed the place"},
+    {"source": "person:jacob", "target": "place:shechem", "type": "settled_at", "notes": "Purchased land from Hamor"},
+    {"source": "person:jacob", "target": "place:hebron", "type": "settled_at", "notes": "Returned to Isaac at Mamre"},
+    {"source": "person:jacob", "target": "place:goshen", "type": "migrated_to", "notes": "Settled in Egypt at Joseph's invitation"},
+    {"source": "person:joseph", "target": "place:shechem", "type": "born_at", "notes": "Born while Jacob was in Paddan-aram region"},
+    {"source": "person:joseph", "target": "place:egypt", "type": "migrated_to", "notes": "Sold into slavery; rose to power"},
+    {"source": "person:joseph", "target": "place:goshen", "type": "settled_at", "notes": "Settled his family in Goshen"},
+
+    {"source": "nation:canaanites", "target": "place:canaan", "type": "territory_of"},
+    {"source": "nation:egyptians", "target": "place:egypt", "type": "territory_of"}
+  ]
+}

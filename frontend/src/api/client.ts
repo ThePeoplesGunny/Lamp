@@ -5,6 +5,8 @@ import type {
   NationDetail,
   GraphStats,
   ChronologyResponse,
+  PlaceSummary,
+  PlaceDetail,
 } from '../types';
 
 const BASE = '/api/v1';
@@ -41,6 +43,14 @@ export function searchNodes(q: string, type?: string): Promise<SearchResult[]> {
 
 export function fetchNations(): Promise<NationDetail[]> {
   return get('/genealogy/nations');
+}
+
+export function fetchPlaces(): Promise<PlaceSummary[]> {
+  return get('/genealogy/places');
+}
+
+export function fetchPlace(id: string): Promise<PlaceDetail> {
+  return get(`/genealogy/place/${id}`);
 }
 
 export function fetchChronology(): Promise<ChronologyResponse> {

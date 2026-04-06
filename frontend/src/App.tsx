@@ -8,6 +8,7 @@ import GenealogyTree from './components/genealogy/GenealogyTree';
 import PersonDetailPanel from './components/genealogy/PersonDetailPanel';
 import LineageFilter from './components/genealogy/LineageFilter';
 import TimelinePage from './components/timeline/TimelinePage';
+import PlacesPage from './components/places/PlacesPage';
 import { fetchTree } from './api/client';
 import type { TreeResponse } from './types';
 
@@ -113,6 +114,7 @@ export default function App() {
           <Route path="/" element={<GenealogyPage />} />
           <Route path="/person/:personId" element={<GenealogyPage />} />
           <Route path="/timeline" element={<TimelinePage />} />
+          <Route path="/places" element={<PlacesPage />} />
         </Route>
       </Routes>
     </QueryClientProvider>

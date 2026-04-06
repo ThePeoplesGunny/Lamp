@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchPerson } from '../../api/client';
 import HebrewText from '../hebrew/HebrewText';
-import type { PersonDetail, ScriptureRef, RelatedPerson } from '../../types';
+import type { PersonDetail, ScriptureRef, RelatedPerson, RelatedPlace } from '../../types';
 
 interface PersonDetailPanelProps {
   personId: string | null;
@@ -196,6 +196,30 @@ export default function PersonDetailPanel({ personId, onClose, onNavigate }: Per
                   >
                     {n.name_english}
                   </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Places */}
+          {person.places && person.places.length > 0 && (
+            <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--color-border)' }}>
+              <h4 className="text-xs uppercase tracking-wide text-text-secondary mb-1">Places</h4>
+              <div className="space-y-1.5">
+                {person.places.map((p: RelatedPlace, i: number) => (
+                  <div key={`${p.id}-${p.relationship}-${i}`} className="text-sm">
+                    <span className="text-text-primary">{p.name_english}</span>
+                    {p.relationship && (
+                      <span className="text-text-secondary text-xs ml-1.5">
+                        {p.relationship.replace(/_/g, ' ')}
+                      </span>
+                    )}
+                    {p.place_type && (
+                      <span className="text-text-secondary text-xs ml-1 opacity-60">
+                        ({p.place_type})
+                      </span>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

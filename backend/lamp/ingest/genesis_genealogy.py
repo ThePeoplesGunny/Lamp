@@ -8,14 +8,23 @@ from lamp.graph.store import GraphStore
 
 
 def load_seed_data(seed_path: Path, store: GraphStore) -> dict:
-    """Load persons.json seed data into the graph store.
+    """Load seed data into the graph store.
 
-    Returns a summary dict with counts.
+    seed_path can be a file (persons.json) or a directory containing
+    persons.json and places.json. Returns a summary dict with counts.
     """
-    with open(seed_path, "r", encoding="utf-8") as f:
+    if seed_path.is_dir():
+        seed_dir = seed_path
+        persons_path = seed_dir / "persons.json"
+    else:
+        seed_dir = seed_path.parent
+        persons_path = seed_path
+
+    with open(persons_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    counts = {"persons": 0, "nations": 0, "relationships": 0, "nation_links": 0}
+    counts = {"persons": 0, "nations": 0, "relationships": 0, "nation_links": 0,
+              "places": 0, "place_links": 0}
 
     # Load persons
     for p in data.get("persons", []):
@@ -79,5 +88,42 @@ def load_seed_data(seed_path: Path, store: GraphStore) -> dict:
         )
         store.add_edge(edge)
         counts["nation_links"] += 1
+
+    # Load places (from separate file if it exists)
+    places_path = seed_dir / "places.json"
+    if places_path.exists():
+        with open(places_path, "r", encoding="utf-8") as f:
+            places_data = json.load(f)
+
+        for p in places_data.get("places", []):
+            refs = [ScriptureRef(**r) for r in p.get("scripture_refs", [])]
+            place = Place(
+                id=p["id"],
+                name_english=p["name_english"],
+                name_hebrew=p.get("name_hebrew"),
+                name_hebrew_transliterated=p.get("name_hebrew_transliterated"),
+                strongs=p.get("strongs"),
+                meaning=p.get("meaning"),
+                place_type=p.get("place_type"),
+                latitude=p.get("latitude"),
+                longitude=p.get("longitude"),
+                scripture_refs=refs,
+                notes=p.get("notes"),
+            )
+            store.add_place(place)
+            counts["places"] += 1
+
+        for pl in places_data.get("place_links", []):
+            refs = [ScriptureRef(**r) for r in pl.get("scripture_refs", [])]
+            edge = Edge(
+                source=pl["source"],
+                target=pl["target"],
+                type=EdgeType(pl["type"]),
+                scripture_refs=refs,
+                order=pl.get("order"),
+                notes=pl.get("notes"),
+            )
+            store.add_edge(edge)
+            counts["place_links"] += 1
 
     return counts

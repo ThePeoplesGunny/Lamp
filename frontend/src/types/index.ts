@@ -76,6 +76,7 @@ export interface PersonDetail {
   spouses: RelatedPerson[];
   children: RelatedPerson[];
   nations: RelatedNation[];
+  places: RelatedPlace[];
 }
 
 /** Search result item */
@@ -102,6 +103,56 @@ export interface NationDetail {
   };
   scripture_refs: ScriptureRef[];
   notes?: string;
+}
+
+/** Related place summary (for person detail) */
+export interface RelatedPlace {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  place_type?: string;
+  relationship?: string;
+  notes?: string;
+}
+
+/** Connected person/nation summary (for place detail) */
+export interface PlaceConnection {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  sex?: string;
+  node_type?: string;
+  relationship?: string;
+  notes?: string;
+}
+
+/** Place summary from /api/v1/genealogy/places */
+export interface PlaceSummary {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  name_hebrew_transliterated?: string;
+  strongs?: string;
+  meaning?: string;
+  place_type?: string;
+  scripture_refs: ScriptureRef[];
+  notes?: string;
+  connected_persons: PlaceConnection[];
+}
+
+/** Full place detail from /api/v1/genealogy/place/{id} */
+export interface PlaceDetail {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  name_hebrew_transliterated?: string;
+  strongs?: string;
+  meaning?: string;
+  place_type?: string;
+  scripture_refs: ScriptureRef[];
+  notes?: string;
+  persons: PlaceConnection[];
+  nations: PlaceConnection[];
 }
 
 /** Chronology person for timeline */

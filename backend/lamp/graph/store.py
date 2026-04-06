@@ -202,6 +202,44 @@ class GraphStore:
                 nations.append(nation_data)
         return nations
 
+    # ── Place queries ─────────────────────────────────────────────
+
+    GEOGRAPHIC_EDGES = {
+        EdgeType.BORN_AT,
+        EdgeType.DIED_AT,
+        EdgeType.SETTLED_AT,
+        EdgeType.MIGRATED_TO,
+        EdgeType.TERRITORY_OF,
+    }
+
+    def get_places_for_person(self, person_id: str) -> list[dict]:
+        """Get places connected to a person via geographic edges."""
+        places = []
+        for _, target, data in self.G.out_edges(person_id, data=True):
+            if data.get("type") in self.GEOGRAPHIC_EDGES:
+                place_data = self._node_with_id(target)
+                place_data["_relationship"] = data.get("type")
+                place_data["_edge"] = {
+                    "notes": data.get("notes"),
+                    "order": data.get("order"),
+                }
+                places.append(place_data)
+        return places
+
+    def get_persons_for_place(self, place_id: str) -> list[dict]:
+        """Get persons/nations connected to a place (reverse lookup)."""
+        connected = []
+        for source, _, data in self.G.in_edges(place_id, data=True):
+            if data.get("type") in self.GEOGRAPHIC_EDGES:
+                node_data = self._node_with_id(source)
+                node_data["_relationship"] = data.get("type")
+                node_data["_edge"] = {
+                    "notes": data.get("notes"),
+                    "order": data.get("order"),
+                }
+                connected.append(node_data)
+        return connected
+
     # ── Tree building ────────────────────────────────────────────
 
     def build_genealogy_tree(

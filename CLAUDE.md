@@ -55,4 +55,6 @@ scripts/
 - Phase 1C complete: full frontend — genealogy tree, person detail, search, line filters
 - Phase 1D complete: URL routing (react-router-dom), error states (inline retry + error boundary), final verification
 - Phase 2A complete: chronology timeline — SVG lifespan bars, shared AppLayout with Tree/Timeline nav, /chronology API endpoint
-- Next: Phase 2B (TBD)
+- Phase 2B complete: places & geography — 18 places, 34 place links, /places and /place/{id} endpoints, PlacesPage with filters, places in PersonDetailPanel
+- Graph: 147 nodes (111 persons, 18 nations, 18 places), 182 edges
+- Next: Phase 2C (TBD)

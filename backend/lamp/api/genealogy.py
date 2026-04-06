@@ -58,6 +58,7 @@ def get_person(person_id: str):
     children = store.get_children(person_id)
     spouses = store.get_spouses(person_id)
     nations = store.get_nations_for_person(person_id)
+    places = store.get_places_for_person(person_id)
 
     # Clean internal fields from related entries
     def summarize(entries: list[dict]) -> list[dict]:
@@ -101,6 +102,17 @@ def get_person(person_id: str):
         "spouses": summarize(spouses),
         "children": summarize(children),
         "nations": summarize_nations(nations),
+        "places": [
+            {
+                "id": p["id"],
+                "name_english": p.get("name_english", ""),
+                "name_hebrew": p.get("name_hebrew"),
+                "place_type": p.get("place_type"),
+                "relationship": p.get("_relationship"),
+                "notes": p.get("_edge", {}).get("notes"),
+            }
+            for p in places
+        ],
     }
 
 
@@ -202,6 +214,89 @@ def get_nations():
             }
         )
     return result
+
+
+@router.get("/places")
+def get_places():
+    """Get all places with connected persons/nations."""
+    store = get_store()
+    places = store.get_places()
+
+    result = []
+    for p in places:
+        connected = store.get_persons_for_place(p["id"])
+        result.append({
+            "id": p["id"],
+            "name_english": p.get("name_english"),
+            "name_hebrew": p.get("name_hebrew"),
+            "name_hebrew_transliterated": p.get("name_hebrew_transliterated"),
+            "strongs": p.get("strongs"),
+            "meaning": p.get("meaning"),
+            "place_type": p.get("place_type"),
+            "scripture_refs": p.get("scripture_refs", []),
+            "notes": p.get("notes"),
+            "connected_persons": [
+                {
+                    "id": c["id"],
+                    "name_english": c.get("name_english", ""),
+                    "node_type": c.get("node_type"),
+                    "relationship": c.get("_relationship"),
+                    "notes": c.get("_edge", {}).get("notes"),
+                }
+                for c in connected
+            ],
+        })
+
+    return result
+
+
+@router.get("/place/{place_id:path}")
+def get_place(place_id: str):
+    """Get full detail for a place."""
+    store = get_store()
+    node = store.get_node(place_id)
+    if node is None or node.get("node_type") != "place":
+        raise HTTPException(status_code=404, detail=f"Place not found: {place_id}")
+
+    connected = store.get_persons_for_place(place_id)
+
+    persons = [
+        {
+            "id": c["id"],
+            "name_english": c.get("name_english", ""),
+            "name_hebrew": c.get("name_hebrew"),
+            "sex": c.get("sex"),
+            "relationship": c.get("_relationship"),
+            "notes": c.get("_edge", {}).get("notes"),
+        }
+        for c in connected
+        if c.get("node_type") == "person"
+    ]
+
+    nations = [
+        {
+            "id": c["id"],
+            "name_english": c.get("name_english", ""),
+            "name_hebrew": c.get("name_hebrew"),
+            "relationship": c.get("_relationship"),
+        }
+        for c in connected
+        if c.get("node_type") == "nation"
+    ]
+
+    return {
+        "id": node["id"],
+        "name_english": node.get("name_english"),
+        "name_hebrew": node.get("name_hebrew"),
+        "name_hebrew_transliterated": node.get("name_hebrew_transliterated"),
+        "strongs": node.get("strongs"),
+        "meaning": node.get("meaning"),
+        "place_type": node.get("place_type"),
+        "scripture_refs": node.get("scripture_refs", []),
+        "notes": node.get("notes"),
+        "persons": persons,
+        "nations": nations,
+    }
 
 
 @router.get("/chronology")
