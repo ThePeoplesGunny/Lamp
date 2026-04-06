@@ -1,0 +1,114 @@
+/** Scripture reference */
+export interface ScriptureRef {
+  book: string;
+  chapter: number;
+  verse: number;
+  verse_end?: number;
+}
+
+/** A person node from the API tree endpoint */
+export interface TreePersonNode {
+  id: string;
+  type: string;
+  position: { x: number; y: number };
+  data: {
+    name_english: string;
+    name_hebrew?: string;
+    meaning?: string;
+    strongs?: string;
+    sex?: string;
+    birth_year_am?: number;
+    death_year_am?: number;
+    age_at_death?: number;
+  };
+}
+
+/** An edge from the API tree endpoint */
+export interface TreeEdge {
+  id: string;
+  source: string;
+  target: string;
+  data: {
+    type: string;
+    birth_order?: number;
+  };
+}
+
+/** Tree response from /api/v1/genealogy/tree */
+export interface TreeResponse {
+  nodes: TreePersonNode[];
+  edges: TreeEdge[];
+}
+
+/** Related person summary (parents, children, spouses) */
+export interface RelatedPerson {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  sex?: string;
+  relationship?: string;
+  birth_order?: number;
+}
+
+/** Related nation summary */
+export interface RelatedNation {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  relationship?: string;
+}
+
+/** Full person detail from /api/v1/genealogy/person/{id} */
+export interface PersonDetail {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  name_hebrew_transliterated?: string;
+  strongs?: string;
+  meaning?: string;
+  sex?: string;
+  birth_year_am?: number;
+  death_year_am?: number;
+  age_at_death?: number;
+  scripture_refs: ScriptureRef[];
+  notes?: string;
+  parents: RelatedPerson[];
+  spouses: RelatedPerson[];
+  children: RelatedPerson[];
+  nations: RelatedNation[];
+}
+
+/** Search result item */
+export interface SearchResult {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  strongs?: string;
+  node_type?: string;
+  meaning?: string;
+}
+
+/** Nation with ancestor info */
+export interface NationDetail {
+  id: string;
+  name_english: string;
+  name_hebrew?: string;
+  strongs?: string;
+  meaning?: string;
+  eponymous_ancestor?: {
+    id: string;
+    name_english: string;
+    name_hebrew?: string;
+  };
+  scripture_refs: ScriptureRef[];
+  notes?: string;
+}
+
+/** Graph stats */
+export interface GraphStats {
+  persons: number;
+  nations: number;
+  places: number;
+  edges: number;
+  total_nodes: number;
+}

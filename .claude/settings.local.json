@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:reactflow.dev)",
+      "WebFetch(domain:visjs.github.io)",
+      "WebFetch(domain:react-leaflet.js.org)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(py -3.12 --version)",
+      "Bash(python:*)",
+      "Bash(npm install:*)",
+      "Bash(mkdir:*)"
+    ]
+  }
+}
