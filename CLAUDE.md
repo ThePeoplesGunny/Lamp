@@ -31,13 +31,17 @@ frontend/
     hooks/        # React hooks
     types/        # TypeScript types
 scripts/
-  dev.sh          # Start both servers
+  dev.sh          # Start both servers (bash)
+  dev.bat         # Start both servers (Windows)
+  seed_graph.py   # Rebuild serialized graph from seed data
 ```
 
 ## Running
 - Backend: `cd backend && python -m uvicorn lamp.main:app --reload --port 8000`
 - Frontend: `cd frontend && npm run dev`
-- Both: `bash scripts/dev.sh`
+- Both (bash): `bash scripts/dev.sh`
+- Both (Windows): `scripts\dev.bat`
+- Rebuild graph: `python scripts/seed_graph.py`
 - API docs: http://localhost:8000/docs
 
 ## Conventions
