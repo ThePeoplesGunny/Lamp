@@ -37,8 +37,18 @@ class EdgeType(StrEnum):
     DURING_EVENT = "during_event"  # person → event
     CONTEMPORARY_OF = "contemporary_of"  # person → person
 
-    # Scripture
-    MENTIONED_IN = "mentioned_in"  # any → scripture_ref
+    # Verse ↔ entity (Phase 2C-1 — verse nodes are first-class)
+    # Every edge sources at a verse and encodes a distinct exegetical relationship.
+    MENTIONS = "mentions"              # verse → person/place/nation/event
+    SPOKEN_BY = "spoken_by"            # verse → person (direct speech)
+    ADDRESSED_TO = "addressed_to"      # verse → person/nation (recipient of speech/writing)
+    SET_IN = "set_in"                  # verse → place (narrative location)
+    OCCURS_DURING = "occurs_during"    # verse → event
+
+    # Verse ↔ verse
+    QUOTES = "quotes"                  # verse → verse (e.g. NT citing OT)
+    ALLUDES_TO = "alludes_to"          # verse → verse (softer than quotes)
+    PARALLEL_TO = "parallel_to"        # verse ↔ verse (synoptic / Kings-Chronicles / Psalm parallels)
 
 
 # Which edge types represent parent-child relationships

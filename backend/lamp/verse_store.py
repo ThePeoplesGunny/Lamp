@@ -1,0 +1,288 @@
+"""SQLite persistence for verse text, per-word morphology, and translation layers.
+
+Canonical verse *nodes* live in the NetworkX graph (IDs + minimal metadata + edges).
+Verse *text* and word-level morphology live here, keyed by verse ID.
+Translations also live here, keyed by (translation, verse_id).
+
+Why separate from the graph:
+  - Graph load stays fast — a ~150-node graph doesn't want ~23K verses × 15 words × 7 fields
+    bloating the JSON by 3+ orders of magnitude.
+  - Translation-history comparison ("show KJV, ASV, Geneva for this verse") is a SQL-native
+    GROUP BY operation.
+  - Physical separation enforces the exegesis/eisegesis discipline at the storage layer:
+    canonical original-language text on the verse node, translations as reference data.
+
+Use only via GraphStore. Graph structure and verse text must stay consistent;
+GraphStore is the coordinator.
+"""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Any
+
+from lamp.models.book_codes import Canon
+from lamp.models.verse import TranslationText, Verse, VerseWord
+
+
+SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS verses (
+    id               TEXT PRIMARY KEY,
+    book             TEXT    NOT NULL,
+    chapter          INTEGER NOT NULL,
+    verse            INTEGER NOT NULL,
+    canon            TEXT    NOT NULL,
+    language         TEXT    NOT NULL,
+    text_consonantal TEXT    NOT NULL,
+    text_pointed     TEXT    NOT NULL,
+    text_cantillated TEXT    NOT NULL,
+    parashah_marker  TEXT,
+    reversed_nun     INTEGER NOT NULL DEFAULT 0,
+    notes_json       TEXT    NOT NULL DEFAULT '[]',
+    source           TEXT    NOT NULL,
+    source_tier      INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_verses_bcv   ON verses(book, chapter, verse);
+CREATE INDEX IF NOT EXISTS idx_verses_canon ON verses(canon);
+
+CREATE TABLE IF NOT EXISTS verse_words (
+    verse_id         TEXT    NOT NULL,
+    position         INTEGER NOT NULL,
+    text_consonantal TEXT    NOT NULL,
+    text_pointed     TEXT    NOT NULL,
+    text_cantillated TEXT    NOT NULL,
+    lemma            TEXT,
+    strongs          TEXT,
+    morph_code       TEXT,
+    transliteration  TEXT,
+    oshb_word_id     TEXT,
+    text_ketiv       TEXT,
+    text_qere        TEXT,
+    PRIMARY KEY (verse_id, position),
+    FOREIGN KEY (verse_id) REFERENCES verses(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_verse_words_strongs ON verse_words(strongs);
+CREATE INDEX IF NOT EXISTS idx_verse_words_lemma   ON verse_words(lemma);
+
+CREATE TABLE IF NOT EXISTS translations (
+    translation TEXT    NOT NULL,
+    verse_id    TEXT    NOT NULL,
+    text        TEXT    NOT NULL,
+    source      TEXT    NOT NULL,
+    source_tier INTEGER NOT NULL,
+    PRIMARY KEY (translation, verse_id),
+    FOREIGN KEY (verse_id) REFERENCES verses(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_translations_verse ON translations(verse_id);
+"""
+
+
+class VerseStore:
+    """SQLite-backed verse text + translation store.
+
+    Pass db_path=None for in-memory (tests). Pass a Path for persistence.
+    """
+
+    def __init__(self, db_path: Path | str | None = None):
+        self.db_path = db_path
+        self.conn: sqlite3.Connection | None = None
+
+    def connect(self) -> None:
+        if isinstance(self.db_path, Path):
+            self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        target = ":memory:" if self.db_path is None else str(self.db_path)
+        self.conn = sqlite3.connect(target)
+        self.conn.row_factory = sqlite3.Row
+        if self.db_path is not None:
+            self.conn.execute("PRAGMA journal_mode=WAL;")
+        self.conn.execute("PRAGMA foreign_keys=ON;")
+        self.conn.executescript(SCHEMA_SQL)
+        self.conn.commit()
+
+    def close(self) -> None:
+        if self.conn:
+            self.conn.close()
+            self.conn = None
+
+    def _require(self) -> sqlite3.Connection:
+        if self.conn is None:
+            raise RuntimeError("VerseStore not connected; call connect() first")
+        return self.conn
+
+    # ── Insert ────────────────────────────────────────────────
+
+    def insert_verses(self, verses: Iterable[Verse]) -> int:
+        """Batch insert. Replaces existing rows with the same id. Returns count."""
+        conn = self._require()
+        verses_list = list(verses)
+        if not verses_list:
+            return 0
+
+        verse_rows = [
+            (
+                v.id, v.book, v.chapter, v.verse, str(v.canon), v.language,
+                v.text_consonantal, v.text_pointed, v.text_cantillated,
+                v.parashah_marker,
+                1 if v.reversed_nun else 0,
+                json.dumps(v.notes, ensure_ascii=False),
+                v.source, v.source_tier,
+            )
+            for v in verses_list
+        ]
+        word_rows = [
+            (
+                v.id, w.position,
+                w.text_consonantal, w.text_pointed, w.text_cantillated,
+                w.lemma, w.strongs, w.morph_code, w.transliteration, w.oshb_word_id,
+                w.text_ketiv, w.text_qere,
+            )
+            for v in verses_list for w in v.words
+        ]
+
+        with conn:
+            conn.executemany(
+                "INSERT OR REPLACE INTO verses "
+                "(id, book, chapter, verse, canon, language, "
+                "text_consonantal, text_pointed, text_cantillated, "
+                "parashah_marker, reversed_nun, notes_json, source, source_tier) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                verse_rows,
+            )
+            verse_ids = [row[0] for row in verse_rows]
+            placeholder = ",".join("?" for _ in verse_ids)
+            conn.execute(
+                f"DELETE FROM verse_words WHERE verse_id IN ({placeholder})",
+                verse_ids,
+            )
+            if word_rows:
+                conn.executemany(
+                    "INSERT INTO verse_words "
+                    "(verse_id, position, text_consonantal, text_pointed, text_cantillated, "
+                    "lemma, strongs, morph_code, transliteration, oshb_word_id, "
+                    "text_ketiv, text_qere) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    word_rows,
+                )
+        return len(verse_rows)
+
+    def insert_translations(self, translations: Iterable[TranslationText]) -> int:
+        conn = self._require()
+        rows = [
+            (t.translation, t.verse_id, t.text, t.source, t.source_tier)
+            for t in translations
+        ]
+        if not rows:
+            return 0
+        with conn:
+            conn.executemany(
+                "INSERT OR REPLACE INTO translations "
+                "(translation, verse_id, text, source, source_tier) "
+                "VALUES (?, ?, ?, ?, ?)",
+                rows,
+            )
+        return len(rows)
+
+    # ── Query ─────────────────────────────────────────────────
+
+    def get_verse(self, verse_id: str) -> Verse | None:
+        conn = self._require()
+        vrow = conn.execute("SELECT * FROM verses WHERE id = ?", (verse_id,)).fetchone()
+        if not vrow:
+            return None
+        wrows = conn.execute(
+            "SELECT * FROM verse_words WHERE verse_id = ? ORDER BY position",
+            (verse_id,),
+        ).fetchall()
+        return _row_to_verse(vrow, wrows)
+
+    def get_verses(self, verse_ids: Iterable[str]) -> list[Verse]:
+        conn = self._require()
+        ids = list(verse_ids)
+        if not ids:
+            return []
+        placeholder = ",".join("?" for _ in ids)
+        vrows = conn.execute(
+            f"SELECT * FROM verses WHERE id IN ({placeholder})",
+            ids,
+        ).fetchall()
+        words_by_id: dict[str, list[sqlite3.Row]] = {}
+        for row in conn.execute(
+            f"SELECT * FROM verse_words WHERE verse_id IN ({placeholder}) "
+            f"ORDER BY verse_id, position",
+            ids,
+        ).fetchall():
+            words_by_id.setdefault(row["verse_id"], []).append(row)
+        return [_row_to_verse(vr, words_by_id.get(vr["id"], [])) for vr in vrows]
+
+    def get_translations_for_verse(self, verse_id: str) -> list[TranslationText]:
+        conn = self._require()
+        rows = conn.execute(
+            "SELECT * FROM translations WHERE verse_id = ? ORDER BY translation",
+            (verse_id,),
+        ).fetchall()
+        return [
+            TranslationText(
+                translation=r["translation"],
+                verse_id=r["verse_id"],
+                text=r["text"],
+                source=r["source"],
+                source_tier=r["source_tier"],
+            )
+            for r in rows
+        ]
+
+    # ── Stats ─────────────────────────────────────────────────
+
+    def count_verses(self) -> int:
+        return self._require().execute("SELECT COUNT(*) FROM verses").fetchone()[0]
+
+    def count_words(self) -> int:
+        return self._require().execute("SELECT COUNT(*) FROM verse_words").fetchone()[0]
+
+    def count_by_book(self) -> dict[str, int]:
+        rows = self._require().execute(
+            "SELECT book, COUNT(*) FROM verses GROUP BY book ORDER BY book"
+        ).fetchall()
+        return {row[0]: row[1] for row in rows}
+
+
+def _row_to_verse(row: Any, word_rows: list[Any]) -> Verse:
+    return Verse(
+        id=row["id"],
+        book=row["book"],
+        chapter=row["chapter"],
+        verse=row["verse"],
+        canon=Canon(row["canon"]),
+        language=row["language"],
+        text_consonantal=row["text_consonantal"],
+        text_pointed=row["text_pointed"],
+        text_cantillated=row["text_cantillated"],
+        parashah_marker=row["parashah_marker"],
+        reversed_nun=bool(row["reversed_nun"]),
+        notes=json.loads(row["notes_json"]),
+        source=row["source"],
+        source_tier=row["source_tier"],
+        words=[_row_to_word(w) for w in word_rows],
+    )
+
+
+def _row_to_word(row: Any) -> VerseWord:
+    return VerseWord(
+        position=row["position"],
+        text_consonantal=row["text_consonantal"],
+        text_pointed=row["text_pointed"],
+        text_cantillated=row["text_cantillated"],
+        lemma=row["lemma"],
+        strongs=row["strongs"],
+        morph_code=row["morph_code"],
+        transliteration=row["transliteration"],
+        oshb_word_id=row["oshb_word_id"],
+        text_ketiv=row["text_ketiv"],
+        text_qere=row["text_qere"],
+    )

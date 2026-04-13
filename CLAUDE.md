@@ -4,25 +4,29 @@
 Biblical analytical tool — investigation platform for original Hebrew/Greek texts. Strips noise, surfaces patterns, connections, and structures not visible through translation.
 
 ## Architecture
-- **Backend:** FastAPI + Python 3.12, NetworkX graph engine, JSON persistence
+- **Backend:** FastAPI + Python 3.12, NetworkX graph engine, JSON graph + SQLite verse store
 - **Frontend:** React 19 + TypeScript + Vite, React Flow (genealogy trees), Tailwind CSS 4
-- **Data model:** Property graph — Person, Place, Nation, Event nodes connected by typed directed edges
+- **Data model:** Property graph — Person, Place, Nation, Event, **Verse** nodes connected by typed directed edges. Verses are first-class nodes and the core engine (Phase 2C-1).
+- **Persistence split:** graph structure (nodes + edges) lives in `backend/data/graphs/lamp.json`; verse text (three-layer Hebrew + per-word morphology) and translations live in `backend/data/verses/verses.db` keyed by verse ID. GraphStore coordinates both.
 
 ## Project Structure
 ```
 backend/
+  docs/           # Design docs (schema, architecture decisions)
   lamp/           # Python package
     main.py       # FastAPI app
     config.py     # Paths and settings
-    models/       # Pydantic models (node types, edge types)
-    graph/        # NetworkX graph store and queries
+    verse_store.py  # SQLite persistence for verse text, morphology, translations
+    models/       # Pydantic models (nodes, edges, verses, book codes)
+    graph/        # NetworkX graph store and queries (coordinates VerseStore)
     api/          # FastAPI route modules
-    ingest/       # Data loading scripts
+    ingest/       # Data loading: seed data, OSHB XML parser
     services/     # Business logic
   data/
     seed/         # Hand-curated JSON seed data
-    external/     # Downloaded open datasets (gitignored)
+    external/     # Downloaded open datasets incl. OSHB (gitignored)
     graphs/       # Serialized NetworkX graph (gitignored)
+    verses/       # SQLite verse/translations store (gitignored)
   tests/
 frontend/
   src/
@@ -33,7 +37,8 @@ frontend/
 scripts/
   dev.sh          # Start both servers (bash)
   dev.bat         # Start both servers (Windows)
-  seed_graph.py   # Rebuild serialized graph from seed data
+  seed_graph.py   # Rebuild entity graph from seed data
+  seed_verses.py  # Rebuild Hebrew OT verse nodes + SQLite from OSHB source
 ```
 
 ## Running
@@ -41,15 +46,23 @@ scripts/
 - Frontend: `cd frontend && npm run dev`
 - Both (bash): `bash scripts/dev.sh`
 - Both (Windows): `scripts\dev.bat`
-- Rebuild graph: `python scripts/seed_graph.py`
+- Rebuild entity graph: `python scripts/seed_graph.py`
+- Rebuild verse nodes + SQLite: `python scripts/seed_verses.py` (requires OSHB cloned into `backend/data/external/morphhb/`)
 - API docs: http://localhost:8000/docs
 
+## External data sources
+- **OSHB (Open Scriptures Hebrew Bible)** — `github.com/openscriptures/morphhb`. Provides Westminster Leningrad Codex in OSIS XML with per-word lemma, Strong's, and morphology. Text is public domain; lemma/morph data is CC-BY-4.0 (must credit OSHB). Clone into `backend/data/external/morphhb/`. Exact commit is captured in each verse's `source` field for provenance.
+
 ## Conventions
-- Node IDs are namespaced: `person:adam`, `place:eden`, `nation:canaanites`
+- Node IDs are namespaced: `person:adam`, `place:eden`, `nation:canaanites`, `verse:GEN.5.3`
 - Hebrew text stored as Unicode, RTL handled in frontend
 - Edge types preserve biblical distinctions (father_of vs mother_of vs wife_of vs concubine_of)
+- Verse edges encode exegetical distinctions: `mentions` vs `spoken_by` vs `addressed_to` vs `set_in` vs `quotes` vs `alludes_to` vs `parallel_to`
 - Scripture refs use format: `{"book": "GEN", "chapter": 5, "verse": 3}`
+- Book codes are SBL-standard uppercase 3-letter (GEN, EXO, PSA, 1SA, NAM, …). OSIS codes (Gen, Exod, Ps, 1Sam, Nah) are mapped to Lamp codes on ingest via `lamp.models.book_codes`.
+- Hebrew text is preserved in three separable layers: consonantal (pre-Masoretic), pointed (niqqud), cantillated (full Masoretic with te'amim). Total-accuracy directive — Ketiv/Qere, parashah markers, and reversed nun (nun hafukha) are all preserved as distinct features.
 - Chronology uses Anno Mundi (AM) year system where calculable
+- Translations live in a separate store from canonical verse nodes by design (enforces exegesis/eisegesis separation at the storage layer)
 
 ## Current State
 - Version: 0.1.0
@@ -60,5 +73,7 @@ scripts/
 - Phase 1D complete: URL routing (react-router-dom), error states (inline retry + error boundary), final verification
 - Phase 2A complete: chronology timeline — SVG lifespan bars, shared AppLayout with Tree/Timeline nav, /chronology API endpoint
 - Phase 2B complete: places & geography — 18 places, 34 place links, /places and /place/{id} endpoints, PlacesPage with filters, places in PersonDetailPanel
-- Graph: 147 nodes (111 persons, 18 nations, 18 places), 182 edges
-- Next: Phase 2C (TBD)
+- Phase 2C-1 Step 1 complete: locked verse-graph schema (`backend/docs/verse_graph_schema.md`) — verses as first-class nodes, three-layer Hebrew text, per-word morphology, 8 verse-edge types, translations stored separately from canonical verse nodes
+- Phase 2C-1 Step 2 complete: full Hebrew OT ingest from OSHB. 23,213 verse nodes (matches WLC reference exactly), 305,516 words with lemma/Strong's/morphology, 1,277 ketiv/qere variants, 3,130 parashah markers, 9 reversed-nun verses, 3,120 Masoretic notes preserved. Zero parse warnings. VerseStore (SQLite WAL) + GraphStore coordination. 65 tests passing.
+- Graph: 23,360 nodes (111 persons, 18 nations, 18 places, 23,213 verses), 182 edges. Verse-to-entity edges seeded in Step 3.
+- Next: Phase 2C-1 Step 3 — auto-link existing 147 Person/Place/Nation nodes to verse nodes by walking their curated `scripture_refs` and creating `MENTIONS` edges. No new claims; purely mechanical materialization of existing data as graph edges.

@@ -15,37 +15,59 @@ from lamp.models import (
     Nation,
     Edge,
     EdgeType,
+    Verse,
     PARENTAL_EDGES,
     SPOUSAL_EDGES,
 )
+from lamp.verse_store import VerseStore
 
 
 class GraphStore:
-    """Manages the Lamp graph — load, save, query."""
+    """Manages the Lamp graph — load, save, query.
 
-    def __init__(self, graph_path: Path | None = None):
+    Coordinates two persistence layers:
+      - NetworkX graph (nodes + edges, JSON-serialized) — structure
+      - VerseStore SQLite (verse text, morphology, translations) — text payload
+
+    Verse nodes carry only minimal metadata in the graph (book, chapter, verse,
+    canon, parashah_marker). Full text + words come from the SQLite store via
+    get_verse(). This keeps graph loads fast while supporting first-class
+    verse-as-node traversals.
+    """
+
+    def __init__(
+        self,
+        graph_path: Path | None = None,
+        verse_db_path: Path | None = None,
+    ):
         self.graph_path = graph_path
         self.G: nx.MultiDiGraph = nx.MultiDiGraph()
+        self.verses = VerseStore(verse_db_path)
 
     # ── Persistence ──────────────────────────────────────────────
 
     def load(self) -> None:
-        """Load graph from JSON file."""
+        """Load graph from JSON and connect to verse SQLite store."""
         if self.graph_path and self.graph_path.exists():
             with open(self.graph_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             self.G = nx.node_link_graph(data, directed=True, multigraph=True)
         else:
             self.G = nx.MultiDiGraph()
+        self.verses.connect()
 
     def save(self) -> None:
-        """Save graph to JSON file."""
+        """Save graph to JSON. (VerseStore persists on each write.)"""
         if not self.graph_path:
             raise ValueError("No graph_path configured")
         self.graph_path.parent.mkdir(parents=True, exist_ok=True)
         data = nx.node_link_data(self.G)
         with open(self.graph_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+
+    def close(self) -> None:
+        """Close SQLite connection."""
+        self.verses.close()
 
     # ── Node operations ──────────────────────────────────────────
 
@@ -60,6 +82,25 @@ class GraphStore:
     def add_nation(self, nation: Nation) -> None:
         """Add a nation node to the graph."""
         self.G.add_node(nation.id, **nation.model_dump(), node_type="nation")
+
+    def add_verses(self, verses: list[Verse]) -> int:
+        """Add verse nodes.
+
+        Graph gets minimal metadata (for fast traversal + rendering).
+        SQLite gets full text + per-word morphology.
+        """
+        for v in verses:
+            self.G.add_node(
+                v.id,
+                node_type="verse",
+                book=v.book,
+                chapter=v.chapter,
+                verse=v.verse,
+                canon=str(v.canon),
+                parashah_marker=v.parashah_marker,
+                reversed_nun=v.reversed_nun,
+            )
+        return self.verses.insert_verses(verses)
 
     # ── Edge operations ──────────────────────────────────────────
 
@@ -114,6 +155,46 @@ class GraphStore:
             self._node_with_id(n)
             for n in self.G.nodes
             if self.G.nodes[n].get("node_type") == "place"
+        ]
+
+    # ── Verse queries ────────────────────────────────────────────
+
+    def get_verse(self, verse_id: str) -> Verse | None:
+        """Fetch a verse's full payload (three-layer text + per-word morphology).
+
+        Returns None if the verse is not in the graph. Graph presence is the
+        canonical signal — SQLite text without a graph node indicates a
+        consistency bug we want to surface.
+        """
+        if verse_id not in self.G:
+            return None
+        return self.verses.get_verse(verse_id)
+
+    def get_verses_mentioning(self, node_id: str) -> list[dict]:
+        """Every verse with a `mentions` edge to this Person/Place/Nation/Event.
+
+        Returns graph-level dicts only (book/chapter/verse/canon/parashah + id).
+        Fetch full text with get_verse(id) or self.verses.get_verses([ids]).
+        """
+        if node_id not in self.G:
+            return []
+        verses = []
+        for source, _, data in self.G.in_edges(node_id, data=True):
+            if data.get("type") == EdgeType.MENTIONS:
+                verses.append(self._node_with_id(source))
+        return sorted(
+            verses,
+            key=lambda v: (v.get("book") or "", v.get("chapter") or 0, v.get("verse") or 0),
+        )
+
+    def get_mentions(self, verse_id: str) -> list[dict]:
+        """Every Person/Place/Nation/Event this verse mentions."""
+        if verse_id not in self.G:
+            return []
+        return [
+            self._node_with_id(target)
+            for _, target, data in self.G.out_edges(verse_id, data=True)
+            if data.get("type") == EdgeType.MENTIONS
         ]
 
     # ── Genealogy queries ────────────────────────────────────────
@@ -357,11 +438,15 @@ class GraphStore:
         places = sum(
             1 for n in self.G.nodes if self.G.nodes[n].get("node_type") == "place"
         )
+        verses = sum(
+            1 for n in self.G.nodes if self.G.nodes[n].get("node_type") == "verse"
+        )
         edges = self.G.number_of_edges()
         return {
             "persons": persons,
             "nations": nations,
             "places": places,
+            "verses": verses,
             "edges": edges,
             "total_nodes": self.G.number_of_nodes(),
         }
