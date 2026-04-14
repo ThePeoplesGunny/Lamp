@@ -12,7 +12,7 @@ from lamp.main import app
 from lamp.config import SEED_DIR, API_PREFIX
 from lamp.graph.store import GraphStore
 from lamp.api.genealogy import init_store
-from lamp.api.verses import init_store as init_verse_store
+from lamp.api.verses import init_store as init_verse_store  # nav_router shares the same store global
 from lamp.ingest.genesis_genealogy import load_seed_data
 from lamp.models import Canon, Edge, EdgeType, Verse, VerseWord
 
@@ -317,4 +317,61 @@ async def test_verses_mentioning_person(client):
 @pytest.mark.anyio
 async def test_verses_mentioning_unknown_404(client):
     r = await client.get(f"{API_PREFIX}/verse/mentioning/person:nonexistent")
+    assert r.status_code == 404
+
+
+# ── Navigation API (books + chapter) ───────────────────────────
+
+@pytest.mark.anyio
+async def test_list_books(client):
+    r = await client.get(f"{API_PREFIX}/books")
+    assert r.status_code == 200
+    data = r.json()
+    # Our test fixture seeds GEN (3 verses) and MAT (1 verse)
+    codes = [b["book"] for b in data]
+    assert "GEN" in codes
+    assert "MAT" in codes
+    # GEN comes before MAT in canonical order
+    assert codes.index("GEN") < codes.index("MAT")
+
+    gen = next(b for b in data if b["book"] == "GEN")
+    assert gen["name"] == "Genesis"
+    assert gen["canon"] == "tanakh"
+    assert gen["language"] == "hbo"
+    assert gen["chapter_count"] == 2  # seed has GEN.1 and GEN.2
+    assert gen["verse_count"] == 3
+
+    mat = next(b for b in data if b["book"] == "MAT")
+    assert mat["canon"] == "nt"
+    assert mat["language"] == "grc"
+
+
+@pytest.mark.anyio
+async def test_get_chapter(client):
+    r = await client.get(f"{API_PREFIX}/book/GEN/chapter/1")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["book"] == "GEN"
+    assert data["book_name"] == "Genesis"
+    assert data["chapter"] == 1
+    assert len(data["verses"]) == 2  # GEN.1.1 and GEN.1.2 in seed
+    assert data["verses"][0]["verse"] == 1
+    assert data["verses"][0]["id"] == "verse:GEN.1.1"
+    # Lightweight payload — no words/morphology
+    assert "words" not in data["verses"][0]
+    # Canonical text preview present
+    assert data["verses"][0]["text_canonical"] != ""
+
+
+@pytest.mark.anyio
+async def test_get_chapter_case_insensitive_book(client):
+    """Book code in URL is normalized to uppercase."""
+    r = await client.get(f"{API_PREFIX}/book/gen/chapter/1")
+    assert r.status_code == 200
+    assert r.json()["book"] == "GEN"
+
+
+@pytest.mark.anyio
+async def test_get_chapter_not_found(client):
+    r = await client.get(f"{API_PREFIX}/book/GEN/chapter/999")
     assert r.status_code == 404

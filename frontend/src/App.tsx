@@ -10,6 +10,7 @@ import LineageFilter from './components/genealogy/LineageFilter';
 import TimelinePage from './components/timeline/TimelinePage';
 import PlacesPage from './components/places/PlacesPage';
 import VersePage from './components/verse/VersePage';
+import ReadPage from './components/read/ReadPage';
 import { fetchTree } from './api/client';
 import type { TreeResponse } from './types';
 
@@ -117,6 +118,9 @@ export default function App() {
           <Route path="/timeline" element={<TimelinePage />} />
           <Route path="/places" element={<PlacesPage />} />
           <Route path="/verse/:verseRef" element={<VersePage />} />
+          <Route path="/read" element={<ReadPage />} />
+          <Route path="/read/:book" element={<ReadPage />} />
+          <Route path="/read/:book/:chapter" element={<ReadPage />} />
         </Route>
       </Routes>
     </QueryClientProvider>

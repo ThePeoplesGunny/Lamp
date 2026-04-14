@@ -9,6 +9,8 @@ import type {
   PlaceDetail,
   VerseDetail,
   VerseRef,
+  BookSummary,
+  ChapterDetail,
 } from '../types';
 
 const BASE = '/api/v1';
@@ -71,4 +73,12 @@ export function fetchVerse(verseId: string): Promise<VerseDetail> {
 
 export function fetchVersesMentioning(nodeId: string): Promise<VerseRef[]> {
   return get(`/verse/mentioning/${encodeURIComponent(nodeId)}`);
+}
+
+export function fetchBooks(): Promise<BookSummary[]> {
+  return get('/books');
+}
+
+export function fetchChapter(book: string, chapter: number): Promise<ChapterDetail> {
+  return get(`/book/${encodeURIComponent(book)}/chapter/${chapter}`);
 }

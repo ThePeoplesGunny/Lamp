@@ -255,3 +255,30 @@ export interface VerseRef {
   canon?: string;
   language?: string;
 }
+
+/** Book summary for the navigation UI. */
+export interface BookSummary {
+  book: string;              // "GEN"
+  name: string;              // "Genesis"
+  canon: 'tanakh' | 'nt' | 'lxx';
+  language: 'hbo' | 'grc' | 'arc';
+  chapter_count: number;
+  verse_count: number;
+}
+
+/** Lightweight verse for the chapter verse-list. */
+export interface ChapterVerse {
+  id: string;
+  verse: number;
+  text_canonical: string;
+  parashah_marker?: string | null;
+  reversed_nun: boolean;
+}
+
+/** Chapter payload from /api/v1/book/{code}/chapter/{n}. */
+export interface ChapterDetail {
+  book: string;
+  book_name: string;
+  chapter: number;
+  verses: ChapterVerse[];
+}

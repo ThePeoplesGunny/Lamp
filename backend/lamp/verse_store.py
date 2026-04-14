@@ -299,6 +299,52 @@ class VerseStore:
         ).fetchall()
         return {row[0]: row[1] for row in rows}
 
+    def books_summary(self) -> list[dict]:
+        """One row per book currently ingested. Used by the navigation UI.
+
+        Returns: book, canon, language, chapter_count, verse_count.
+        """
+        rows = self._require().execute(
+            "SELECT book, canon, language, MAX(chapter) AS chapter_count, "
+            "COUNT(*) AS verse_count "
+            "FROM verses "
+            "GROUP BY book, canon, language "
+            "ORDER BY book"
+        ).fetchall()
+        return [
+            {
+                "book": r["book"],
+                "canon": r["canon"],
+                "language": r["language"],
+                "chapter_count": r["chapter_count"],
+                "verse_count": r["verse_count"],
+            }
+            for r in rows
+        ]
+
+    def chapter_verses(self, book: str, chapter: int) -> list[dict]:
+        """Lightweight verse list for a chapter — id, number, canonical text only.
+
+        Heavy fields (per-word morphology, three-layer text) are NOT loaded;
+        callers that need them fetch the verse individually.
+        """
+        rows = self._require().execute(
+            "SELECT id, verse, text_canonical, parashah_marker, reversed_nun "
+            "FROM verses WHERE book = ? AND chapter = ? "
+            "ORDER BY verse",
+            (book, chapter),
+        ).fetchall()
+        return [
+            {
+                "id": r["id"],
+                "verse": r["verse"],
+                "text_canonical": r["text_canonical"],
+                "parashah_marker": r["parashah_marker"],
+                "reversed_nun": bool(r["reversed_nun"]),
+            }
+            for r in rows
+        ]
+
     # ── Navigation ────────────────────────────────────────────
 
     def prev_verse_id(self, verse_id: str) -> str | None:

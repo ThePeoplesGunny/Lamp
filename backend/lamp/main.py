@@ -6,7 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from lamp.config import API_PREFIX, GRAPH_FILE, VERSES_DB_FILE
 from lamp.graph.store import GraphStore
 from lamp.api.genealogy import router as genealogy_router, init_store
-from lamp.api.verses import router as verses_router, init_store as init_verse_store
+from lamp.api.verses import (
+    router as verses_router,
+    nav_router as nav_router,
+    init_store as init_verse_store,
+)
 
 
 @asynccontextmanager
@@ -45,3 +49,4 @@ def health():
 
 app.include_router(genealogy_router, prefix=API_PREFIX)
 app.include_router(verses_router, prefix=API_PREFIX)
+app.include_router(nav_router, prefix=API_PREFIX)

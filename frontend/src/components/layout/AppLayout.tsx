@@ -77,6 +77,17 @@ export default function AppLayout() {
             >
               Places
             </NavLink>
+            <NavLink
+              to="/read"
+              className="px-3 py-1 text-xs rounded border transition-colors"
+              style={({ isActive }) => ({
+                backgroundColor: isActive ? 'var(--color-accent-dim)' : 'var(--color-bg-secondary)',
+                borderColor: isActive ? 'var(--color-accent)' : 'var(--color-border)',
+                color: isActive ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+              })}
+            >
+              Read
+            </NavLink>
           </nav>
         </div>
 

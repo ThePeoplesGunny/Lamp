@@ -13,6 +13,7 @@ from lamp.graph.store import GraphStore
 from lamp.models.book_codes import LAMP_CODE_TO_NAME
 
 router = APIRouter(prefix="/verse", tags=["verse"])
+nav_router = APIRouter(tags=["verse-navigation"])
 
 _store: GraphStore | None = None
 
@@ -61,6 +62,72 @@ def _summarize_verse_ref(node: dict) -> dict:
         "verse": verse,
         "canon": node.get("canon"),
         "language": node.get("language"),
+    }
+
+
+@nav_router.get("/books")
+def list_books():
+    """All ingested books with canon, language, and chapter/verse counts.
+
+    Used by the navigation UI to build the book list and chapter picker.
+    Returned in canonical book order (OT → NT).
+    """
+    store = get_store()
+    summaries = store.verses.books_summary()
+
+    # Canonical order: Tanakh (Torah, Nevi'im, Ketuvim) then NT
+    canonical_order = [
+        # Torah
+        "GEN", "EXO", "LEV", "NUM", "DEU",
+        # Former Prophets
+        "JOS", "JDG", "1SA", "2SA", "1KI", "2KI",
+        # Latter Prophets
+        "ISA", "JER", "EZK",
+        # The Twelve
+        "HOS", "JOL", "AMO", "OBA", "JON", "MIC",
+        "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL",
+        # Ketuvim
+        "PSA", "PRO", "JOB", "SNG", "RUT", "LAM",
+        "ECC", "EST", "DAN", "EZR", "NEH", "1CH", "2CH",
+        # New Testament
+        "MAT", "MRK", "LUK", "JHN", "ACT", "ROM",
+        "1CO", "2CO", "GAL", "EPH", "PHP", "COL",
+        "1TH", "2TH", "1TI", "2TI", "TIT", "PHM",
+        "HEB", "JAS", "1PE", "2PE", "1JN", "2JN",
+        "3JN", "JUD", "REV",
+    ]
+    order_index = {code: i for i, code in enumerate(canonical_order)}
+
+    books = []
+    for s in summaries:
+        books.append({
+            **s,
+            "name": LAMP_CODE_TO_NAME.get(s["book"], s["book"]),
+        })
+    books.sort(key=lambda b: order_index.get(b["book"], 999))
+    return books
+
+
+@nav_router.get("/book/{book}/chapter/{chapter}")
+def get_chapter(book: str, chapter: int):
+    """Lightweight list of verses in a chapter — id, number, canonical-text preview.
+
+    Heavy fields (per-word morphology, three-layer text) are NOT included;
+    the frontend fetches the full verse via /verse/{id} when one is opened.
+    """
+    store = get_store()
+    book_upper = book.upper()
+    verses = store.verses.chapter_verses(book_upper, chapter)
+    if not verses:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No verses found for {book_upper} chapter {chapter}",
+        )
+    return {
+        "book": book_upper,
+        "book_name": LAMP_CODE_TO_NAME.get(book_upper, book_upper),
+        "chapter": chapter,
+        "verses": verses,
     }
 
 
