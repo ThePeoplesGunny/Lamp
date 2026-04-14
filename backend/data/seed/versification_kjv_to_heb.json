@@ -1,0 +1,47 @@
+{
+  "_schema": "KJV → Hebrew (OSHB) versification mapping for books where they diverge. Uniform-offset psalms and chapter-renumber books are handled; books with complex chapter-boundary shifts (Num, 1Sam, 1Kgs, 1Chr, Neh, Isa) are listed as `skipped_books` and will be added in a follow-up phase using authoritative per-verse mappings.",
+  "_source_notes": "Psalms offsets derived algorithmically from verse-count differences between KJV and OSHB (Phase 2C-6). Joel and Malachi chapter mappings are sourced from standard versification tables (e.g. BDB, BHS introductions — widely documented textual-tradition divergence).",
+
+  "psalms_offsets": {
+    "_doc": "For each KJV Psalms chapter with a superscription in the Hebrew, add offset to the KJV verse number to get the Hebrew verse. E.g. offset=1 means KJV Ps 3:1 → Heb Ps 3:2.",
+    "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1,
+    "11": 1, "12": 1, "13": 1, "14": 1, "15": 1, "16": 1, "17": 1,
+    "18": 1, "19": 1, "20": 1, "21": 1, "22": 1, "23": 1, "24": 1,
+    "25": 1, "26": 1, "27": 1, "28": 1, "29": 1, "30": 1, "31": 1,
+    "32": 1, "34": 1, "36": 1, "38": 1, "39": 1, "40": 1, "41": 1,
+    "42": 1, "44": 1, "45": 1, "46": 1, "47": 1, "48": 1, "49": 1,
+    "50": 1, "51": 2, "52": 2, "53": 1, "54": 2, "55": 1, "56": 1,
+    "57": 1, "58": 1, "59": 1, "60": 2, "61": 1, "62": 1, "63": 1,
+    "64": 1, "65": 1, "67": 1, "68": 1, "69": 1, "70": 1, "75": 1,
+    "76": 1, "77": 1, "80": 1, "81": 1, "83": 1, "84": 1, "85": 1,
+    "88": 1, "89": 1, "92": 1, "102": 1, "108": 1, "140": 1, "142": 1
+  },
+
+  "joel_mapping": {
+    "_doc": "KJV Joel has 3 chapters; Hebrew has 4. KJV 2:28-32 = Heb 3:1-5 (new chapter); KJV 3:1-21 = Heb 4:1-21.",
+    "chapter_overrides": [
+      {"kjv_from": {"chapter": 2, "verse_min": 28, "verse_max": 32},
+       "heb": {"chapter": 3, "verse_offset": -27}},
+      {"kjv_from": {"chapter": 3, "verse_min": 1, "verse_max": 21},
+       "heb": {"chapter": 4, "verse_offset": 0}}
+    ]
+  },
+
+  "malachi_mapping": {
+    "_doc": "KJV Malachi has 4 chapters; Hebrew has 3. KJV 4:1-6 = Heb 3:19-24. Chapters 1-3 align verse-for-verse.",
+    "chapter_overrides": [
+      {"kjv_from": {"chapter": 4, "verse_min": 1, "verse_max": 6},
+       "heb": {"chapter": 3, "verse_offset": 18}}
+    ]
+  },
+
+  "skipped_books": {
+    "_doc": "Books whose KJV → Hebrew mapping involves chapter-boundary shifts of more than ±1 verse, requiring authoritative per-verse mappings. Deferred to a follow-up phase. Current KJV text for these books is NOT ingested; verse pages for these books will show only the Hebrew original until the mapping is completed.",
+    "NUM": "Ch 16/17 split differs by 15 verses (Heb 16:1-35 = KJV 16:1-35; KJV 16:36-50 = Heb 17:1-15); plus ±1 shifts at 25:19, 29:40, 30:1.",
+    "1SA": "Chapter boundaries at 21/22 and 23/24 differ by ±1 verse.",
+    "1KI": "Ch 4/5 boundary differs by 14 verses; plus 22:43/44.",
+    "1CH": "Ch 5/6 boundary differs by 15 verses; plus 12:40/41.",
+    "NEH": "Ch 3/4 boundary differs by 6 verses; plus ±1 at 7:68, 9:38, 10:1.",
+    "ISA": "Ch 8/9 boundary differs by 1 verse; plus 63:19/64:1."
+  }
+}
