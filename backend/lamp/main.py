@@ -3,21 +3,23 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from lamp.config import API_PREFIX, GRAPH_FILE
+from lamp.config import API_PREFIX, GRAPH_FILE, VERSES_DB_FILE
 from lamp.graph.store import GraphStore
 from lamp.api.genealogy import router as genealogy_router, init_store
+from lamp.api.verses import router as verses_router, init_store as init_verse_store
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: load the graph
-    store = GraphStore(GRAPH_FILE)
+    # Startup: load the graph + verse SQLite
+    store = GraphStore(GRAPH_FILE, VERSES_DB_FILE)
     store.load()
     init_store(store)
+    init_verse_store(store)
     stats = store.stats()
     print(f"Lamp graph loaded: {stats['total_nodes']} nodes, {stats['edges']} edges")
     yield
-    # Shutdown: nothing to clean up
+    store.close()
 
 
 app = FastAPI(
@@ -42,3 +44,4 @@ def health():
 
 
 app.include_router(genealogy_router, prefix=API_PREFIX)
+app.include_router(verses_router, prefix=API_PREFIX)

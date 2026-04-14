@@ -120,7 +120,10 @@ class VerseStore:
         if isinstance(self.db_path, Path):
             self.db_path.parent.mkdir(parents=True, exist_ok=True)
         target = ":memory:" if self.db_path is None else str(self.db_path)
-        self.conn = sqlite3.connect(target)
+        # check_same_thread=False: FastAPI runs endpoints in a thread pool; reads are safe
+        # against the single WAL-mode SQLite connection. Writes go through insert_verses
+        # (batch, transactional), which is only called from ingest scripts, not the API.
+        self.conn = sqlite3.connect(target, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
         if self.db_path is not None:
             self.conn.execute("PRAGMA journal_mode=WAL;")
@@ -295,6 +298,40 @@ class VerseStore:
             "SELECT book, COUNT(*) FROM verses GROUP BY book ORDER BY book"
         ).fetchall()
         return {row[0]: row[1] for row in rows}
+
+    # ── Navigation ────────────────────────────────────────────
+
+    def prev_verse_id(self, verse_id: str) -> str | None:
+        """Return the id of the verse immediately before this one, within the same book."""
+        conn = self._require()
+        row = conn.execute(
+            "SELECT book, chapter, verse FROM verses WHERE id = ?", (verse_id,)
+        ).fetchone()
+        if not row:
+            return None
+        result = conn.execute(
+            "SELECT id FROM verses WHERE book = ? AND "
+            "(chapter < ? OR (chapter = ? AND verse < ?)) "
+            "ORDER BY chapter DESC, verse DESC LIMIT 1",
+            (row["book"], row["chapter"], row["chapter"], row["verse"]),
+        ).fetchone()
+        return result["id"] if result else None
+
+    def next_verse_id(self, verse_id: str) -> str | None:
+        """Return the id of the verse immediately after this one, within the same book."""
+        conn = self._require()
+        row = conn.execute(
+            "SELECT book, chapter, verse FROM verses WHERE id = ?", (verse_id,)
+        ).fetchone()
+        if not row:
+            return None
+        result = conn.execute(
+            "SELECT id FROM verses WHERE book = ? AND "
+            "(chapter > ? OR (chapter = ? AND verse > ?)) "
+            "ORDER BY chapter ASC, verse ASC LIMIT 1",
+            (row["book"], row["chapter"], row["chapter"], row["verse"]),
+        ).fetchone()
+        return result["id"] if result else None
 
 
 def _row_to_verse(row: Any, word_rows: list[Any]) -> Verse:

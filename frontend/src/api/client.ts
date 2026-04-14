@@ -7,6 +7,8 @@ import type {
   ChronologyResponse,
   PlaceSummary,
   PlaceDetail,
+  VerseDetail,
+  VerseRef,
 } from '../types';
 
 const BASE = '/api/v1';
@@ -59,4 +61,14 @@ export function fetchChronology(): Promise<ChronologyResponse> {
 
 export function fetchStats(): Promise<GraphStats> {
   return get('/genealogy/stats');
+}
+
+export function fetchVerse(verseId: string): Promise<VerseDetail> {
+  // Accept either 'verse:GEN.1.1' or 'GEN.1.1'
+  const id = verseId.startsWith('verse:') ? verseId : `verse:${verseId}`;
+  return get(`/verse/${encodeURIComponent(id)}`);
+}
+
+export function fetchVersesMentioning(nodeId: string): Promise<VerseRef[]> {
+  return get(`/verse/mentioning/${encodeURIComponent(nodeId)}`);
 }

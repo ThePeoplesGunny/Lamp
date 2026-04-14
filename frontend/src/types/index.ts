@@ -178,6 +178,80 @@ export interface GraphStats {
   persons: number;
   nations: number;
   places: number;
+  verses?: number;
   edges: number;
   total_nodes: number;
+}
+
+// ── Verse types ───────────────────────────────────────────
+
+/** One word within a verse, with full morphology. */
+export interface VerseWord {
+  position: number;
+  text_canonical: string;
+  // Hebrew layers (empty strings for Greek)
+  text_consonantal: string;
+  text_pointed: string;
+  text_cantillated: string;
+  // Greek layers (empty strings for Hebrew)
+  text_plain: string;
+  text_accented: string;
+  // Morphology
+  lemma?: string;
+  strongs?: string;
+  morph_code?: string;
+  transliteration?: string;
+  // Hebrew variant readings
+  text_ketiv?: string;
+  text_qere?: string;
+}
+
+/** Entity mentioned in a verse (reverse traversal). */
+export interface VerseMention {
+  id: string;
+  node_type?: string;
+  name_english?: string;
+  name_hebrew?: string;
+}
+
+/** Full verse payload from /api/v1/verse/{id}. */
+export interface VerseDetail {
+  id: string;
+  reference: string;              // "Genesis 1:1"
+  book: string;
+  book_name: string;
+  chapter: number;
+  verse: number;
+  canon: 'tanakh' | 'nt' | 'lxx';
+  language: 'hbo' | 'grc' | 'arc';
+  text_canonical: string;
+  // Hebrew layers
+  text_consonantal: string;
+  text_pointed: string;
+  text_cantillated: string;
+  // Greek layers
+  text_plain: string;
+  text_accented: string;
+  // Hebrew-specific scribal features
+  parashah_marker?: string | null;
+  reversed_nun: boolean;
+  notes: string[];
+  // Payload
+  words: VerseWord[];
+  mentions: VerseMention[];
+  prev_id: string | null;
+  next_id: string | null;
+  source: string;
+  source_tier: number;
+}
+
+/** Short verse reference for lists of "verses mentioning X". */
+export interface VerseRef {
+  id: string;
+  reference: string;
+  book: string;
+  chapter: number;
+  verse: number;
+  canon?: string;
+  language?: string;
 }

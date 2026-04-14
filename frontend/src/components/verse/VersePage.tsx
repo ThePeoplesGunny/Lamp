@@ -1,0 +1,429 @@
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+
+import { fetchVerse } from '../../api/client';
+import HebrewText from '../hebrew/HebrewText';
+import type { VerseDetail, VerseWord, VerseMention } from '../../types';
+
+/** Which text layer to display as the primary verse text. */
+type HebrewLayer = 'consonantal' | 'pointed' | 'cantillated';
+type GreekLayer = 'plain' | 'accented';
+
+function VerseHeader({
+  verse,
+  onPrev,
+  onNext,
+}: {
+  verse: VerseDetail;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  return (
+    <div
+      className="flex items-center justify-between px-6 py-4 border-b flex-shrink-0"
+      style={{ borderColor: 'var(--color-border)' }}
+    >
+      <div className="flex items-center gap-3">
+        <h2 className="text-xl font-semibold" style={{ color: 'var(--color-text-primary)' }}>
+          {verse.reference}
+        </h2>
+        <span
+          className="text-xs px-2 py-0.5 rounded border"
+          style={{
+            borderColor: 'var(--color-border)',
+            color: 'var(--color-text-secondary)',
+          }}
+        >
+          {verse.canon.toUpperCase()} · {verse.language}
+        </span>
+        {verse.parashah_marker && (
+          <span
+            className="text-xs px-2 py-0.5 rounded border"
+            style={{
+              borderColor: 'var(--color-accent)',
+              color: 'var(--color-accent)',
+            }}
+            title={verse.parashah_marker === 'pe' ? 'Open parashah (petuchah)' : 'Closed parashah (setumah)'}
+          >
+            parashah: {verse.parashah_marker}
+          </span>
+        )}
+        {verse.reversed_nun && (
+          <span
+            className="text-xs px-2 py-0.5 rounded border"
+            style={{
+              borderColor: 'var(--color-accent)',
+              color: 'var(--color-accent)',
+            }}
+            title="Reversed nun (nun hafukha) — scribal bracket marking a set-apart passage"
+          >
+            ׆ reversed nun
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onPrev}
+          disabled={!verse.prev_id}
+          className="text-xs px-3 py-1 rounded border disabled:opacity-30 disabled:cursor-not-allowed"
+          style={{
+            borderColor: 'var(--color-border)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
+          ← prev
+        </button>
+        <button
+          onClick={onNext}
+          disabled={!verse.next_id}
+          className="text-xs px-3 py-1 rounded border disabled:opacity-30 disabled:cursor-not-allowed"
+          style={{
+            borderColor: 'var(--color-border)',
+            color: 'var(--color-text-primary)',
+          }}
+        >
+          next →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LayerToggle<T extends string>({
+  value,
+  options,
+  onChange,
+}: {
+  value: T;
+  options: { value: T; label: string; hint?: string }[];
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex gap-1">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          title={opt.hint}
+          className="text-xs px-3 py-1 rounded border transition-colors cursor-pointer"
+          style={{
+            borderColor: value === opt.value ? 'var(--color-accent)' : 'var(--color-border)',
+            backgroundColor:
+              value === opt.value ? 'var(--color-bg-tertiary)' : 'transparent',
+            color:
+              value === opt.value ? 'var(--color-accent)' : 'var(--color-text-secondary)',
+          }}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function HebrewVerseBody({ verse }: { verse: VerseDetail }) {
+  const [layer, setLayer] = useState<HebrewLayer>('cantillated');
+  const text =
+    layer === 'consonantal'
+      ? verse.text_consonantal
+      : layer === 'pointed'
+      ? verse.text_pointed
+      : verse.text_cantillated;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs uppercase tracking-wide" style={{ color: 'var(--color-text-secondary)' }}>
+          Hebrew text — {layer}
+        </span>
+        <LayerToggle<HebrewLayer>
+          value={layer}
+          options={[
+            { value: 'consonantal', label: 'consonantal', hint: 'Pre-Masoretic stratum — letters only' },
+            { value: 'pointed', label: 'pointed', hint: 'With niqqud (vowel points), 7th–10th c.' },
+            { value: 'cantillated', label: 'cantillated', hint: 'Full Masoretic: niqqud + te\'amim' },
+          ]}
+          onChange={setLayer}
+        />
+      </div>
+      <div
+        className="rounded border p-6 text-right"
+        style={{
+          borderColor: 'var(--color-border)',
+          backgroundColor: 'var(--color-bg-tertiary)',
+        }}
+      >
+        <HebrewText text={text} className="text-2xl leading-loose" />
+      </div>
+    </div>
+  );
+}
+
+function GreekVerseBody({ verse }: { verse: VerseDetail }) {
+  const [layer, setLayer] = useState<GreekLayer>('accented');
+  const text = layer === 'plain' ? verse.text_plain : verse.text_accented;
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs uppercase tracking-wide" style={{ color: 'var(--color-text-secondary)' }}>
+          Greek text — {layer}
+        </span>
+        <LayerToggle<GreekLayer>
+          value={layer}
+          options={[
+            { value: 'plain', label: 'plain', hint: 'Lowercase, no diacritics — uncial-manuscript-style' },
+            { value: 'accented', label: 'accented', hint: 'Standard published form with accents and breathings' },
+          ]}
+          onChange={setLayer}
+        />
+      </div>
+      <div
+        className="rounded border p-6"
+        style={{
+          borderColor: 'var(--color-border)',
+          backgroundColor: 'var(--color-bg-tertiary)',
+        }}
+      >
+        <span lang="grc" style={{ fontSize: '1.375rem', lineHeight: '2' }}>
+          {text}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function WordCard({ word, language }: { word: VerseWord; language: string }) {
+  const isHebrew = language === 'hbo';
+  const displayText = word.text_canonical;
+
+  return (
+    <div
+      className="rounded border p-3"
+      style={{
+        borderColor: 'var(--color-border)',
+        backgroundColor: 'var(--color-bg-tertiary)',
+      }}
+    >
+      <div className="flex items-baseline justify-between mb-2">
+        {isHebrew ? (
+          <HebrewText text={displayText} className="text-lg" />
+        ) : (
+          <span lang="grc" className="text-lg">
+            {displayText}
+          </span>
+        )}
+        <span className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+          #{word.position}
+        </span>
+      </div>
+
+      {word.lemma && (
+        <div className="text-xs mb-1">
+          <span style={{ color: 'var(--color-text-secondary)' }}>lemma: </span>
+          {isHebrew ? (
+            <code>{word.lemma}</code>
+          ) : (
+            <span lang="grc">{word.lemma}</span>
+          )}
+          {word.strongs && (
+            <span style={{ color: 'var(--color-text-secondary)' }}>
+              {' · H'}{word.strongs}
+            </span>
+          )}
+        </div>
+      )}
+
+      {word.morph_code && (
+        <div className="text-xs">
+          <span style={{ color: 'var(--color-text-secondary)' }}>morph: </span>
+          <code>{word.morph_code}</code>
+        </div>
+      )}
+
+      {(word.text_ketiv || word.text_qere) && (
+        <div
+          className="text-xs mt-2 pt-2 border-t"
+          style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-secondary)' }}
+        >
+          {word.text_ketiv !== undefined && word.text_ketiv !== '' && (
+            <div>ketiv (written): <HebrewText text={word.text_ketiv} /></div>
+          )}
+          {word.text_qere && (
+            <div>qere (read): <HebrewText text={word.text_qere} /></div>
+          )}
+          {word.text_consonantal === '' && (
+            <div className="italic">qere velo ketiv — read but not written</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MentionsSection({
+  mentions,
+  onNavigate,
+}: {
+  mentions: VerseMention[];
+  onNavigate: (id: string) => void;
+}) {
+  if (mentions.length === 0) return null;
+
+  return (
+    <div>
+      <h3 className="text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+        Mentioned in this verse
+      </h3>
+      <div className="flex flex-wrap gap-1.5">
+        {mentions.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => onNavigate(m.id)}
+            className="text-xs px-2 py-1 rounded border transition-colors cursor-pointer"
+            style={{
+              borderColor: 'var(--color-border)',
+              backgroundColor: 'var(--color-bg-tertiary)',
+              color: 'var(--color-text-primary)',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
+          >
+            <span className="uppercase text-[10px] mr-1" style={{ color: 'var(--color-text-secondary)' }}>
+              {m.node_type}
+            </span>
+            {m.name_english}
+            {m.name_hebrew && (
+              <>
+                {' '}
+                <HebrewText text={m.name_hebrew} />
+              </>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function VersePage() {
+  const { verseRef } = useParams<{ verseRef: string }>();
+  const navigate = useNavigate();
+
+  const { data: verse, isLoading, isError, error, refetch } = useQuery<VerseDetail>({
+    queryKey: ['verse', verseRef],
+    queryFn: () => fetchVerse(verseRef!),
+    enabled: !!verseRef,
+  });
+
+  useEffect(() => {
+    if (verse) {
+      document.title = `${verse.reference} — Lamp`;
+    } else {
+      document.title = 'Verse — Lamp';
+    }
+  }, [verse]);
+
+  const handlePrev = useCallback(() => {
+    if (verse?.prev_id) {
+      const bare = verse.prev_id.replace(/^verse:/, '');
+      navigate(`/verse/${bare}`);
+    }
+  }, [verse, navigate]);
+
+  const handleNext = useCallback(() => {
+    if (verse?.next_id) {
+      const bare = verse.next_id.replace(/^verse:/, '');
+      navigate(`/verse/${bare}`);
+    }
+  }, [verse, navigate]);
+
+  const handleMentionClick = useCallback(
+    (id: string) => {
+      if (id.startsWith('person:')) {
+        navigate(`/person/${id.replace(/^person:/, '')}`);
+      } else if (id.startsWith('place:')) {
+        navigate(`/places`);
+      }
+      // nation: no dedicated page yet; could extend later
+    },
+    [navigate],
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center" style={{ color: 'var(--color-text-secondary)' }}>
+        Loading verse…
+      </div>
+    );
+  }
+
+  if (isError || !verse) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-3">
+        <div style={{ color: 'var(--color-text-secondary)' }}>
+          {error instanceof Error ? error.message : `Verse not found: ${verseRef}`}
+        </div>
+        <button
+          onClick={() => refetch()}
+          className="text-xs px-3 py-1 rounded border"
+          style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-primary)' }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 overflow-y-auto">
+      <VerseHeader verse={verse} onPrev={handlePrev} onNext={handleNext} />
+
+      <div className="max-w-4xl mx-auto px-6 py-6 space-y-6">
+        {verse.language === 'hbo' ? (
+          <HebrewVerseBody verse={verse} />
+        ) : (
+          <GreekVerseBody verse={verse} />
+        )}
+
+        <div>
+          <h3
+            className="text-xs uppercase tracking-wide mb-3"
+            style={{ color: 'var(--color-text-secondary)' }}
+          >
+            Words ({verse.words.length})
+          </h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            {verse.words.map((w) => (
+              <WordCard key={w.position} word={w} language={verse.language} />
+            ))}
+          </div>
+        </div>
+
+        <MentionsSection mentions={verse.mentions} onNavigate={handleMentionClick} />
+
+        {verse.notes.length > 0 && (
+          <div>
+            <h3 className="text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-text-secondary)' }}>
+              Masoretic notes
+            </h3>
+            <ul className="text-sm space-y-1" style={{ color: 'var(--color-text-secondary)' }}>
+              {verse.notes.map((n, i) => (
+                <li key={i}>• {n}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div
+          className="text-xs pt-4 border-t"
+          style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}
+        >
+          source: <code>{verse.source}</code> · tier {verse.source_tier} · id: <code>{verse.id}</code>
+        </div>
+      </div>
+    </div>
+  );
+}

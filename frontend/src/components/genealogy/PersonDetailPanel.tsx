@@ -1,17 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchPerson } from '../../api/client';
+import { useNavigate } from 'react-router-dom';
+import { fetchPerson, fetchVersesMentioning } from '../../api/client';
 import HebrewText from '../hebrew/HebrewText';
-import type { PersonDetail, ScriptureRef, RelatedPerson, RelatedPlace } from '../../types';
+import type { PersonDetail, RelatedPerson, RelatedPlace, VerseRef } from '../../types';
 
 interface PersonDetailPanelProps {
   personId: string | null;
   onClose: () => void;
   onNavigate: (personId: string) => void;
-}
-
-function formatRef(ref: ScriptureRef): string {
-  const base = `${ref.book} ${ref.chapter}:${ref.verse}`;
-  return ref.verse_end ? `${base}–${ref.verse_end}` : base;
 }
 
 function RelatedList({
@@ -57,11 +53,25 @@ function RelatedList({
 }
 
 export default function PersonDetailPanel({ personId, onClose, onNavigate }: PersonDetailPanelProps) {
+  const navigate = useNavigate();
+
   const { data: person, isLoading, isError, refetch } = useQuery<PersonDetail>({
     queryKey: ['person', personId],
     queryFn: () => fetchPerson(personId!),
     enabled: !!personId,
   });
+
+  // Parallel fetch: materialized MENTIONS edges (with ranges expanded to individual verses).
+  // Failure here should not block the person detail from rendering.
+  const { data: mentionVerses } = useQuery<VerseRef[]>({
+    queryKey: ['person-mentions', personId],
+    queryFn: () => fetchVersesMentioning(personId!),
+    enabled: !!personId,
+  });
+
+  const handleVerseClick = (verseId: string) => {
+    navigate(`/verse/${verseId.replace(/^verse:/, '')}`);
+  };
 
   if (!personId) return null;
 
@@ -158,15 +168,33 @@ export default function PersonDetailPanel({ personId, onClose, onNavigate }: Per
             </div>
           )}
 
-          {/* Scripture refs */}
-          {person.scripture_refs.length > 0 && (
+          {/* Verses mentioning — materialized MENTIONS edges, click to open verse page */}
+          {mentionVerses && mentionVerses.length > 0 && (
             <div className="mt-3 border-t pt-3" style={{ borderColor: 'var(--color-border)' }}>
-              <h4 className="text-xs uppercase tracking-wide text-text-secondary mb-1">References</h4>
+              <h4 className="text-xs uppercase tracking-wide text-text-secondary mb-1">
+                Mentioned in {mentionVerses.length} verse{mentionVerses.length === 1 ? '' : 's'}
+              </h4>
               <div className="flex flex-wrap gap-1">
-                {person.scripture_refs.map((ref, i) => (
-                  <span key={i} className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: 'var(--color-bg-tertiary)', color: 'var(--color-accent)' }}>
-                    {formatRef(ref)}
-                  </span>
+                {mentionVerses.map((v) => (
+                  <button
+                    key={v.id}
+                    onClick={() => handleVerseClick(v.id)}
+                    className="text-xs px-1.5 py-0.5 rounded border transition-colors cursor-pointer"
+                    style={{
+                      borderColor: 'var(--color-border)',
+                      backgroundColor: 'var(--color-bg-tertiary)',
+                      color: 'var(--color-accent)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-accent)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-border)';
+                    }}
+                    title={`Open ${v.reference}`}
+                  >
+                    {v.reference}
+                  </button>
                 ))}
               </div>
             </div>
