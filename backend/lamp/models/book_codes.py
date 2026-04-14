@@ -61,6 +61,34 @@ LAMP_CODE_TO_NAME = {
     "NEH": "Nehemiah",
     "1CH": "1 Chronicles",
     "2CH": "2 Chronicles",
+    # New Testament
+    "MAT": "Matthew",
+    "MRK": "Mark",
+    "LUK": "Luke",
+    "JHN": "John",
+    "ACT": "Acts",
+    "ROM": "Romans",
+    "1CO": "1 Corinthians",
+    "2CO": "2 Corinthians",
+    "GAL": "Galatians",
+    "EPH": "Ephesians",
+    "PHP": "Philippians",
+    "COL": "Colossians",
+    "1TH": "1 Thessalonians",
+    "2TH": "2 Thessalonians",
+    "1TI": "1 Timothy",
+    "2TI": "2 Timothy",
+    "TIT": "Titus",
+    "PHM": "Philemon",
+    "HEB": "Hebrews",
+    "JAS": "James",
+    "1PE": "1 Peter",
+    "2PE": "2 Peter",
+    "1JN": "1 John",
+    "2JN": "2 John",
+    "3JN": "3 John",
+    "JUD": "Jude",
+    "REV": "Revelation",
 }
 
 # OSIS (OSHB / SBLGNT) codes → Lamp canonical codes
@@ -108,13 +136,53 @@ OSIS_TO_LAMP = {
     "Neh": "NEH",
     "1Chr": "1CH",
     "2Chr": "2CH",
+    # NT (MorphGNT / SBLGNT OSIS codes)
+    "Matt": "MAT",
+    "Mark": "MRK",
+    "Luke": "LUK",
+    "John": "JHN",
+    "Acts": "ACT",
+    "Rom": "ROM",
+    "1Cor": "1CO",
+    "2Cor": "2CO",
+    "Gal": "GAL",
+    "Eph": "EPH",
+    "Phil": "PHP",
+    "Col": "COL",
+    "1Thess": "1TH",
+    "2Thess": "2TH",
+    "1Tim": "1TI",
+    "2Tim": "2TI",
+    "Titus": "TIT",
+    "Phlm": "PHM",
+    "Heb": "HEB",
+    "Jas": "JAS",
+    "1Pet": "1PE",
+    "2Pet": "2PE",
+    "1John": "1JN",
+    "2John": "2JN",
+    "3John": "3JN",
+    "Jude": "JUD",
+    "Rev": "REV",
 }
 
 LAMP_TO_OSIS = {v: k for k, v in OSIS_TO_LAMP.items()}
 
-# Canon membership for every canonical Lamp code.
-# (NT and LXX-only codes added as those phases land.)
-BOOK_CANON: dict[str, Canon] = {code: Canon.TANAKH for code in LAMP_CODE_TO_NAME}
+# Set of Lamp codes that belong to each canon; derived once for O(1) lookup.
+_NT_CODES = {
+    "MAT", "MRK", "LUK", "JHN", "ACT", "ROM", "1CO", "2CO", "GAL", "EPH",
+    "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT", "PHM", "HEB", "JAS",
+    "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV",
+}
+
+
+def _canon_for(code: str) -> Canon:
+    if code in _NT_CODES:
+        return Canon.NT
+    return Canon.TANAKH  # LXX-only deuterocanon additions come later
+
+
+BOOK_CANON: dict[str, Canon] = {code: _canon_for(code) for code in LAMP_CODE_TO_NAME}
 
 
 def osis_to_lamp(osis_code: str) -> str:

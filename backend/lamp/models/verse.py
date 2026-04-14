@@ -1,10 +1,16 @@
 """Verse node model — verses as first-class graph nodes.
 
-Schema locked by backend/docs/verse_graph_schema.md (2026-04-13).
+Schema locked by backend/docs/verse_graph_schema.md (2026-04-13, Greek addendum 2026-04-13).
 
-Three-layer text preserves the Masoretic stratigraphy: consonantal (oldest),
-pointed (niqqud added 7th–10th c. AD), cantillated (te'amim added same era).
-Any analytical query can request the text at any stratum without losing fidelity.
+Hebrew stratigraphy (Masoretic): consonantal (oldest), pointed (niqqud added
+7th–10th c. AD), cantillated (te'amim added same era).
+Greek stratigraphy (manuscript tradition): plain (lowercase, no diacritics —
+closer to ancient uncial manuscripts) and accented (standard minuscule-era
+published form).
+
+Hebrew verses populate the Hebrew trio; Greek verses populate the Greek pair.
+`text_canonical` holds the "standard read form" — cantillated for Hebrew,
+accented for Greek — so display code does not need language branching.
 """
 
 from pydantic import BaseModel
@@ -16,16 +22,32 @@ class VerseWord(BaseModel):
     """One Hebrew/Greek word within a verse, with full morphology."""
 
     position: int                    # 1-indexed position within the verse
-    text_consonantal: str            # Letters only, no niqqud, no te'amim
-    text_pointed: str                # With niqqud (vowel points)
-    text_cantillated: str            # With niqqud + te'amim (Masoretic full)
-    lemma: str | None = None         # OSHB lemma, may include prefix segmentation (e.g. "c/m/6529")
-    strongs: str | None = None       # Extracted numeric Strong's (e.g. "6529") for easy search
-    morph_code: str | None = None    # OSHB morphology code (e.g. "HC/R/Ncmsc")
-    transliteration: str | None = None
-    oshb_word_id: str | None = None  # OSHB immutable word id (e.g. "01xeN")
 
-    # Ketiv/Qere variants — populated only when this word has a variant reading
+    # Language-agnostic read form. Cantillated for Hebrew, accented for Greek.
+    text_canonical: str = ""
+
+    # Hebrew layers (default empty for non-Hebrew verses)
+    text_consonantal: str = ""       # Letters only, no niqqud, no te'amim
+    text_pointed: str = ""           # With niqqud (vowel points)
+    text_cantillated: str = ""       # With niqqud + te'amim (Masoretic full)
+
+    # Greek layers (default empty for non-Greek verses)
+    text_plain: str = ""             # Lowercase, no accents/breathings/iota-subscripts
+    text_accented: str = ""          # Standard published form with full diacritics
+
+    # Common morphology
+    lemma: str | None = None         # OSHB / MorphGNT dictionary form
+    strongs: str | None = None       # Strong's number (Hebrew via OSHB; Greek: None unless tagged)
+    morph_code: str | None = None    # "HVqp3ms" (OSHB) or "GN-----NSF-" (MorphGNT, G-prefixed)
+    transliteration: str | None = None
+
+    # Hebrew provenance
+    oshb_word_id: str | None = None  # Immutable OSHB word id (e.g. "01xeN")
+
+    # Greek provenance
+    sblgnt_index: int | None = None  # 1-indexed position in MorphGNT source file
+
+    # Hebrew ketiv/qere variants — populated only when this word has a variant reading
     text_ketiv: str | None = None    # Written form (usually consonantal)
     text_qere: str | None = None     # Read form (usually pointed)
 
@@ -33,39 +55,43 @@ class VerseWord(BaseModel):
 class Verse(BaseModel):
     """A single Bible verse as a graph node."""
 
-    id: str                          # "verse:GEN.5.3"
+    id: str                          # "verse:GEN.5.3" | "verse:JHN.3.16"
     node_type: str = "verse"
-    book: str                        # Lamp canonical code: "GEN"
+    book: str                        # Lamp canonical code: "GEN" | "JHN"
     chapter: int
     verse: int
     canon: Canon                     # tanakh / nt / lxx
 
     # Text representation metadata
-    language: str                    # ISO 639-3: "hbo" | "grc" | "arc"
+    language: str                    # ISO 639-3: "hbo" (Hebrew) | "grc" (Greek) | "arc" (Aramaic)
 
-    # Three-layer canonical text (whole verse, joined from words)
-    text_consonantal: str
-    text_pointed: str
-    text_cantillated: str
+    # Language-agnostic read form — cantillated for Hebrew, accented for Greek.
+    # Consumers that just want "the text" should use this.
+    text_canonical: str = ""
+
+    # Hebrew-stratum text layers (default empty for non-Hebrew)
+    text_consonantal: str = ""
+    text_pointed: str = ""
+    text_cantillated: str = ""
+
+    # Greek-stratum text layers (default empty for non-Greek)
+    text_plain: str = ""
+    text_accented: str = ""
 
     # Word-level breakdown with full morphology
     words: list[VerseWord]
 
     # Provenance (Research Methodology — all claims carry source)
-    source: str                      # Exact version, e.g. "OSHB-WLC@3d15126f"
-    source_tier: int                 # Per CLAUDE.md; OSHB = tier 1
+    source: str                      # Exact version, e.g. "OSHB-WLC@3d15126" or "MorphGNT-SBLGNT@<sha>"
+    source_tier: int                 # Per CLAUDE.md; OSHB and MorphGNT both tier 1
 
-    # Ancient paragraph markers (Masoretic parashah)
-    # Values from OSHB: "pe" (petuchah / open) or "samekh" (setumah / closed).
-    # Marker appears AFTER this verse's text (end-of-paragraph marker).
+    # Hebrew-specific Masoretic features (default None/False for non-Hebrew)
+    # "pe" (petuchah / open) or "samekh" (setumah / closed). Marker appears AFTER verse text.
     parashah_marker: str | None = None
-
-    # Reversed/inverted nun (nun hafukha, ׆ U+05C6) — rare scribal bracket marking
-    # textually-set-apart passages. True for the 9 verses in the MT that carry it
-    # (bracketing Num 10:35-36 and bracketing three sections in Ps 107).
+    # Reversed/inverted nun (nun hafukha, ׆ U+05C6). True for the 9 MT verses that carry it.
     reversed_nun: bool = False
 
-    # Free-form Masoretic notes (ketiv/qere commentary, BHS variants)
+    # Free-form textual notes (ketiv/qere commentary, BHS variants, MorphGNT notes)
     notes: list[str] = []
 
 

@@ -35,10 +35,12 @@ frontend/
     hooks/        # React hooks
     types/        # TypeScript types
 scripts/
-  dev.sh          # Start both servers (bash)
-  dev.bat         # Start both servers (Windows)
-  seed_graph.py   # Rebuild entity graph from seed data
-  seed_verses.py  # Rebuild Hebrew OT verse nodes + SQLite from OSHB source
+  dev.sh              # Start both servers (bash)
+  dev.bat             # Start both servers (Windows)
+  seed_graph.py       # Rebuild entity graph from seed data
+  seed_verses.py      # Rebuild Hebrew OT verse nodes + SQLite from OSHB source
+  seed_verses_nt.py   # Rebuild Greek NT verse nodes + SQLite from MorphGNT source
+  seed_verse_links.py # Create MENTIONS edges from entity scripture_refs to verse nodes
 ```
 
 ## Running
@@ -47,11 +49,13 @@ scripts/
 - Both (bash): `bash scripts/dev.sh`
 - Both (Windows): `scripts\dev.bat`
 - Rebuild entity graph: `python scripts/seed_graph.py`
-- Rebuild verse nodes + SQLite: `python scripts/seed_verses.py` (requires OSHB cloned into `backend/data/external/morphhb/`)
+- Rebuild Hebrew OT verses: `python scripts/seed_verses.py` (requires OSHB cloned into `backend/data/external/morphhb/`)
+- Rebuild Greek NT verses: `python scripts/seed_verses_nt.py` (requires MorphGNT cloned into `backend/data/external/morphgnt/`)
 - API docs: http://localhost:8000/docs
 
 ## External data sources
-- **OSHB (Open Scriptures Hebrew Bible)** — `github.com/openscriptures/morphhb`. Provides Westminster Leningrad Codex in OSIS XML with per-word lemma, Strong's, and morphology. Text is public domain; lemma/morph data is CC-BY-4.0 (must credit OSHB). Clone into `backend/data/external/morphhb/`. Exact commit is captured in each verse's `source` field for provenance.
+- **OSHB (Open Scriptures Hebrew Bible)** — `github.com/openscriptures/morphhb`. Provides Westminster Leningrad Codex in OSIS XML with per-word lemma, Strong's, and morphology. Text is public domain; lemma/morph data is CC-BY-4.0 (must credit OSHB). Clone into `backend/data/external/morphhb/`. Exact commit captured in each verse's `source` field for provenance.
+- **MorphGNT / SBLGNT** — `github.com/morphgnt/sblgnt`. SBL Greek New Testament with per-word parsing and lemmatization. **License structure differs from OSHB:** the SBLGNT text itself is governed by the [SBLGNT EULA](http://sblgnt.com/license/) (permits non-commercial academic/personal/research use with attribution — *not* CC-BY); the morphological parsing and lemmatization is CC-BY-**SA** 3.0 (Share-Alike). Implication: if Lamp is ever publicly released, the SA clause forces a CC-BY-SA-3.0-compatible license for derivatives using the MorphGNT data. Clone into `backend/data/external/morphgnt/`. Exact commit captured per verse.
 
 ## Conventions
 - Node IDs are namespaced: `person:adam`, `place:eden`, `nation:canaanites`, `verse:GEN.5.3`
@@ -76,5 +80,6 @@ scripts/
 - Phase 2C-1 Step 1 complete: locked verse-graph schema (`backend/docs/verse_graph_schema.md`) — verses as first-class nodes, three-layer Hebrew text, per-word morphology, 8 verse-edge types, translations stored separately from canonical verse nodes
 - Phase 2C-1 Step 2 complete: full Hebrew OT ingest from OSHB. 23,213 verse nodes (matches WLC reference exactly), 305,516 words with lemma/Strong's/morphology, 1,277 ketiv/qere variants, 3,130 parashah markers, 9 reversed-nun verses, 3,120 Masoretic notes preserved. Zero parse warnings. VerseStore (SQLite WAL) + GraphStore coordination. 65 tests passing.
 - Phase 2C-1 Step 3 complete: entity→verse link seeding. 358 `MENTIONS` edges created from the 188 curated scripture_refs on 146 entities (110 persons, 18 nations, 18 places). Verse-side traversal works (e.g. `GEN.5.3` → Adam + Seth); entity-side traversal works (e.g. `person:noah` → 7 verses). Script is idempotent — re-run overwrites existing edges.
-- Graph: 23,360 nodes (111 persons, 18 nations, 18 places, 23,213 verses), **540 edges** (182 entity-entity + 358 verse→entity MENTIONS).
-- Next: Phase 2C-2 (TBD) — most likely next candidates: (a) Greek NT ingest via SBLGNT, (b) verse-detail API + frontend view surfacing the three-layer text + morphology, or (c) expanding curated entity scripture_refs since current coverage is narrow (Genesis-focused).
+- Phase 2C-2 complete: Greek NT ingest via MorphGNT / SBLGNT. Schema addendum added `text_plain` + `text_accented` Greek layers alongside the Hebrew trio, plus language-agnostic `text_canonical` convenience field (= cantillated for Hebrew, accented for Greek). 7,927 NT verse nodes across all 27 books (legitimately fewer than KJV/TR's 7,957 — SBLGNT omits ~30 Byzantine-only verses per modern critical-text decisions). 137,554 words with part-of-speech + parsing-code morphology (G-prefixed codes like `GV-3AAI-S--`). SBLGNT variant markers (`⸀ ⸂ ⸃` etc.) preserved verbatim in verse text. Zero parse warnings. 83 tests passing.
+- Graph: **31,287 nodes** (111 persons, 18 nations, 18 places, 23,213 Hebrew verses, 7,927 Greek verses), **540 edges** (182 entity-entity + 358 verse→entity MENTIONS). Verse-to-verse edges (QUOTES, PARALLEL_TO, ALLUDES_TO) infrastructure ready; no instances seeded yet.
+- Next: Phase 2C-3 (TBD). Most likely: (a) NT entity seed + link-seeding (add NT persons/places to graph and create MENTIONS edges), (b) verse-detail API + frontend view, or (c) NT↔OT `QUOTES` edge seeding (e.g. Matt 1:23 → Isa 7:14).

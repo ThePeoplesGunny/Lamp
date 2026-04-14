@@ -124,6 +124,7 @@ def _word_from_element(
 
     word = VerseWord(
         position=position,
+        text_canonical=cantillated,  # Hebrew "read form" = fully Masoretic
         text_consonantal=consonantal,
         text_pointed=pointed,
         text_cantillated=cantillated,
@@ -269,6 +270,7 @@ def _parse_verse(
         verse=verse_num,
         canon=BOOK_CANON[lamp_book],
         language="hbo",
+        text_canonical=cantillated_text,  # Hebrew "read form" = fully Masoretic
         text_consonantal=consonantal_text,
         text_pointed=pointed_text,
         text_cantillated=cantillated_text,

@@ -198,6 +198,64 @@ This is pure mechanical translation of existing curated data into graph edges. N
 3. **Ketiv/Qere:** preserve both on the word record (`text_ketiv`, `text_qere` fields on `VerseWord` when they differ) — exegesis over smoothing.
 4. **Parashah markers:** preserve OSHB section markers (samekh/pe) as verse-level metadata.
 
+## Greek NT addendum (locked 2026-04-13)
+
+The Hebrew OT ingest (Phase 2C-1 Step 2) established the schema shape. Greek NT (Phase 2C-2) inherits the substrate but diverges in textual stratigraphy:
+
+**Text layers — Greek has its own strata, not Hebrew's:**
+
+- Hebrew stratigraphy (Masoretic): `consonantal` (pre-Masoretic), `pointed` (niqqud, 7th–10th c.), `cantillated` (te'amim, same era).
+- Greek stratigraphy (manuscript-tradition): `plain` (lowercase letters, no diacritics — closer to ancient uncial manuscripts) and `accented` (standard published form with accents, breathings, iota subscripts — minuscule-era convention from 9th c. onward).
+
+Both sets are preserved on every verse node. Hebrew verses populate the Hebrew trio and leave Greek fields empty; Greek verses do the reverse. A convenience `text_canonical` field on both `Verse` and `VerseWord` holds the "standard read form" (cantillated for Hebrew, accented for Greek) so display code does not need language branching.
+
+**NT book codes (SBL 3-letter, canonical Lamp form):**
+
+```
+MAT MRK LUK JHN ACT ROM 1CO 2CO GAL EPH PHP COL 1TH 2TH
+1TI 2TI TIT PHM HEB JAS 1PE 2PE 1JN 2JN 3JN JUD REV
+```
+
+OSIS codes (MorphGNT source) map to Lamp codes on ingest: `Matt→MAT`, `Mark→MRK`, `Luke→LUK`, `John→JHN`, `Acts→ACT`, `Rom→ROM`, `1Cor→1CO`, etc. Mapping table in `lamp.models.book_codes`.
+
+**Source — MorphGNT / SBLGNT:**
+
+- `github.com/morphgnt/sblgnt` — SBL Greek NT (Holmes 2010) with per-word morphological parsing
+- License: CC-BY 4.0 (same as OSHB lemma/morph data)
+- ~7,957 verses across 27 books
+- Per-word fields available: POS code, parsing code, accented form, lemma
+
+**No Greek analog for Hebrew-specific scribal features:**
+
+`parashah_marker`, `reversed_nun`, `ketiv`/`qere` are Hebrew Masoretic features. They remain on the schema but default to None/False/empty for Greek verses. Greek has its own textual-critical features (variant readings, punctuation systems) which are out of scope for the initial ingest and will be layered in later if load-bearing.
+
+**Verse/VerseWord field layout (post-addendum):**
+
+```
+Verse:
+  # Language-agnostic
+  id, book, chapter, verse, canon, language
+  text_canonical        # the standard read form (cantillated/accented)
+  # Hebrew-specific (default empty/None/False for non-Hebrew)
+  text_consonantal, text_pointed, text_cantillated
+  parashah_marker, reversed_nun
+  # Greek-specific (default empty for non-Greek)
+  text_plain, text_accented
+  # Common
+  words, source, source_tier, notes
+
+VerseWord:
+  position, lemma, strongs, morph_code, transliteration
+  text_canonical
+  text_consonantal, text_pointed, text_cantillated   # Hebrew
+  text_plain, text_accented                           # Greek
+  text_ketiv, text_qere                               # Hebrew (variant)
+  oshb_word_id                                        # Hebrew provenance
+  sblgnt_word_index                                   # Greek provenance (position in MorphGNT file)
+```
+
+Rejected alternatives: a polymorphic `text_layers: dict[str, str]` (too loose, invites typos); a single collapsed `text` field (loses the layer granularity the Hebrew work just established); language-specific subclasses of Verse (fights pydantic + SQLite serialization). Option 1 — explicit nullable per-language fields + a convenience `text_canonical` — was chosen by Gunny 2026-04-13 for continuity with the committed Hebrew work.
+
 ---
 
 ## What this doc is NOT

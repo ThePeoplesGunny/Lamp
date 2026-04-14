@@ -36,9 +36,12 @@ CREATE TABLE IF NOT EXISTS verses (
     verse            INTEGER NOT NULL,
     canon            TEXT    NOT NULL,
     language         TEXT    NOT NULL,
-    text_consonantal TEXT    NOT NULL,
-    text_pointed     TEXT    NOT NULL,
-    text_cantillated TEXT    NOT NULL,
+    text_canonical   TEXT    NOT NULL DEFAULT '',
+    text_consonantal TEXT    NOT NULL DEFAULT '',
+    text_pointed     TEXT    NOT NULL DEFAULT '',
+    text_cantillated TEXT    NOT NULL DEFAULT '',
+    text_plain       TEXT    NOT NULL DEFAULT '',
+    text_accented    TEXT    NOT NULL DEFAULT '',
     parashah_marker  TEXT,
     reversed_nun     INTEGER NOT NULL DEFAULT 0,
     notes_json       TEXT    NOT NULL DEFAULT '[]',
@@ -46,20 +49,25 @@ CREATE TABLE IF NOT EXISTS verses (
     source_tier      INTEGER NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_verses_bcv   ON verses(book, chapter, verse);
-CREATE INDEX IF NOT EXISTS idx_verses_canon ON verses(canon);
+CREATE INDEX IF NOT EXISTS idx_verses_bcv      ON verses(book, chapter, verse);
+CREATE INDEX IF NOT EXISTS idx_verses_canon    ON verses(canon);
+CREATE INDEX IF NOT EXISTS idx_verses_language ON verses(language);
 
 CREATE TABLE IF NOT EXISTS verse_words (
     verse_id         TEXT    NOT NULL,
     position         INTEGER NOT NULL,
-    text_consonantal TEXT    NOT NULL,
-    text_pointed     TEXT    NOT NULL,
-    text_cantillated TEXT    NOT NULL,
+    text_canonical   TEXT    NOT NULL DEFAULT '',
+    text_consonantal TEXT    NOT NULL DEFAULT '',
+    text_pointed     TEXT    NOT NULL DEFAULT '',
+    text_cantillated TEXT    NOT NULL DEFAULT '',
+    text_plain       TEXT    NOT NULL DEFAULT '',
+    text_accented    TEXT    NOT NULL DEFAULT '',
     lemma            TEXT,
     strongs          TEXT,
     morph_code       TEXT,
     transliteration  TEXT,
     oshb_word_id     TEXT,
+    sblgnt_index     INTEGER,
     text_ketiv       TEXT,
     text_qere        TEXT,
     PRIMARY KEY (verse_id, position),
@@ -83,6 +91,21 @@ CREATE INDEX IF NOT EXISTS idx_translations_verse ON translations(verse_id);
 """
 
 
+# Schema migrations — applied in order on every connect(). Each entry is a column
+# that a pre-Greek-addendum database (Phase 2C-1 schema) will be missing. The
+# ADD COLUMN is wrapped in a try/except so re-runs on already-migrated databases
+# are no-ops. Order within a table doesn't matter to SQLite.
+SCHEMA_MIGRATIONS: list[tuple[str, str, str]] = [
+    ("verses",      "text_canonical",   "TEXT NOT NULL DEFAULT ''"),
+    ("verses",      "text_plain",       "TEXT NOT NULL DEFAULT ''"),
+    ("verses",      "text_accented",    "TEXT NOT NULL DEFAULT ''"),
+    ("verse_words", "text_canonical",   "TEXT NOT NULL DEFAULT ''"),
+    ("verse_words", "text_plain",       "TEXT NOT NULL DEFAULT ''"),
+    ("verse_words", "text_accented",    "TEXT NOT NULL DEFAULT ''"),
+    ("verse_words", "sblgnt_index",     "INTEGER"),
+]
+
+
 class VerseStore:
     """SQLite-backed verse text + translation store.
 
@@ -103,7 +126,19 @@ class VerseStore:
             self.conn.execute("PRAGMA journal_mode=WAL;")
         self.conn.execute("PRAGMA foreign_keys=ON;")
         self.conn.executescript(SCHEMA_SQL)
+        self._apply_migrations()
         self.conn.commit()
+
+    def _apply_migrations(self) -> None:
+        """Apply schema additions (new columns) to pre-existing databases."""
+        assert self.conn is not None
+        for table, column, coldef in SCHEMA_MIGRATIONS:
+            existing = {
+                row[1]
+                for row in self.conn.execute(f"PRAGMA table_info({table})").fetchall()
+            }
+            if column not in existing:
+                self.conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {coldef}")
 
     def close(self) -> None:
         if self.conn:
@@ -127,7 +162,9 @@ class VerseStore:
         verse_rows = [
             (
                 v.id, v.book, v.chapter, v.verse, str(v.canon), v.language,
+                v.text_canonical,
                 v.text_consonantal, v.text_pointed, v.text_cantillated,
+                v.text_plain, v.text_accented,
                 v.parashah_marker,
                 1 if v.reversed_nun else 0,
                 json.dumps(v.notes, ensure_ascii=False),
@@ -138,8 +175,11 @@ class VerseStore:
         word_rows = [
             (
                 v.id, w.position,
+                w.text_canonical,
                 w.text_consonantal, w.text_pointed, w.text_cantillated,
-                w.lemma, w.strongs, w.morph_code, w.transliteration, w.oshb_word_id,
+                w.text_plain, w.text_accented,
+                w.lemma, w.strongs, w.morph_code, w.transliteration,
+                w.oshb_word_id, w.sblgnt_index,
                 w.text_ketiv, w.text_qere,
             )
             for v in verses_list for w in v.words
@@ -149,9 +189,11 @@ class VerseStore:
             conn.executemany(
                 "INSERT OR REPLACE INTO verses "
                 "(id, book, chapter, verse, canon, language, "
+                "text_canonical, "
                 "text_consonantal, text_pointed, text_cantillated, "
+                "text_plain, text_accented, "
                 "parashah_marker, reversed_nun, notes_json, source, source_tier) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 verse_rows,
             )
             verse_ids = [row[0] for row in verse_rows]
@@ -163,10 +205,13 @@ class VerseStore:
             if word_rows:
                 conn.executemany(
                     "INSERT INTO verse_words "
-                    "(verse_id, position, text_consonantal, text_pointed, text_cantillated, "
-                    "lemma, strongs, morph_code, transliteration, oshb_word_id, "
+                    "(verse_id, position, text_canonical, "
+                    "text_consonantal, text_pointed, text_cantillated, "
+                    "text_plain, text_accented, "
+                    "lemma, strongs, morph_code, transliteration, "
+                    "oshb_word_id, sblgnt_index, "
                     "text_ketiv, text_qere) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     word_rows,
                 )
         return len(verse_rows)
@@ -260,9 +305,12 @@ def _row_to_verse(row: Any, word_rows: list[Any]) -> Verse:
         verse=row["verse"],
         canon=Canon(row["canon"]),
         language=row["language"],
+        text_canonical=row["text_canonical"],
         text_consonantal=row["text_consonantal"],
         text_pointed=row["text_pointed"],
         text_cantillated=row["text_cantillated"],
+        text_plain=row["text_plain"],
+        text_accented=row["text_accented"],
         parashah_marker=row["parashah_marker"],
         reversed_nun=bool(row["reversed_nun"]),
         notes=json.loads(row["notes_json"]),
@@ -275,14 +323,18 @@ def _row_to_verse(row: Any, word_rows: list[Any]) -> Verse:
 def _row_to_word(row: Any) -> VerseWord:
     return VerseWord(
         position=row["position"],
+        text_canonical=row["text_canonical"],
         text_consonantal=row["text_consonantal"],
         text_pointed=row["text_pointed"],
         text_cantillated=row["text_cantillated"],
+        text_plain=row["text_plain"],
+        text_accented=row["text_accented"],
         lemma=row["lemma"],
         strongs=row["strongs"],
         morph_code=row["morph_code"],
         transliteration=row["transliteration"],
         oshb_word_id=row["oshb_word_id"],
+        sblgnt_index=row["sblgnt_index"],
         text_ketiv=row["text_ketiv"],
         text_qere=row["text_qere"],
     )

@@ -97,6 +97,7 @@ class GraphStore:
                 chapter=v.chapter,
                 verse=v.verse,
                 canon=str(v.canon),
+                language=v.language,
                 parashah_marker=v.parashah_marker,
                 reversed_nun=v.reversed_nun,
             )
