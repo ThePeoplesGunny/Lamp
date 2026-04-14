@@ -7,7 +7,7 @@ original-language text is always primary, translations (when added) will
 attach as a separate field.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from lamp.graph.store import GraphStore
 from lamp.models.book_codes import LAMP_CODE_TO_NAME
@@ -106,6 +106,52 @@ def list_books():
         })
     books.sort(key=lambda b: order_index.get(b["book"], 999))
     return books
+
+
+@nav_router.get("/lexeme/occurrences")
+def get_lexeme_occurrences(
+    lemma: str | None = Query(None, description="Exact OSHB/MorphGNT lemma (e.g. 'βίβλος' or 'b/7225')"),
+    strongs: str | None = Query(None, description="Strong's number — Hebrew only (e.g. '1254')"),
+    canon: str | None = Query(None, description="Filter: tanakh, nt, or all (default: all)"),
+    limit: int = Query(500, ge=1, le=2000, description="Max results (default 500, max 2000)"),
+    offset: int = Query(0, ge=0, description="Pagination offset"),
+):
+    """Find every verse where the given lemma or Strong's number appears.
+
+    Exactly one of `lemma` or `strongs` is required. Greek verses do not carry
+    Strong's numbers (MorphGNT doesn't tag them), so Greek searches must use `lemma`.
+    """
+    store = get_store()
+    if (lemma is None) == (strongs is None):
+        raise HTTPException(
+            status_code=400,
+            detail="Exactly one of 'lemma' or 'strongs' is required",
+        )
+
+    results, total = store.verses.occurrences(
+        lemma=lemma,
+        strongs=strongs,
+        canon=canon,
+        limit=limit,
+        offset=offset,
+    )
+
+    # Enrich each result with a human-readable reference
+    for r in results:
+        r["reference"] = (
+            f"{LAMP_CODE_TO_NAME.get(r['book'], r['book'])} {r['chapter']}:{r['verse']}"
+        )
+
+    return {
+        "key": lemma if lemma is not None else strongs,
+        "key_type": "lemma" if lemma is not None else "strongs",
+        "canon": canon or "all",
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "returned": len(results),
+        "results": results,
+    }
 
 
 @nav_router.get("/book/{book}/chapter/{chapter}")

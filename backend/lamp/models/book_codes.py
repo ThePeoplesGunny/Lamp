@@ -185,6 +185,33 @@ def _canon_for(code: str) -> Canon:
 BOOK_CANON: dict[str, Canon] = {code: _canon_for(code) for code in LAMP_CODE_TO_NAME}
 
 
+# Canonical ingest/read order used for stable sorting in SQL queries and UI.
+# Same order as TANAKH_ORDER in scripts/seed_verses.py + NT (Matt → Rev).
+CANONICAL_ORDER = [
+    # Torah
+    "GEN", "EXO", "LEV", "NUM", "DEU",
+    # Nevi'im Rishonim
+    "JOS", "JDG", "1SA", "2SA", "1KI", "2KI",
+    # Nevi'im Aharonim
+    "ISA", "JER", "EZK",
+    # The Twelve
+    "HOS", "JOL", "AMO", "OBA", "JON", "MIC",
+    "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL",
+    # Ketuvim
+    "PSA", "PRO", "JOB", "SNG", "RUT", "LAM",
+    "ECC", "EST", "DAN", "EZR", "NEH", "1CH", "2CH",
+    # NT
+    "MAT", "MRK", "LUK", "JHN", "ACT", "ROM",
+    "1CO", "2CO", "GAL", "EPH", "PHP", "COL",
+    "1TH", "2TH", "1TI", "2TI", "TIT", "PHM",
+    "HEB", "JAS", "1PE", "2PE", "1JN", "2JN",
+    "3JN", "JUD", "REV",
+]
+
+BOOK_ORDER: dict[str, int] = {code: i for i, code in enumerate(CANONICAL_ORDER)}
+
+
+
 def osis_to_lamp(osis_code: str) -> str:
     """Convert an OSIS book code to Lamp canonical code. Raises KeyError on unknown."""
     return OSIS_TO_LAMP[osis_code]

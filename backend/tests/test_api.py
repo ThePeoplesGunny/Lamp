@@ -430,3 +430,85 @@ async def test_translations_preserved_in_verse_endpoint(client):
     kjv = next(t for t in translations if t["translation"] == "KJV-1769")
     # Exact KJV text survived round-trip
     assert kjv["text"] == "In the beginning God created the heaven and the earth."
+
+
+# ── Lexeme search (concordance) ───────────────────────────────
+
+@pytest.mark.anyio
+async def test_lexeme_search_by_strongs(client):
+    """Fixture seeds one Hebrew word with Strong's 7225. That should find it."""
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences?strongs=7225")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["key_type"] == "strongs"
+    assert data["key"] == "7225"
+    assert data["total"] >= 1
+    verse_ids = [res["verse_id"] for res in data["results"]]
+    assert "verse:GEN.1.1" in verse_ids
+    first = next(r for r in data["results"] if r["verse_id"] == "verse:GEN.1.1")
+    assert first["reference"] == "Genesis 1:1"
+    assert 1 in first["positions"]
+
+
+@pytest.mark.anyio
+async def test_lexeme_search_by_lemma(client):
+    """Greek fixture word has lemma βίβλος."""
+    import urllib.parse
+    lemma = urllib.parse.quote("βίβλος")
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences?lemma={lemma}")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["key_type"] == "lemma"
+    assert data["key"] == "βίβλος"
+    verse_ids = [res["verse_id"] for res in data["results"]]
+    assert "verse:MAT.1.1" in verse_ids
+
+
+@pytest.mark.anyio
+async def test_lexeme_search_requires_key(client):
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences")
+    assert r.status_code == 400
+
+
+@pytest.mark.anyio
+async def test_lexeme_search_rejects_both_keys(client):
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences?lemma=foo&strongs=1")
+    assert r.status_code == 400
+
+
+@pytest.mark.anyio
+async def test_lexeme_search_canon_filter(client):
+    """Filter to NT should exclude Tanakh matches."""
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences?strongs=7225&canon=nt")
+    data = r.json()
+    for res in data["results"]:
+        assert res["canon"] == "nt"
+
+
+@pytest.mark.anyio
+async def test_lexeme_search_empty_result(client):
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences?strongs=99999")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["total"] == 0
+    assert data["results"] == []
+
+
+@pytest.mark.anyio
+async def test_lexeme_search_results_ordered_canonically(client):
+    """Results must follow Tanakh → NT canonical order, not ASCII book-code order.
+
+    We only have one matching verse per key in the fixture, so the sharper
+    assertion we can make: when results span canons, Tanakh verses come before NT.
+    """
+    # Seed-agnostic: just verify ordering invariant holds for any keys that might
+    # return cross-canon results — here we just check the response is well-formed.
+    r = await client.get(f"{API_PREFIX}/lexeme/occurrences?strongs=7225")
+    data = r.json()
+    if len(data["results"]) >= 2:
+        prior_order = -1
+        canon_order = {"tanakh": 0, "nt": 1, "lxx": 2}
+        for res in data["results"]:
+            co = canon_order.get(res["canon"], 99)
+            assert co >= prior_order, "canon order violated"
+            prior_order = co

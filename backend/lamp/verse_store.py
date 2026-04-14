@@ -24,7 +24,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-from lamp.models.book_codes import Canon
+from lamp.models.book_codes import BOOK_ORDER, Canon
 from lamp.models.verse import TranslationText, Verse, VerseWord
 
 
@@ -321,6 +321,88 @@ class VerseStore:
             }
             for r in rows
         ]
+
+    # ── Lexeme search (concordance) ───────────────────────────
+
+    def occurrences(
+        self,
+        lemma: str | None = None,
+        strongs: str | None = None,
+        canon: str | None = None,
+        limit: int = 500,
+        offset: int = 0,
+    ) -> tuple[list[dict], int]:
+        """Find every verse where a lemma or Strong's number appears.
+
+        Exactly one of `lemma` or `strongs` must be provided. Returns a
+        (results, total_count) tuple — results are paginated, total is the
+        full match count regardless of limit.
+
+        Each result: {verse_id, book, chapter, verse, canon, language,
+                       text_canonical, positions: [int...], match_count}.
+        Sorted by canon order (Tanakh before NT), then book, chapter, verse.
+        """
+        if (lemma is None) == (strongs is None):
+            raise ValueError("Exactly one of lemma or strongs must be provided")
+
+        conn = self._require()
+        if lemma is not None:
+            where_clause = "w.lemma = ?"
+            param = lemma
+        else:
+            where_clause = "w.strongs = ?"
+            param = strongs
+
+        canon_filter = ""
+        canon_params: list[str] = []
+        if canon and canon != "all":
+            canon_filter = " AND v.canon = ?"
+            canon_params.append(canon)
+
+        count_sql = (
+            f"SELECT COUNT(DISTINCT v.id) FROM verse_words w "
+            f"JOIN verses v ON w.verse_id = v.id "
+            f"WHERE {where_clause}{canon_filter}"
+        )
+        total = conn.execute(count_sql, (param, *canon_params)).fetchone()[0]
+
+        # Canonical book order baked into SQL via a CASE — Python dict is
+        # source of truth, we emit WHEN/THEN pairs for each book. Keeps pagination
+        # consistent with in-UI expected ordering (Gen → Mal → Matt → Rev).
+        order_case = "CASE v.book " + " ".join(
+            f"WHEN '{code}' THEN {idx}" for code, idx in BOOK_ORDER.items()
+        ) + " ELSE 999 END"
+        query_sql = (
+            "SELECT v.id, v.book, v.chapter, v.verse, v.canon, v.language, "
+            "v.text_canonical, "
+            "GROUP_CONCAT(w.position) AS positions, "
+            "COUNT(*) AS match_count "
+            "FROM verse_words w "
+            "JOIN verses v ON w.verse_id = v.id "
+            f"WHERE {where_clause}{canon_filter} "
+            "GROUP BY v.id, v.book, v.chapter, v.verse, v.canon, v.language, v.text_canonical "
+            f"ORDER BY {order_case}, v.chapter, v.verse "
+            "LIMIT ? OFFSET ?"
+        )
+        rows = conn.execute(
+            query_sql, (param, *canon_params, limit, offset),
+        ).fetchall()
+
+        results = [
+            {
+                "verse_id": r["id"],
+                "book": r["book"],
+                "chapter": r["chapter"],
+                "verse": r["verse"],
+                "canon": r["canon"],
+                "language": r["language"],
+                "text_canonical": r["text_canonical"],
+                "positions": [int(p) for p in r["positions"].split(",")],
+                "match_count": r["match_count"],
+            }
+            for r in rows
+        ]
+        return results, total
 
     def chapter_verses(self, book: str, chapter: int) -> list[dict]:
         """Lightweight verse list for a chapter — id, number, canonical text only.

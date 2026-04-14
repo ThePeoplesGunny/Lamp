@@ -195,7 +195,15 @@ function GreekVerseBody({ verse }: { verse: VerseDetail }) {
   );
 }
 
-function WordCard({ word, language }: { word: VerseWord; language: string }) {
+function WordCard({
+  word,
+  language,
+  onLexemeClick,
+}: {
+  word: VerseWord;
+  language: string;
+  onLexemeClick: (params: { lemma?: string; strongs?: string }) => void;
+}) {
   const isHebrew = language === 'hbo';
   const displayText = word.text_canonical;
 
@@ -223,15 +231,26 @@ function WordCard({ word, language }: { word: VerseWord; language: string }) {
       {word.lemma && (
         <div className="text-xs mb-1">
           <span style={{ color: 'var(--color-text-secondary)' }}>lemma: </span>
-          {isHebrew ? (
-            <code>{word.lemma}</code>
-          ) : (
-            <span lang="grc">{word.lemma}</span>
-          )}
+          <button
+            onClick={() => onLexemeClick({ lemma: word.lemma })}
+            className="cursor-pointer hover:underline"
+            style={{ color: 'var(--color-accent)' }}
+            title="See every verse where this lemma appears"
+          >
+            {isHebrew ? <code>{word.lemma}</code> : <span lang="grc">{word.lemma}</span>}
+          </button>
           {word.strongs && (
-            <span style={{ color: 'var(--color-text-secondary)' }}>
-              {' · H'}{word.strongs}
-            </span>
+            <>
+              <span style={{ color: 'var(--color-text-secondary)' }}>{' · '}</span>
+              <button
+                onClick={() => onLexemeClick({ strongs: word.strongs })}
+                className="cursor-pointer hover:underline"
+                style={{ color: 'var(--color-accent)' }}
+                title="See every verse with this Strong's number"
+              >
+                H{word.strongs}
+              </button>
+            </>
           )}
         </div>
       )}
@@ -415,6 +434,16 @@ export default function VersePage() {
     [navigate],
   );
 
+  const handleLexemeClick = useCallback(
+    ({ lemma, strongs }: { lemma?: string; strongs?: string }) => {
+      const q = new URLSearchParams();
+      if (lemma) q.set('lemma', lemma);
+      if (strongs) q.set('strongs', strongs);
+      navigate(`/lexeme?${q}`);
+    },
+    [navigate],
+  );
+
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center" style={{ color: 'var(--color-text-secondary)' }}>
@@ -465,7 +494,12 @@ export default function VersePage() {
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
             {verse.words.map((w) => (
-              <WordCard key={w.position} word={w} language={verse.language} />
+              <WordCard
+                key={w.position}
+                word={w}
+                language={verse.language}
+                onLexemeClick={handleLexemeClick}
+              />
             ))}
           </div>
         </div>

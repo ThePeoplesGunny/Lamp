@@ -11,6 +11,7 @@ import type {
   VerseRef,
   BookSummary,
   ChapterDetail,
+  LexemeOccurrenceResponse,
 } from '../types';
 
 const BASE = '/api/v1';
@@ -81,4 +82,16 @@ export function fetchBooks(): Promise<BookSummary[]> {
 
 export function fetchChapter(book: string, chapter: number): Promise<ChapterDetail> {
   return get(`/book/${encodeURIComponent(book)}/chapter/${chapter}`);
+}
+
+export function fetchLexemeOccurrences(
+  params: { lemma?: string; strongs?: string; canon?: string; limit?: number; offset?: number },
+): Promise<LexemeOccurrenceResponse> {
+  const q = new URLSearchParams();
+  if (params.lemma !== undefined) q.set('lemma', params.lemma);
+  if (params.strongs !== undefined) q.set('strongs', params.strongs);
+  if (params.canon) q.set('canon', params.canon);
+  if (params.limit != null) q.set('limit', String(params.limit));
+  if (params.offset != null) q.set('offset', String(params.offset));
+  return get(`/lexeme/occurrences?${q}`);
 }

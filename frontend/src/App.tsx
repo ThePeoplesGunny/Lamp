@@ -11,6 +11,7 @@ import TimelinePage from './components/timeline/TimelinePage';
 import PlacesPage from './components/places/PlacesPage';
 import VersePage from './components/verse/VersePage';
 import ReadPage from './components/read/ReadPage';
+import ConcordancePage from './components/lexeme/ConcordancePage';
 import { fetchTree } from './api/client';
 import type { TreeResponse } from './types';
 
@@ -121,6 +122,7 @@ export default function App() {
           <Route path="/read" element={<ReadPage />} />
           <Route path="/read/:book" element={<ReadPage />} />
           <Route path="/read/:book/:chapter" element={<ReadPage />} />
+          <Route path="/lexeme" element={<ConcordancePage />} />
         </Route>
       </Routes>
     </QueryClientProvider>

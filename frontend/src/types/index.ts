@@ -291,3 +291,29 @@ export interface ChapterDetail {
   chapter: number;
   verses: ChapterVerse[];
 }
+
+/** Single occurrence of a lemma/Strong's in a specific verse. */
+export interface LexemeOccurrence {
+  verse_id: string;
+  reference: string;          // "Genesis 1:1"
+  book: string;
+  chapter: number;
+  verse: number;
+  canon: 'tanakh' | 'nt' | 'lxx';
+  language: 'hbo' | 'grc' | 'arc';
+  text_canonical: string;
+  positions: number[];        // 1-indexed word positions that matched
+  match_count: number;
+}
+
+/** Lexeme search response from /api/v1/lexeme/occurrences. */
+export interface LexemeOccurrenceResponse {
+  key: string;
+  key_type: 'lemma' | 'strongs';
+  canon: string;
+  total: number;
+  limit: number;
+  offset: number;
+  returned: number;
+  results: LexemeOccurrence[];
+}
