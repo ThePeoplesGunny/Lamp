@@ -14,7 +14,7 @@ from lamp.graph.store import GraphStore
 from lamp.api.genealogy import init_store
 from lamp.api.verses import init_store as init_verse_store  # nav_router shares the same store global
 from lamp.ingest.genesis_genealogy import load_seed_data
-from lamp.models import Canon, Edge, EdgeType, Verse, VerseWord
+from lamp.models import Canon, Edge, EdgeType, TranslationText, Verse, VerseWord
 
 
 def _test_hebrew_verse(verse_id: str, book: str, chapter: int, verse: int) -> Verse:
@@ -92,6 +92,24 @@ def setup_store():
         target="person:adam",
         type=EdgeType.MENTIONS,
     ))
+
+    # Gen 1:1 has a KJV translation attached (for /verse translation payload tests)
+    store.verses.insert_translations([
+        TranslationText(
+            translation="KJV-1769",
+            verse_id="verse:GEN.1.1",
+            text="In the beginning God created the heaven and the earth.",
+            source="test-KJV",
+            source_tier=4,
+        ),
+        TranslationText(
+            translation="ASV-1901",
+            verse_id="verse:GEN.1.1",
+            text="In the beginning God created the heavens and the earth.",
+            source="test-ASV",
+            source_tier=4,
+        ),
+    ])
 
     init_store(store)
     init_verse_store(store)
@@ -375,3 +393,40 @@ async def test_get_chapter_case_insensitive_book(client):
 async def test_get_chapter_not_found(client):
     r = await client.get(f"{API_PREFIX}/book/GEN/chapter/999")
     assert r.status_code == 404
+
+
+# ── Translations on verse endpoint ─────────────────────────────
+
+@pytest.mark.anyio
+async def test_verse_includes_translations(client):
+    r = await client.get(f"{API_PREFIX}/verse/verse:GEN.1.1")
+    data = r.json()
+    # Two translations seeded in the fixture (KJV + ASV)
+    assert "translations" in data
+    assert len(data["translations"]) == 2
+    ids = {t["translation"] for t in data["translations"]}
+    assert ids == {"KJV-1769", "ASV-1901"}
+    # Each translation has the expected shape
+    kjv = next(t for t in data["translations"] if t["translation"] == "KJV-1769")
+    assert kjv["text"].startswith("In the beginning")
+    assert kjv["source"] == "test-KJV"
+    assert kjv["source_tier"] == 4
+
+
+@pytest.mark.anyio
+async def test_verse_with_no_translations(client):
+    """Greek Mat 1:1 in the fixture has no translation attached."""
+    r = await client.get(f"{API_PREFIX}/verse/verse:MAT.1.1")
+    assert r.status_code == 200
+    data = r.json()
+    assert data["translations"] == []
+
+
+@pytest.mark.anyio
+async def test_translations_preserved_in_verse_endpoint(client):
+    """Translation data integrity through the full API path."""
+    r = await client.get(f"{API_PREFIX}/verse/verse:GEN.1.1")
+    translations = r.json()["translations"]
+    kjv = next(t for t in translations if t["translation"] == "KJV-1769")
+    # Exact KJV text survived round-trip
+    assert kjv["text"] == "In the beginning God created the heaven and the earth."

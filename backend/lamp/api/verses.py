@@ -162,6 +162,7 @@ def get_verse(verse_id: str):
         raise HTTPException(status_code=404, detail=f"Verse not found: {verse_id}")
 
     mentions = [_summarize_mention(m) for m in store.get_mentions(verse_id)]
+    translations = store.verses.get_translations_for_verse(verse_id)
 
     return {
         "id": verse.id,
@@ -205,6 +206,16 @@ def get_verse(verse_id: str):
         ],
         # Reverse traversal — entities mentioned in this verse
         "mentions": mentions,
+        # Translation layer — reference text, never replaces the original
+        "translations": [
+            {
+                "translation": t.translation,
+                "text": t.text,
+                "source": t.source,
+                "source_tier": t.source_tier,
+            }
+            for t in translations
+        ],
         # Navigation (within-book)
         "prev_id": store.verses.prev_verse_id(verse_id),
         "next_id": store.verses.next_verse_id(verse_id),

@@ -214,6 +214,14 @@ export interface VerseMention {
   name_hebrew?: string;
 }
 
+/** A translation of a single verse, attached to the canonical verse node. */
+export interface Translation {
+  translation: string;    // "KJV-1769"
+  text: string;
+  source: string;
+  source_tier: number;
+}
+
 /** Full verse payload from /api/v1/verse/{id}. */
 export interface VerseDetail {
   id: string;
@@ -239,6 +247,7 @@ export interface VerseDetail {
   // Payload
   words: VerseWord[];
   mentions: VerseMention[];
+  translations: Translation[];
   prev_id: string | null;
   next_id: string | null;
   source: string;

@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchVerse } from '../../api/client';
 import HebrewText from '../hebrew/HebrewText';
-import type { VerseDetail, VerseWord, VerseMention } from '../../types';
+import type { VerseDetail, VerseWord, VerseMention, Translation } from '../../types';
 
 /** Which text layer to display as the primary verse text. */
 type HebrewLayer = 'consonantal' | 'pointed' | 'cantillated';
@@ -263,6 +263,69 @@ function WordCard({ word, language }: { word: VerseWord; language: string }) {
   );
 }
 
+function TranslationsSection({
+  translations,
+  canonicalTextIsEmpty,
+}: {
+  translations: Translation[];
+  canonicalTextIsEmpty: boolean;
+}) {
+  if (translations.length === 0) return null;
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-2">
+        <h3
+          className="text-xs uppercase tracking-wide"
+          style={{ color: 'var(--color-text-secondary)' }}
+        >
+          Translations ({translations.length})
+        </h3>
+        <span className="text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
+          Reference layer — never replaces the original text
+        </span>
+      </div>
+      {canonicalTextIsEmpty && (
+        <div
+          className="text-xs mb-2 italic"
+          style={{ color: 'var(--color-accent)' }}
+        >
+          Note: no original-language text available for this verse (absent from SBLGNT
+          critical text). Translation shown below is from KJV/Byzantine tradition.
+        </div>
+      )}
+      <div className="space-y-2">
+        {translations.map((t) => (
+          <div
+            key={t.translation}
+            className="rounded border p-3"
+            style={{
+              borderColor: 'var(--color-border)',
+              backgroundColor: 'var(--color-bg-tertiary)',
+            }}
+          >
+            <div className="flex items-baseline justify-between mb-1">
+              <span
+                className="text-xs font-semibold"
+                style={{ color: 'var(--color-accent)' }}
+              >
+                {t.translation}
+              </span>
+              <span className="text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
+                tier {t.source_tier}
+              </span>
+            </div>
+            <div className="text-sm leading-relaxed" style={{ color: 'var(--color-text-primary)' }}>
+              {t.text}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 function MentionsSection({
   mentions,
   onNavigate,
@@ -387,6 +450,11 @@ export default function VersePage() {
         ) : (
           <GreekVerseBody verse={verse} />
         )}
+
+        <TranslationsSection
+          translations={verse.translations}
+          canonicalTextIsEmpty={verse.text_canonical === ''}
+        />
 
         <div>
           <h3
