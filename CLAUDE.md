@@ -70,22 +70,46 @@ scripts/
 - Translations live in a separate store from canonical verse nodes by design (enforces exegesis/eisegesis separation at the storage layer)
 
 ## Current State
-- Version: 0.1.0
-- Phase 0 complete: project scaffold, both servers operational
-- Phase 1A complete: data models, GraphStore, seed data (111 persons, 18 nations, 148 edges), 13 integrity tests passing
-- Phase 1B complete: all genealogy API endpoints, 14 API tests passing (27 total)
-- Phase 1C complete: full frontend — genealogy tree, person detail, search, line filters
-- Phase 1D complete: URL routing (react-router-dom), error states (inline retry + error boundary), final verification
-- Phase 2A complete: chronology timeline — SVG lifespan bars, shared AppLayout with Tree/Timeline nav, /chronology API endpoint
-- Phase 2B complete: places & geography — 18 places, 34 place links, /places and /place/{id} endpoints, PlacesPage with filters, places in PersonDetailPanel
-- Phase 2C-1 Step 1 complete: locked verse-graph schema (`backend/docs/verse_graph_schema.md`) — verses as first-class nodes, three-layer Hebrew text, per-word morphology, 8 verse-edge types, translations stored separately from canonical verse nodes
-- Phase 2C-1 Step 2 complete: full Hebrew OT ingest from OSHB. 23,213 verse nodes (matches WLC reference exactly), 305,516 words with lemma/Strong's/morphology, 1,277 ketiv/qere variants, 3,130 parashah markers, 9 reversed-nun verses, 3,120 Masoretic notes preserved. Zero parse warnings. VerseStore (SQLite WAL) + GraphStore coordination. 65 tests passing.
-- Phase 2C-1 Step 3 complete: entity→verse link seeding. 358 `MENTIONS` edges created from the 188 curated scripture_refs on 146 entities (110 persons, 18 nations, 18 places). Verse-side traversal works (e.g. `GEN.5.3` → Adam + Seth); entity-side traversal works (e.g. `person:noah` → 7 verses). Script is idempotent — re-run overwrites existing edges.
-- Phase 2C-6 complete: KJV 1769 OT translation layer with Hebrew↔English versification mapping. 17,525 KJV OT verses ingested (~99.6% of the non-skipped-book corpus). Versification map at `backend/data/seed/versification_kjv_to_heb.json` handles: Psalms superscription offsets (62 Psalms, uniform per-chapter offset), Joel 2:28-3:21 → Heb 3:1-4:21, Malachi 4:1-6 → Heb 3:19-24. **Deferred:** 6 books with complex chapter-boundary divergences (NUM, 1SA, 1KI, 1CH, NEH, ISA) need authoritative per-verse mappings — KJV text for these 5,554 verses is not ingested yet. Also 66 unmapped verses scattered across other books at chapter boundaries (Gen 31/32, Exo 7/8, Lev 5/6, Dan 3-6, etc.) — small gaps, documented.
-- Phase 2D-1 complete: lemma / Strong's concordance search. VerseStore.occurrences + /api/v1/lexeme/occurrences endpoint. WordCards on VersePage are clickable → concordance view. Canonical sort order via book_codes.BOOK_ORDER. 105 tests passing.
-- Phase 2C-5 complete: KJV 1769 NT translation layer. 7,957 KJV verses attached via the `translations` table (structurally separate from canonical verse nodes — enforces exegesis-over-eisegesis discipline). 32 new verse slots created for KJV verses absent from SBLGNT (pericope adulterae, Matt 17:21/18:11/23:14, and similar textual-critical omissions) — these have empty Greek text with explanatory note, ready for Byzantine/TR ingest later. VersePage surfaces translations in a reference panel beneath the original. 98 tests passing.
-- Phase 2C-4 complete: book/chapter navigation — /read route with book list grouped by canon, chapter picker, verse list. /books and /book/{code}/chapter/{n} API endpoints. 95 tests passing.
-- Phase 2C-3 complete: verse-detail API (/verse/{id}) + VersePage with three-layer Hebrew / two-layer Greek, layer toggles, per-word morphology, mentioned entities. PersonDetailPanel links to verse pages via materialized MENTIONS edges.
-- Phase 2C-2 complete: Greek NT ingest via MorphGNT / SBLGNT. Schema addendum added `text_plain` + `text_accented` Greek layers alongside the Hebrew trio, plus language-agnostic `text_canonical` convenience field (= cantillated for Hebrew, accented for Greek). 7,927 NT verse nodes across all 27 books (legitimately fewer than KJV/TR's 7,957 — SBLGNT omits ~30 Byzantine-only verses per modern critical-text decisions). 137,554 words with part-of-speech + parsing-code morphology (G-prefixed codes like `GV-3AAI-S--`). SBLGNT variant markers (`⸀ ⸂ ⸃` etc.) preserved verbatim in verse text. Zero parse warnings. 83 tests passing.
-- Graph: **31,287 nodes** (111 persons, 18 nations, 18 places, 23,213 Hebrew verses, 7,927 Greek verses), **540 edges** (182 entity-entity + 358 verse→entity MENTIONS). Verse-to-verse edges (QUOTES, PARALLEL_TO, ALLUDES_TO) infrastructure ready; no instances seeded yet.
-- Next: Phase 2C-3 (TBD). Most likely: (a) NT entity seed + link-seeding (add NT persons/places to graph and create MENTIONS edges), (b) verse-detail API + frontend view, or (c) NT↔OT `QUOTES` edge seeding (e.g. Matt 1:23 → Isa 7:14).
+
+**Version:** 0.1.0
+
+**Graph:** 31,172 verse nodes (23,213 Hebrew + 7,927 Greek + 32 KJV-only slots) + 147 entities (111 persons, 18 nations, 18 places). 540 edges (182 entity-entity + 358 verse→entity MENTIONS).
+
+**Corpus:**
+- Hebrew OT (OSHB/WLC): 23,213 verses, 305,516 words with lemma + Strong's + morphology + ketiv/qere + parashah + reversed-nun
+- Greek NT (MorphGNT/SBLGNT): 7,927 verses, 137,554 words with lemma + POS + parsing codes
+- KJV 1769 translations: 25,482 verses attached (7,957 NT + 17,525 OT mapped via Hebrew↔English versification table)
+
+**Tests:** 105 passing.
+
+### Phases complete (chronological)
+- **Phase 0** — scaffold, both servers operational
+- **Phase 1A** — data models, GraphStore, OT seed data, integrity tests
+- **Phase 1B** — genealogy API endpoints, API tests
+- **Phase 1C** — frontend genealogy tree, person detail, search, line filters
+- **Phase 1D** — URL routing, error states, verification
+- **Phase 2A** — chronology timeline (SVG lifespan bars, /chronology API)
+- **Phase 2B** — places & geography (18 places, 34 place links, PlacesPage)
+- **Phase 2C-1** — verse-graph schema lock + Hebrew OT ingest + entity↔verse MENTIONS seeding
+- **Phase 2C-2** — Greek NT ingest via MorphGNT/SBLGNT (2-layer text, G-prefixed morph codes, variant markers preserved)
+- **Phase 2C-3** — verse detail API + VersePage with layer toggles + per-word morphology + mention traversal; PersonDetailPanel links to verses
+- **Phase 2C-4** — book/chapter navigation (/read route with canon-grouped book list, chapter picker, verse list)
+- **Phase 2C-5** — KJV 1769 NT translation layer + Translations panel on VersePage (32 KJV-only slots for SBLGNT-absent verses including pericope adulterae)
+- **Phase 2D-1** — lemma / Strong's concordance search (/lexeme route, clickable WordCards, canonical sort order)
+- **Phase 2C-6** — KJV 1769 OT translation layer with Hebrew↔English versification mapping (Psalms offsets, Joel & Malachi chapter renumbers)
+
+### Known gaps / deferred work
+- **KJV OT — 6 books not ingested** (NUM, 1SA, 1KI, 1CH, NEH, ISA): 5,554 verses. Require authoritative per-verse versification table (CrossWire av11n or USFM). Documented in `backend/data/seed/versification_kjv_to_heb.json`.
+- **KJV OT — 66 chapter-boundary verses unmapped** across otherwise-aligned books (Gen 31/32, Exo 7/8, Lev 5/6, Dan 3-6, etc.). Same root cause, same follow-up fix.
+- **No NT entities in graph** — Jesus, Paul, Peter, etc. not yet seeded; 7,927 Greek verses have zero incoming MENTIONS edges.
+- **No NT↔OT QUOTES edges** — infrastructure (edge type) exists; no instances seeded (Matt 1:23 → Isa 7:14, etc.).
+- **No browser-based visual verification** of the verse/read/concordance pages from any session so far — typecheck + API probes are clean but rendered UI not spot-checked.
+- **Pre-existing GenealogyTree.tsx TS errors** (lines 97-98) untouched across all Phase 2C/2D work — unrelated to the verse substrate, `vite build` tolerates them, `tsc -b` flags.
+
+### Next candidates (pick direction next session)
+- **(a) NT entity seed + MENTIONS seeding** — add Jesus, Paul, Peter, Pilate, NT places etc.; materialize MENTIONS edges from their curated scripture_refs. Symmetrizes OT/NT coverage.
+- **(b) NT↔OT QUOTES edges** — seed NT citations of OT (Matt 1:23 → Isa 7:14, etc.) from a published list (UBS Greek NT has a cross-reference index). First cross-canon analytical feature.
+- **(c) Finish KJV OT** — add the 6 deferred books + 66 gap verses via CrossWire av11n mapping.
+- **(d) Second translation** (e.g. ASV 1901, PD) for translation-drift side-by-side.
+- **(e) Fix pre-existing GenealogyTree TS errors** — small cleanup.
+- **(f) Browser-visual QA pass** of everything built in this session — catch any runtime UI issues the typecheck/curl probes wouldn't.
