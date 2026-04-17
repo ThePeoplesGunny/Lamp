@@ -80,6 +80,11 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
                     {r.name_hebrew}
                   </span>
                 )}
+                {!r.name_hebrew && r.name_greek && (
+                  <span className="ml-2 text-text-secondary" lang="grc">
+                    {r.name_greek}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 {r.strongs && <span className="text-xs text-accent">{r.strongs}</span>}

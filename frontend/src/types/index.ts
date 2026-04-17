@@ -64,6 +64,8 @@ export interface PersonDetail {
   name_english: string;
   name_hebrew?: string;
   name_hebrew_transliterated?: string;
+  name_greek?: string;
+  name_greek_transliterated?: string;
   strongs?: string;
   meaning?: string;
   sex?: string;
@@ -84,6 +86,7 @@ export interface SearchResult {
   id: string;
   name_english: string;
   name_hebrew?: string;
+  name_greek?: string;
   strongs?: string;
   node_type?: string;
   meaning?: string;
@@ -132,6 +135,8 @@ export interface PlaceSummary {
   name_english: string;
   name_hebrew?: string;
   name_hebrew_transliterated?: string;
+  name_greek?: string;
+  name_greek_transliterated?: string;
   strongs?: string;
   meaning?: string;
   place_type?: string;
@@ -146,6 +151,8 @@ export interface PlaceDetail {
   name_english: string;
   name_hebrew?: string;
   name_hebrew_transliterated?: string;
+  name_greek?: string;
+  name_greek_transliterated?: string;
   strongs?: string;
   meaning?: string;
   place_type?: string;
@@ -212,6 +219,7 @@ export interface VerseMention {
   node_type?: string;
   name_english?: string;
   name_hebrew?: string;
+  name_greek?: string;
 }
 
 /** A translation of a single verse, attached to the canonical verse node. */
@@ -220,6 +228,18 @@ export interface Translation {
   text: string;
   source: string;
   source_tier: number;
+}
+
+/** A cross-canon quote link — one verse citing or cited by another. */
+export interface QuoteRef {
+  id: string;
+  reference: string;
+  book: string;
+  chapter: number;
+  verse: number;
+  canon?: string;
+  language?: string;
+  notes?: string | null;    // exegetical note on the edge (LXX-vs-MT, typology, etc.)
 }
 
 /** Full verse payload from /api/v1/verse/{id}. */
@@ -247,6 +267,8 @@ export interface VerseDetail {
   // Payload
   words: VerseWord[];
   mentions: VerseMention[];
+  cites: QuoteRef[];
+  cited_by: QuoteRef[];
   translations: Translation[];
   prev_id: string | null;
   next_id: string | null;

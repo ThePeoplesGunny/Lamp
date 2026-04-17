@@ -4,7 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchVerse } from '../../api/client';
 import HebrewText from '../hebrew/HebrewText';
-import type { VerseDetail, VerseWord, VerseMention, Translation } from '../../types';
+import GreekText from '../hebrew/GreekText';
+import type { VerseDetail, VerseWord, VerseMention, Translation, QuoteRef } from '../../types';
 
 /** Which text layer to display as the primary verse text. */
 type HebrewLayer = 'consonantal' | 'pointed' | 'cantillated';
@@ -345,6 +346,93 @@ function TranslationsSection({
 }
 
 
+function QuotesSection({
+  cites,
+  citedBy,
+  onNavigate,
+}: {
+  cites: QuoteRef[];
+  citedBy: QuoteRef[];
+  onNavigate: (verseId: string) => void;
+}) {
+  if (cites.length === 0 && citedBy.length === 0) return null;
+
+  const renderList = (items: QuoteRef[], emptyLabel: string) => (
+    <div className="space-y-1.5">
+      {items.length === 0 && (
+        <span className="text-xs italic" style={{ color: 'var(--color-text-secondary)' }}>
+          {emptyLabel}
+        </span>
+      )}
+      {items.map((q) => (
+        <button
+          key={`${q.id}-${q.notes ?? ''}`}
+          onClick={() => onNavigate(q.id)}
+          title={q.notes || undefined}
+          className="block w-full text-left text-xs px-2.5 py-1.5 rounded border transition-colors cursor-pointer"
+          style={{
+            borderColor: 'var(--color-border)',
+            backgroundColor: 'var(--color-bg-tertiary)',
+            color: 'var(--color-text-primary)',
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; }}
+        >
+          <div className="flex items-baseline gap-2">
+            <span className="font-semibold">{q.reference}</span>
+            {q.canon && (
+              <span className="uppercase text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
+                {q.canon}
+              </span>
+            )}
+          </div>
+          {q.notes && (
+            <div
+              className="mt-0.5 text-[11px] leading-snug"
+              style={{ color: 'var(--color-text-secondary)' }}
+            >
+              {q.notes}
+            </div>
+          )}
+        </button>
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-2">
+        <h3 className="text-xs uppercase tracking-wide" style={{ color: 'var(--color-text-secondary)' }}>
+          Cross-canon quotes
+        </h3>
+        <span className="text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
+          Curated NT↔OT citation edges — notes capture LXX↔MT, typology, attribution
+        </span>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div
+            className="text-[11px] uppercase tracking-wide mb-1.5"
+            style={{ color: 'var(--color-text-secondary)' }}
+          >
+            Cites ({cites.length})
+          </div>
+          {renderList(cites, 'This verse quotes no other seeded verses.')}
+        </div>
+        <div>
+          <div
+            className="text-[11px] uppercase tracking-wide mb-1.5"
+            style={{ color: 'var(--color-text-secondary)' }}
+          >
+            Cited by ({citedBy.length})
+          </div>
+          {renderList(citedBy, 'No seeded verses quote this one.')}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MentionsSection({
   mentions,
   onNavigate,
@@ -381,6 +469,12 @@ function MentionsSection({
               <>
                 {' '}
                 <HebrewText text={m.name_hebrew} />
+              </>
+            )}
+            {!m.name_hebrew && m.name_greek && (
+              <>
+                {' '}
+                <GreekText text={m.name_greek} />
               </>
             )}
           </button>
@@ -430,6 +524,14 @@ export default function VersePage() {
         navigate(`/places`);
       }
       // nation: no dedicated page yet; could extend later
+    },
+    [navigate],
+  );
+
+  const handleQuoteNavigate = useCallback(
+    (verseId: string) => {
+      const bare = verseId.replace(/^verse:/, '');
+      navigate(`/verse/${bare}`);
     },
     [navigate],
   );
@@ -505,6 +607,12 @@ export default function VersePage() {
         </div>
 
         <MentionsSection mentions={verse.mentions} onNavigate={handleMentionClick} />
+
+        <QuotesSection
+          cites={verse.cites}
+          citedBy={verse.cited_by}
+          onNavigate={handleQuoteNavigate}
+        />
 
         {verse.notes.length > 0 && (
           <div>

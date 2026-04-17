@@ -41,6 +41,7 @@ def _summarize_mention(node: dict) -> dict:
         "node_type": node.get("node_type"),
         "name_english": node.get("name_english"),
         "name_hebrew": node.get("name_hebrew"),
+        "name_greek": node.get("name_greek"),
     }
 
 
@@ -63,6 +64,13 @@ def _summarize_verse_ref(node: dict) -> dict:
         "canon": node.get("canon"),
         "language": node.get("language"),
     }
+
+
+def _summarize_quote_ref(node: dict) -> dict:
+    """Verse summary plus the edge's exegetical notes — for cites/cited_by lists."""
+    out = _summarize_verse_ref(node)
+    out["notes"] = node.get("_edge_notes")
+    return out
 
 
 @nav_router.get("/books")
@@ -208,6 +216,8 @@ def get_verse(verse_id: str):
         raise HTTPException(status_code=404, detail=f"Verse not found: {verse_id}")
 
     mentions = [_summarize_mention(m) for m in store.get_mentions(verse_id)]
+    cites = [_summarize_quote_ref(v) for v in store.get_cites(verse_id)]
+    cited_by = [_summarize_quote_ref(v) for v in store.get_cited_by(verse_id)]
     translations = store.verses.get_translations_for_verse(verse_id)
 
     return {
@@ -252,6 +262,9 @@ def get_verse(verse_id: str):
         ],
         # Reverse traversal — entities mentioned in this verse
         "mentions": mentions,
+        # Cross-canon quote traversal
+        "cites": cites,             # verses this one quotes (NT→OT direction)
+        "cited_by": cited_by,       # verses that quote this one
         # Translation layer — reference text, never replaces the original
         "translations": [
             {

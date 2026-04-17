@@ -1,4 +1,5 @@
 import HebrewText from '../hebrew/HebrewText';
+import GreekText from '../hebrew/GreekText';
 import type { PlaceSummary } from '../../types';
 
 interface PlaceCardProps {
@@ -42,6 +43,13 @@ export default function PlaceCard({ place, isSelected, onClick }: PlaceCardProps
       {place.name_hebrew && (
         <div className="text-base mt-0.5">
           <HebrewText text={place.name_hebrew} className="text-text-primary" />
+        </div>
+      )}
+
+      {/* Greek */}
+      {place.name_greek && (
+        <div className="text-base mt-0.5">
+          <GreekText text={place.name_greek} className="text-text-primary" />
         </div>
       )}
 

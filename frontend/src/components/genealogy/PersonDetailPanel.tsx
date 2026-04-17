@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { fetchPerson, fetchVersesMentioning } from '../../api/client';
 import HebrewText from '../hebrew/HebrewText';
+import GreekText from '../hebrew/GreekText';
 import type { PersonDetail, RelatedPerson, RelatedPlace, VerseRef } from '../../types';
 
 interface PersonDetailPanelProps {
@@ -124,9 +125,19 @@ export default function PersonDetailPanel({ personId, onClose, onNavigate }: Per
               <HebrewText text={person.name_hebrew} className="text-text-primary" />
             </div>
           )}
+          {person.name_greek && (
+            <div className="text-2xl mt-1">
+              <GreekText text={person.name_greek} className="text-text-primary" />
+            </div>
+          )}
           {person.name_hebrew_transliterated && (
             <div className="text-sm text-text-secondary mt-0.5">
               {person.name_hebrew_transliterated}
+            </div>
+          )}
+          {person.name_greek_transliterated && (
+            <div className="text-sm text-text-secondary mt-0.5">
+              {person.name_greek_transliterated}
             </div>
           )}
 

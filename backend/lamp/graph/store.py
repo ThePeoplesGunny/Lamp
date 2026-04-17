@@ -198,6 +198,44 @@ class GraphStore:
             if data.get("type") == EdgeType.MENTIONS
         ]
 
+    def get_cites(self, verse_id: str) -> list[dict]:
+        """Verses this verse quotes (outgoing QUOTES edges).
+
+        Each returned dict includes the target verse's graph metadata plus
+        an `_edge_notes` field carrying the exegetical note on the edge.
+        Sorted canonically (book order → chapter → verse).
+        """
+        if verse_id not in self.G:
+            return []
+        out = []
+        for _, target, data in self.G.out_edges(verse_id, data=True):
+            if data.get("type") == EdgeType.QUOTES:
+                node = self._node_with_id(target)
+                node["_edge_notes"] = data.get("notes")
+                out.append(node)
+        return sorted(
+            out,
+            key=lambda v: (v.get("book") or "", v.get("chapter") or 0, v.get("verse") or 0),
+        )
+
+    def get_cited_by(self, verse_id: str) -> list[dict]:
+        """Verses that quote this verse (incoming QUOTES edges).
+
+        Same shape as get_cites, sorted canonically by the citing verse.
+        """
+        if verse_id not in self.G:
+            return []
+        out = []
+        for source, _, data in self.G.in_edges(verse_id, data=True):
+            if data.get("type") == EdgeType.QUOTES:
+                node = self._node_with_id(source)
+                node["_edge_notes"] = data.get("notes")
+                out.append(node)
+        return sorted(
+            out,
+            key=lambda v: (v.get("book") or "", v.get("chapter") or 0, v.get("verse") or 0),
+        )
+
     # ── Genealogy queries ────────────────────────────────────────
 
     def get_children(self, person_id: str) -> list[dict]:
