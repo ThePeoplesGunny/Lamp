@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Lamp",
     description="Biblical analytical tool — investigation platform for original Hebrew/Greek texts",
-    version="0.1.0",
+    version="0.2.0",
     lifespan=lifespan,
 )
 
@@ -44,7 +44,7 @@ app.add_middleware(
 
 @app.get(f"{API_PREFIX}/health")
 def health():
-    return {"status": "ok", "version": "0.1.0"}
+    return {"status": "ok", "version": "0.2.0"}
 
 
 app.include_router(genealogy_router, prefix=API_PREFIX)

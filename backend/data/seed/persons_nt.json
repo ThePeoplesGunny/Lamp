@@ -1,0 +1,563 @@
+{
+  "persons": [
+    {
+      "id": "person:jesus",
+      "name_english": "Jesus",
+      "name_greek": "Ἰησοῦς",
+      "name_greek_transliterated": "Iēsous",
+      "strongs": "G2424",
+      "meaning": "YHWH is salvation; Gk form of Heb Yeshua",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 1, "verse": 1},
+        {"book": "MAT", "chapter": 1, "verse": 21},
+        {"book": "LUK", "chapter": 2, "verse": 21},
+        {"book": "JHN", "chapter": 1, "verse": 14}
+      ],
+      "notes": "Anchor refs only — Jesus is named in thousands of NT verses; full linkage out of scope here"
+    },
+    {
+      "id": "person:mary_mother_of_jesus",
+      "name_english": "Mary (mother of Jesus)",
+      "name_greek": "Μαρία",
+      "name_greek_transliterated": "Maria",
+      "strongs": "G3137",
+      "meaning": "from Heb Miryam",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 1, "verse": 16},
+        {"book": "LUK", "chapter": 1, "verse": 27},
+        {"book": "LUK", "chapter": 2, "verse": 5},
+        {"book": "JHN", "chapter": 19, "verse": 25}
+      ]
+    },
+    {
+      "id": "person:joseph_husband_of_mary",
+      "name_english": "Joseph (husband of Mary)",
+      "name_greek": "Ἰωσήφ",
+      "name_greek_transliterated": "Iōsēph",
+      "strongs": "G2501",
+      "meaning": "from Heb Yoseph: he adds",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 1, "verse": 16},
+        {"book": "MAT", "chapter": 1, "verse": 18, "verse_end": 25},
+        {"book": "LUK", "chapter": 2, "verse": 4}
+      ]
+    },
+    {
+      "id": "person:john_the_baptist",
+      "name_english": "John the Baptist",
+      "name_greek": "Ἰωάννης",
+      "name_greek_transliterated": "Iōannēs",
+      "strongs": "G2491",
+      "meaning": "YHWH is gracious",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 3, "verse": 1},
+        {"book": "LUK", "chapter": 1, "verse": 13},
+        {"book": "LUK", "chapter": 1, "verse": 57, "verse_end": 66}
+      ]
+    },
+    {
+      "id": "person:zechariah_priest",
+      "name_english": "Zechariah (father of John the Baptist)",
+      "name_greek": "Ζαχαρίας",
+      "name_greek_transliterated": "Zacharias",
+      "strongs": "G2197",
+      "meaning": "YHWH has remembered",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 1, "verse": 5},
+        {"book": "LUK", "chapter": 1, "verse": 67, "verse_end": 79}
+      ]
+    },
+    {
+      "id": "person:elizabeth",
+      "name_english": "Elizabeth",
+      "name_greek": "Ἐλισάβετ",
+      "name_greek_transliterated": "Elisabet",
+      "strongs": "G1665",
+      "meaning": "my God is an oath",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 1, "verse": 5},
+        {"book": "LUK", "chapter": 1, "verse": 41, "verse_end": 45}
+      ]
+    },
+    {
+      "id": "person:simeon_prophet",
+      "name_english": "Simeon (at the Temple)",
+      "name_greek": "Συμεών",
+      "name_greek_transliterated": "Sumeōn",
+      "strongs": "G4826",
+      "meaning": "hearing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 2, "verse": 25, "verse_end": 35}
+      ]
+    },
+    {
+      "id": "person:anna_prophetess",
+      "name_english": "Anna the prophetess",
+      "name_greek": "Ἅννα",
+      "name_greek_transliterated": "Hanna",
+      "strongs": "G451",
+      "meaning": "from Heb Channah: grace, favor",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 2, "verse": 36, "verse_end": 38}
+      ]
+    },
+    {
+      "id": "person:peter",
+      "name_english": "Peter (Simon Peter)",
+      "name_greek": "Πέτρος",
+      "name_greek_transliterated": "Petros",
+      "strongs": "G4074",
+      "meaning": "rock; cognomen of Simon son of Jonah",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 18},
+        {"book": "MAT", "chapter": 16, "verse": 16, "verse_end": 19},
+        {"book": "JHN", "chapter": 21, "verse": 15, "verse_end": 17}
+      ]
+    },
+    {
+      "id": "person:andrew",
+      "name_english": "Andrew",
+      "name_greek": "Ἀνδρέας",
+      "name_greek_transliterated": "Andreas",
+      "strongs": "G406",
+      "meaning": "manly",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 18},
+        {"book": "JHN", "chapter": 1, "verse": 40, "verse_end": 42}
+      ]
+    },
+    {
+      "id": "person:james_son_of_zebedee",
+      "name_english": "James (son of Zebedee)",
+      "name_greek": "Ἰάκωβος",
+      "name_greek_transliterated": "Iakōbos",
+      "strongs": "G2385",
+      "meaning": "from Heb Yaakov: supplanter",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 21},
+        {"book": "MAT", "chapter": 10, "verse": 2},
+        {"book": "ACT", "chapter": 12, "verse": 2}
+      ],
+      "notes": "Martyred by Herod Agrippa I (Acts 12:2)"
+    },
+    {
+      "id": "person:john_apostle",
+      "name_english": "John (son of Zebedee, apostle)",
+      "name_greek": "Ἰωάννης",
+      "name_greek_transliterated": "Iōannēs",
+      "strongs": "G2491",
+      "meaning": "YHWH is gracious",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 21},
+        {"book": "MAT", "chapter": 10, "verse": 2},
+        {"book": "JHN", "chapter": 13, "verse": 23}
+      ],
+      "notes": "Traditional author of Gospel of John, 1-3 John, Revelation; 'the disciple whom Jesus loved'"
+    },
+    {
+      "id": "person:philip_apostle",
+      "name_english": "Philip (apostle)",
+      "name_greek": "Φίλιππος",
+      "name_greek_transliterated": "Philippos",
+      "strongs": "G5376",
+      "meaning": "lover of horses",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 3},
+        {"book": "JHN", "chapter": 1, "verse": 43, "verse_end": 46}
+      ]
+    },
+    {
+      "id": "person:bartholomew",
+      "name_english": "Bartholomew",
+      "name_greek": "Βαρθολομαῖος",
+      "name_greek_transliterated": "Bartholomaios",
+      "strongs": "G918",
+      "meaning": "son of Tolmai (Aramaic)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 3}
+      ],
+      "notes": "Often identified with Nathanael (John 1:45-51)"
+    },
+    {
+      "id": "person:thomas",
+      "name_english": "Thomas",
+      "name_greek": "Θωμᾶς",
+      "name_greek_transliterated": "Thōmas",
+      "strongs": "G2381",
+      "meaning": "twin (Aramaic t'oma)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 3},
+        {"book": "JHN", "chapter": 20, "verse": 24, "verse_end": 29}
+      ]
+    },
+    {
+      "id": "person:matthew_apostle",
+      "name_english": "Matthew (tax collector)",
+      "name_greek": "Μαθθαῖος",
+      "name_greek_transliterated": "Matthaios",
+      "strongs": "G3156",
+      "meaning": "gift of YHWH (from Heb Mattityah)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 9, "verse": 9},
+        {"book": "MAT", "chapter": 10, "verse": 3}
+      ],
+      "notes": "Also called Levi (Mark 2:14, Luke 5:27); traditional author of Gospel of Matthew"
+    },
+    {
+      "id": "person:james_son_of_alphaeus",
+      "name_english": "James (son of Alphaeus)",
+      "name_greek": "Ἰάκωβος",
+      "name_greek_transliterated": "Iakōbos",
+      "strongs": "G2385",
+      "meaning": "from Heb Yaakov: supplanter",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 3}
+      ]
+    },
+    {
+      "id": "person:thaddaeus",
+      "name_english": "Thaddaeus (Jude son of James)",
+      "name_greek": "Θαδδαῖος",
+      "name_greek_transliterated": "Thaddaios",
+      "strongs": "G2280",
+      "meaning": "breast, heart (Aramaic)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 3},
+        {"book": "LUK", "chapter": 6, "verse": 16}
+      ],
+      "notes": "Luke/Acts calls him 'Judas of James' (Ioudas Iakōbou); Matthew/Mark call him Thaddaeus"
+    },
+    {
+      "id": "person:simon_the_zealot",
+      "name_english": "Simon the Zealot",
+      "name_greek": "Σίμων",
+      "name_greek_transliterated": "Simōn",
+      "strongs": "G4613",
+      "meaning": "hearing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 4},
+        {"book": "LUK", "chapter": 6, "verse": 15}
+      ]
+    },
+    {
+      "id": "person:judas_iscariot",
+      "name_english": "Judas Iscariot",
+      "name_greek": "Ἰούδας Ἰσκαριώτης",
+      "name_greek_transliterated": "Ioudas Iskariōtēs",
+      "strongs": "G2455",
+      "meaning": "from Heb Yehuda: praise",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 4},
+        {"book": "MAT", "chapter": 26, "verse": 14, "verse_end": 16},
+        {"book": "MAT", "chapter": 27, "verse": 3, "verse_end": 5}
+      ],
+      "notes": "Betrayer of Jesus; 'Iscariot' likely means 'man of Kerioth'"
+    },
+    {
+      "id": "person:paul",
+      "name_english": "Paul (Saul of Tarsus)",
+      "name_greek": "Παῦλος",
+      "name_greek_transliterated": "Paulos",
+      "strongs": "G3972",
+      "meaning": "small, little (Latin Paulus); born Saul (Σαῦλος, G4569, from Heb Sha'ul)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 1, "verse_end": 19},
+        {"book": "ACT", "chapter": 13, "verse": 9},
+        {"book": "ROM", "chapter": 1, "verse": 1},
+        {"book": "GAL", "chapter": 1, "verse": 1}
+      ]
+    },
+    {
+      "id": "person:barnabas",
+      "name_english": "Barnabas",
+      "name_greek": "Βαρναβᾶς",
+      "name_greek_transliterated": "Barnabas",
+      "strongs": "G921",
+      "meaning": "son of encouragement (Aramaic)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 4, "verse": 36, "verse_end": 37},
+        {"book": "ACT", "chapter": 11, "verse": 22, "verse_end": 26},
+        {"book": "ACT", "chapter": 13, "verse": 2}
+      ],
+      "notes": "Also called Joseph/Joses by birth (Acts 4:36)"
+    },
+    {
+      "id": "person:stephen",
+      "name_english": "Stephen",
+      "name_greek": "Στέφανος",
+      "name_greek_transliterated": "Stephanos",
+      "strongs": "G4736",
+      "meaning": "crown, wreath",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5},
+        {"book": "ACT", "chapter": 7, "verse": 59, "verse_end": 60}
+      ],
+      "notes": "First Christian martyr"
+    },
+    {
+      "id": "person:pontius_pilate",
+      "name_english": "Pontius Pilate",
+      "name_greek": "Πόντιος Πιλᾶτος",
+      "name_greek_transliterated": "Pontios Pilatos",
+      "strongs": "G4091",
+      "meaning": "Pilatus: armed with a javelin (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 3, "verse": 1},
+        {"book": "MAT", "chapter": 27, "verse": 2},
+        {"book": "JHN", "chapter": 18, "verse": 28, "verse_end": 38}
+      ],
+      "notes": "Roman prefect of Judaea AD 26-36"
+    },
+    {
+      "id": "person:herod_the_great",
+      "name_english": "Herod the Great",
+      "name_greek": "Ἡρῴδης",
+      "name_greek_transliterated": "Hērōdēs",
+      "strongs": "G2264",
+      "meaning": "hero-like",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 2, "verse": 1, "verse_end": 19},
+        {"book": "LUK", "chapter": 1, "verse": 5}
+      ],
+      "notes": "King of Judaea 37-4 BC; ordered the massacre of innocents"
+    },
+    {
+      "id": "person:herod_antipas",
+      "name_english": "Herod Antipas",
+      "name_greek": "Ἡρῴδης",
+      "name_greek_transliterated": "Hērōdēs",
+      "strongs": "G2264",
+      "meaning": "hero-like",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 14, "verse": 1, "verse_end": 12},
+        {"book": "LUK", "chapter": 3, "verse": 1},
+        {"book": "LUK", "chapter": 23, "verse": 7, "verse_end": 12}
+      ],
+      "notes": "Tetrarch of Galilee and Perea 4 BC-AD 39; beheaded John the Baptist; son of Herod the Great"
+    },
+    {
+      "id": "person:caiaphas",
+      "name_english": "Caiaphas",
+      "name_greek": "Καϊάφας",
+      "name_greek_transliterated": "Kaïaphas",
+      "strongs": "G2533",
+      "meaning": "uncertain; possibly Aramaic",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 26, "verse": 57, "verse_end": 66},
+        {"book": "JHN", "chapter": 11, "verse": 49, "verse_end": 52},
+        {"book": "JHN", "chapter": 18, "verse": 14}
+      ],
+      "notes": "High priest AD 18-36; son-in-law of Annas"
+    },
+    {
+      "id": "person:annas",
+      "name_english": "Annas",
+      "name_greek": "Ἅννας",
+      "name_greek_transliterated": "Hannas",
+      "strongs": "G452",
+      "meaning": "from Heb Channah: grace",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 3, "verse": 2},
+        {"book": "JHN", "chapter": 18, "verse": 13, "verse_end": 24}
+      ],
+      "notes": "High priest AD 6-15; remained powerful 'high priest emeritus' during Caiaphas's tenure"
+    },
+    {
+      "id": "person:mary_magdalene",
+      "name_english": "Mary Magdalene",
+      "name_greek": "Μαρία ἡ Μαγδαληνή",
+      "name_greek_transliterated": "Maria hē Magdalēnē",
+      "strongs": "G3137",
+      "meaning": "Mary of Magdala",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 8, "verse": 2},
+        {"book": "MAT", "chapter": 27, "verse": 56},
+        {"book": "JHN", "chapter": 20, "verse": 1, "verse_end": 18}
+      ]
+    },
+    {
+      "id": "person:martha",
+      "name_english": "Martha",
+      "name_greek": "Μάρθα",
+      "name_greek_transliterated": "Martha",
+      "strongs": "G3136",
+      "meaning": "lady, mistress (Aramaic)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 10, "verse": 38, "verse_end": 42},
+        {"book": "JHN", "chapter": 11, "verse": 1},
+        {"book": "JHN", "chapter": 12, "verse": 2}
+      ]
+    },
+    {
+      "id": "person:lazarus_of_bethany",
+      "name_english": "Lazarus of Bethany",
+      "name_greek": "Λάζαρος",
+      "name_greek_transliterated": "Lazaros",
+      "strongs": "G2976",
+      "meaning": "from Heb Eleazar: God has helped",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 11, "verse": 1, "verse_end": 44},
+        {"book": "JHN", "chapter": 12, "verse": 1, "verse_end": 11}
+      ]
+    },
+    {
+      "id": "person:mary_of_bethany",
+      "name_english": "Mary of Bethany",
+      "name_greek": "Μαρία",
+      "name_greek_transliterated": "Maria",
+      "strongs": "G3137",
+      "meaning": "from Heb Miryam",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 10, "verse": 39, "verse_end": 42},
+        {"book": "JHN", "chapter": 11, "verse": 1, "verse_end": 2},
+        {"book": "JHN", "chapter": 12, "verse": 3}
+      ],
+      "notes": "Sister of Martha and Lazarus; anointed Jesus at Bethany"
+    },
+    {
+      "id": "person:nicodemus",
+      "name_english": "Nicodemus",
+      "name_greek": "Νικόδημος",
+      "name_greek_transliterated": "Nikodēmos",
+      "strongs": "G3530",
+      "meaning": "victory of the people",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 3, "verse": 1, "verse_end": 21},
+        {"book": "JHN", "chapter": 7, "verse": 50, "verse_end": 52},
+        {"book": "JHN", "chapter": 19, "verse": 39}
+      ]
+    },
+    {
+      "id": "person:joseph_of_arimathea",
+      "name_english": "Joseph of Arimathea",
+      "name_greek": "Ἰωσήφ",
+      "name_greek_transliterated": "Iōsēph",
+      "strongs": "G2501",
+      "meaning": "from Heb Yoseph: he adds",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 27, "verse": 57, "verse_end": 60},
+        {"book": "MRK", "chapter": 15, "verse": 43, "verse_end": 46},
+        {"book": "JHN", "chapter": 19, "verse": 38, "verse_end": 42}
+      ]
+    },
+    {
+      "id": "person:james_brother_of_jesus",
+      "name_english": "James (brother of Jesus)",
+      "name_greek": "Ἰάκωβος",
+      "name_greek_transliterated": "Iakōbos",
+      "strongs": "G2385",
+      "meaning": "from Heb Yaakov: supplanter",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 13, "verse": 55},
+        {"book": "ACT", "chapter": 15, "verse": 13, "verse_end": 21},
+        {"book": "GAL", "chapter": 1, "verse": 19}
+      ],
+      "notes": "Leader of the Jerusalem church; traditional author of Epistle of James"
+    },
+    {
+      "id": "person:timothy",
+      "name_english": "Timothy",
+      "name_greek": "Τιμόθεος",
+      "name_greek_transliterated": "Timotheos",
+      "strongs": "G5095",
+      "meaning": "honoring God",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 1, "verse_end": 3},
+        {"book": "1TI", "chapter": 1, "verse": 2},
+        {"book": "2TI", "chapter": 1, "verse": 2}
+      ]
+    },
+    {
+      "id": "person:titus",
+      "name_english": "Titus",
+      "name_greek": "Τίτος",
+      "name_greek_transliterated": "Titos",
+      "strongs": "G5103",
+      "meaning": "nurse, protector (Latin origin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "GAL", "chapter": 2, "verse": 1, "verse_end": 3},
+        {"book": "2CO", "chapter": 8, "verse": 16, "verse_end": 24},
+        {"book": "TIT", "chapter": 1, "verse": 4}
+      ]
+    },
+    {
+      "id": "person:apollos",
+      "name_english": "Apollos",
+      "name_greek": "Ἀπολλῶς",
+      "name_greek_transliterated": "Apollōs",
+      "strongs": "G625",
+      "meaning": "shortened form of Apollonius",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 24, "verse_end": 28},
+        {"book": "1CO", "chapter": 3, "verse": 5, "verse_end": 6}
+      ]
+    },
+    {
+      "id": "person:priscilla",
+      "name_english": "Priscilla (Prisca)",
+      "name_greek": "Πρίσκιλλα",
+      "name_greek_transliterated": "Priskilla",
+      "strongs": "G4252",
+      "meaning": "diminutive of Prisca: ancient",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 2},
+        {"book": "ACT", "chapter": 18, "verse": 26},
+        {"book": "ROM", "chapter": 16, "verse": 3}
+      ],
+      "notes": "Wife of Aquila; often named before her husband — unusual in 1st-c. convention"
+    },
+    {
+      "id": "person:aquila",
+      "name_english": "Aquila",
+      "name_greek": "Ἀκύλας",
+      "name_greek_transliterated": "Akulas",
+      "strongs": "G207",
+      "meaning": "eagle (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 2},
+        {"book": "ACT", "chapter": 18, "verse": 26},
+        {"book": "ROM", "chapter": 16, "verse": 3}
+      ]
+    }
+  ]
+}

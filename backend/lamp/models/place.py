@@ -12,6 +12,8 @@ class Place(BaseModel):
     name_english: str
     name_hebrew: str | None = None
     name_hebrew_transliterated: str | None = None
+    name_greek: str | None = None
+    name_greek_transliterated: str | None = None
     strongs: str | None = None
     meaning: str | None = None
     place_type: str | None = None  # region, city, mountain, river, etc.

@@ -1,0 +1,341 @@
+{
+  "places": [
+    {
+      "id": "place:bethlehem",
+      "name_english": "Bethlehem",
+      "name_hebrew": "בֵּית לֶחֶם",
+      "name_hebrew_transliterated": "Beit Lechem",
+      "name_greek": "Βηθλέεμ",
+      "name_greek_transliterated": "Bēthleem",
+      "strongs": "G965",
+      "meaning": "house of bread",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 2, "verse": 1, "verse_end": 8},
+        {"book": "LUK", "chapter": 2, "verse": 4, "verse_end": 15},
+        {"book": "JHN", "chapter": 7, "verse": 42}
+      ],
+      "notes": "Birthplace of Jesus; 'Bethlehem of Judaea' (distinct from Bethlehem in Zebulun, Josh 19:15)"
+    },
+    {
+      "id": "place:nazareth",
+      "name_english": "Nazareth",
+      "name_greek": "Ναζαρέτ",
+      "name_greek_transliterated": "Nazareth",
+      "strongs": "G3478",
+      "meaning": "uncertain; possibly 'branch' (netzer)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 2, "verse": 23},
+        {"book": "LUK", "chapter": 1, "verse": 26},
+        {"book": "LUK", "chapter": 2, "verse": 39},
+        {"book": "LUK", "chapter": 4, "verse": 16}
+      ],
+      "notes": "Jesus' hometown in Galilee"
+    },
+    {
+      "id": "place:capernaum",
+      "name_english": "Capernaum",
+      "name_greek": "Καφαρναούμ",
+      "name_greek_transliterated": "Kapharnaoum",
+      "strongs": "G2584",
+      "meaning": "village of Nahum (Heb)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 13},
+        {"book": "MRK", "chapter": 1, "verse": 21},
+        {"book": "MAT", "chapter": 11, "verse": 23}
+      ],
+      "notes": "Fishing village on north shore of Sea of Galilee; center of Jesus' Galilean ministry"
+    },
+    {
+      "id": "place:bethany",
+      "name_english": "Bethany",
+      "name_greek": "Βηθανία",
+      "name_greek_transliterated": "Bēthania",
+      "strongs": "G963",
+      "meaning": "house of affliction, or house of dates",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 21, "verse": 17},
+        {"book": "JHN", "chapter": 11, "verse": 1},
+        {"book": "JHN", "chapter": 12, "verse": 1}
+      ],
+      "notes": "Village on east slope of Mount of Olives; home of Mary, Martha, Lazarus"
+    },
+    {
+      "id": "place:gethsemane",
+      "name_english": "Gethsemane",
+      "name_greek": "Γεθσημανί",
+      "name_greek_transliterated": "Gethsēmani",
+      "strongs": "G1068",
+      "meaning": "oil press (Aramaic gath-shemanē)",
+      "place_type": "garden",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 26, "verse": 36},
+        {"book": "MRK", "chapter": 14, "verse": 32}
+      ],
+      "notes": "Garden on Mount of Olives; Jesus' place of prayer before arrest"
+    },
+    {
+      "id": "place:golgotha",
+      "name_english": "Golgotha",
+      "name_greek": "Γολγοθᾶ",
+      "name_greek_transliterated": "Golgotha",
+      "strongs": "G1115",
+      "meaning": "skull (Aramaic gulgulta); Latin Calvaria",
+      "place_type": "hill",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 27, "verse": 33},
+        {"book": "MRK", "chapter": 15, "verse": 22},
+        {"book": "JHN", "chapter": 19, "verse": 17}
+      ],
+      "notes": "Site of Jesus' crucifixion, just outside Jerusalem"
+    },
+    {
+      "id": "place:mount_of_olives",
+      "name_english": "Mount of Olives",
+      "name_greek": "ὄρος τῶν ἐλαιῶν",
+      "name_greek_transliterated": "oros tōn elaiōn",
+      "strongs": "G1636",
+      "meaning": "mountain of the olive trees",
+      "place_type": "mountain",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 21, "verse": 1},
+        {"book": "MAT", "chapter": 26, "verse": 30},
+        {"book": "ACT", "chapter": 1, "verse": 12}
+      ],
+      "notes": "Ridge east of Jerusalem across Kidron Valley; site of ascension"
+    },
+    {
+      "id": "place:cana",
+      "name_english": "Cana",
+      "name_greek": "Κανά",
+      "name_greek_transliterated": "Kana",
+      "strongs": "G2580",
+      "meaning": "place of reeds",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 2, "verse": 1, "verse_end": 11},
+        {"book": "JHN", "chapter": 4, "verse": 46},
+        {"book": "JHN", "chapter": 21, "verse": 2}
+      ],
+      "notes": "Village in Galilee; site of Jesus' first sign (water into wine)"
+    },
+    {
+      "id": "place:emmaus",
+      "name_english": "Emmaus",
+      "name_greek": "Ἐμμαούς",
+      "name_greek_transliterated": "Emmaous",
+      "strongs": "G1695",
+      "meaning": "uncertain; possibly from Heb hammat: warm spring",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 24, "verse": 13, "verse_end": 35}
+      ],
+      "notes": "Village about 60 stadia from Jerusalem; post-resurrection appearance"
+    },
+    {
+      "id": "place:damascus",
+      "name_english": "Damascus",
+      "name_greek": "Δαμασκός",
+      "name_greek_transliterated": "Damaskos",
+      "strongs": "G1154",
+      "meaning": "uncertain ancient origin",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 2, "verse_end": 22},
+        {"book": "ACT", "chapter": 22, "verse": 6, "verse_end": 11},
+        {"book": "GAL", "chapter": 1, "verse": 17}
+      ],
+      "notes": "Capital of Syria; site of Paul's conversion"
+    },
+    {
+      "id": "place:antioch_syria",
+      "name_english": "Antioch (Syria)",
+      "name_greek": "Ἀντιόχεια",
+      "name_greek_transliterated": "Antiocheia",
+      "strongs": "G490",
+      "meaning": "named for Antiochus (Seleucid dynasty)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 11, "verse": 19, "verse_end": 26},
+        {"book": "ACT", "chapter": 13, "verse": 1, "verse_end": 3},
+        {"book": "GAL", "chapter": 2, "verse": 11}
+      ],
+      "notes": "Syrian Antioch on the Orontes; first place disciples were called Christians (Acts 11:26); base of Paul's missionary journeys"
+    },
+    {
+      "id": "place:antioch_pisidia",
+      "name_english": "Antioch (Pisidia)",
+      "name_greek": "Ἀντιόχεια τῆς Πισιδίας",
+      "name_greek_transliterated": "Antiocheia tēs Pisidias",
+      "strongs": "G490",
+      "meaning": "named for Antiochus",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 14, "verse_end": 52},
+        {"book": "2TI", "chapter": 3, "verse": 11}
+      ],
+      "notes": "Pisidian Antioch in southern Asia Minor; distinct from Antioch of Syria"
+    },
+    {
+      "id": "place:tarsus",
+      "name_english": "Tarsus",
+      "name_greek": "Ταρσός",
+      "name_greek_transliterated": "Tarsos",
+      "strongs": "G5019",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 11},
+        {"book": "ACT", "chapter": 22, "verse": 3}
+      ],
+      "notes": "Capital of Cilicia; Paul's birthplace"
+    },
+    {
+      "id": "place:corinth",
+      "name_english": "Corinth",
+      "name_greek": "Κόρινθος",
+      "name_greek_transliterated": "Korinthos",
+      "strongs": "G2882",
+      "meaning": "uncertain pre-Greek origin",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 1, "verse_end": 18},
+        {"book": "1CO", "chapter": 1, "verse": 2},
+        {"book": "2CO", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Major Greek commercial city on the Isthmus"
+    },
+    {
+      "id": "place:athens",
+      "name_english": "Athens",
+      "name_greek": "Ἀθῆναι",
+      "name_greek_transliterated": "Athēnai",
+      "strongs": "G116",
+      "meaning": "city of Athena",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 15, "verse_end": 34}
+      ],
+      "notes": "Site of Paul's Areopagus address"
+    },
+    {
+      "id": "place:ephesus",
+      "name_english": "Ephesus",
+      "name_greek": "Ἔφεσος",
+      "name_greek_transliterated": "Ephesos",
+      "strongs": "G2181",
+      "meaning": "desirable, permitted (uncertain)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 19, "verse_end": 21},
+        {"book": "ACT", "chapter": 19, "verse": 1, "verse_end": 41},
+        {"book": "EPH", "chapter": 1, "verse": 1},
+        {"book": "REV", "chapter": 2, "verse": 1}
+      ],
+      "notes": "Capital of Roman Asia; temple of Artemis"
+    },
+    {
+      "id": "place:philippi",
+      "name_english": "Philippi",
+      "name_greek": "Φίλιπποι",
+      "name_greek_transliterated": "Philippoi",
+      "strongs": "G5375",
+      "meaning": "city of Philip (II of Macedon)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 12, "verse_end": 40},
+        {"book": "PHP", "chapter": 1, "verse": 1},
+        {"book": "1TH", "chapter": 2, "verse": 2}
+      ],
+      "notes": "Roman colony in Macedonia; first Pauline church in Europe"
+    },
+    {
+      "id": "place:thessalonica",
+      "name_english": "Thessalonica",
+      "name_greek": "Θεσσαλονίκη",
+      "name_greek_transliterated": "Thessalonikē",
+      "strongs": "G2332",
+      "meaning": "victory in Thessaly",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 1, "verse_end": 9},
+        {"book": "1TH", "chapter": 1, "verse": 1},
+        {"book": "2TH", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Capital of Macedonia"
+    },
+    {
+      "id": "place:berea",
+      "name_english": "Berea",
+      "name_greek": "Βέροια",
+      "name_greek_transliterated": "Beroia",
+      "strongs": "G960",
+      "meaning": "beyond the coast (uncertain)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 10, "verse_end": 14}
+      ],
+      "notes": "Macedonian city where Paul preached after Thessalonica; Bereans commended as 'more noble'"
+    },
+    {
+      "id": "place:rome",
+      "name_english": "Rome",
+      "name_greek": "Ῥώμη",
+      "name_greek_transliterated": "Rhōmē",
+      "strongs": "G4516",
+      "meaning": "strength (possibly from Latin)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 14, "verse_end": 16},
+        {"book": "ROM", "chapter": 1, "verse": 7},
+        {"book": "2TI", "chapter": 1, "verse": 17}
+      ],
+      "notes": "Capital of the Roman Empire; Paul's final imprisonment"
+    },
+    {
+      "id": "place:caesarea_maritima",
+      "name_english": "Caesarea (Maritima)",
+      "name_greek": "Καισάρεια",
+      "name_greek_transliterated": "Kaisareia",
+      "strongs": "G2542",
+      "meaning": "named for Caesar Augustus",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 10, "verse": 1},
+        {"book": "ACT", "chapter": 23, "verse": 23, "verse_end": 35},
+        {"book": "ACT", "chapter": 25, "verse": 1, "verse_end": 13}
+      ],
+      "notes": "Roman administrative capital of Judaea on the Mediterranean coast; Paul's 2-year imprisonment"
+    },
+    {
+      "id": "place:caesarea_philippi",
+      "name_english": "Caesarea Philippi",
+      "name_greek": "Καισάρεια Φιλίππου",
+      "name_greek_transliterated": "Kaisareia Philippou",
+      "strongs": "G2542",
+      "meaning": "Philip's Caesarea",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 16, "verse": 13, "verse_end": 20},
+        {"book": "MRK", "chapter": 8, "verse": 27, "verse_end": 30}
+      ],
+      "notes": "Northern city at the foot of Mount Hermon; site of Peter's confession; distinct from coastal Caesarea Maritima"
+    },
+    {
+      "id": "place:patmos",
+      "name_english": "Patmos",
+      "name_greek": "Πάτμος",
+      "name_greek_transliterated": "Patmos",
+      "strongs": "G3963",
+      "meaning": "uncertain",
+      "place_type": "island",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 1, "verse": 9}
+      ],
+      "notes": "Aegean island where John received the Revelation"
+    }
+  ]
+}

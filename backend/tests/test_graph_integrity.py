@@ -43,11 +43,12 @@ def test_all_nations_have_required_fields(store):
 
 
 def test_no_orphan_person_nodes(store):
-    """Every person in the genealogical lines should have at least one parent.
+    """Every person in the OT genealogical lines should have at least one parent.
 
-    Exceptions: root persons (Adam, Eve) and persons whose parentage
+    Exceptions: root persons (Adam, Eve), persons whose parentage
     is not recorded in the text (wives, handmaids brought into the narrative
-    without genealogical context).
+    without genealogical context), and NT persons (scoped out of
+    parent-child edges in the current seed).
     """
     # Persons whose parentage is not recorded in Genesis
     unrecorded_parentage = {
@@ -56,10 +57,19 @@ def test_no_orphan_person_nodes(store):
         "person:rebekah", "person:leah", "person:rachel",
         "person:bilhah", "person:zilpah",
     }
+    nt_books = {
+        "MAT", "MRK", "LUK", "JHN", "ACT",
+        "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL",
+        "1TH", "2TH", "1TI", "2TI", "TIT", "PHM",
+        "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV",
+    }
     for person in store.get_persons():
         pid = person["id"]
         if pid in unrecorded_parentage:
             continue
+        refs = person.get("scripture_refs") or []
+        if refs and all(r["book"] in nt_books for r in refs):
+            continue  # NT person — parent-child edges not yet seeded
         parents = store.get_parents(pid)
         assert len(parents) > 0, f"Orphan person (no parents): {pid}"
 
@@ -143,3 +153,39 @@ def test_search(store):
 
     results = store.search("H3290")  # Jacob's Strong's
     assert any(r["id"] == "person:jacob" for r in results)
+
+
+# ── NT↔OT QUOTES seed integrity (Phase 2D-3) ──────────────────────────────
+
+NT_BOOKS = {
+    "MAT", "MRK", "LUK", "JHN", "ACT",
+    "ROM", "1CO", "2CO", "GAL", "EPH", "PHP", "COL",
+    "1TH", "2TH", "1TI", "2TI", "TIT", "PHM",
+    "HEB", "JAS", "1PE", "2PE", "1JN", "2JN", "3JN", "JUD", "REV",
+}
+
+
+def _load_quotes():
+    import json
+    with open(SEED_DIR / "nt_ot_quotes.json", "r", encoding="utf-8") as f:
+        return json.load(f)["quotes"]
+
+
+def test_nt_ot_quotes_seed_format():
+    quotes = _load_quotes()
+    assert len(quotes) >= 50, f"Expected >= 50 curated quotes, got {len(quotes)}"
+    for i, q in enumerate(quotes):
+        assert "nt" in q and "ot" in q, f"Entry {i} missing nt/ot"
+        for side in ("nt", "ot"):
+            ref = q[side]
+            assert isinstance(ref["book"], str) and len(ref["book"]) == 3
+            assert isinstance(ref["chapter"], int) and ref["chapter"] > 0
+            assert isinstance(ref["verse"], int) and ref["verse"] > 0
+
+
+def test_nt_ot_quotes_direction():
+    """QUOTES edges must point NT → OT, never reverse."""
+    quotes = _load_quotes()
+    for q in quotes:
+        assert q["nt"]["book"] in NT_BOOKS, f"NT source book not in NT canon: {q['nt']}"
+        assert q["ot"]["book"] not in NT_BOOKS, f"OT target book is in NT canon: {q['ot']}"

@@ -12,7 +12,9 @@ class Person(BaseModel):
     name_english: str
     name_hebrew: str | None = None
     name_hebrew_transliterated: str | None = None
-    strongs: str | None = None  # e.g. "H120"
+    name_greek: str | None = None
+    name_greek_transliterated: str | None = None
+    strongs: str | None = None  # e.g. "H120" (OT) or "G2424" (NT)
     meaning: str | None = None  # Name meaning
     sex: str  # "male" or "female"
     birth_year_am: int | None = None  # Anno Mundi

@@ -71,16 +71,16 @@ scripts/
 
 ## Current State
 
-**Version:** 0.1.0
+**Version:** 0.2.0
 
-**Graph:** 31,172 verse nodes (23,213 Hebrew + 7,927 Greek + 32 KJV-only slots) + 147 entities (111 persons, 18 nations, 18 places). 540 edges (182 entity-entity + 358 verse→entity MENTIONS).
+**Graph:** 31,172 verse nodes (23,213 Hebrew + 7,927 Greek + 32 KJV-only slots) + 210 entities (151 persons, 18 nations, 41 places). 1,382 edges (182 entity-entity + 1,084 verse→entity MENTIONS + 116 NT→OT QUOTES).
 
 **Corpus:**
 - Hebrew OT (OSHB/WLC): 23,213 verses, 305,516 words with lemma + Strong's + morphology + ketiv/qere + parashah + reversed-nun
 - Greek NT (MorphGNT/SBLGNT): 7,927 verses, 137,554 words with lemma + POS + parsing codes
 - KJV 1769 translations: 25,482 verses attached (7,957 NT + 17,525 OT mapped via Hebrew↔English versification table)
 
-**Tests:** 105 passing.
+**Tests:** 107 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -97,19 +97,25 @@ scripts/
 - **Phase 2C-5** — KJV 1769 NT translation layer + Translations panel on VersePage (32 KJV-only slots for SBLGNT-absent verses including pericope adulterae)
 - **Phase 2D-1** — lemma / Strong's concordance search (/lexeme route, clickable WordCards, canonical sort order)
 - **Phase 2C-6** — KJV 1769 OT translation layer with Hebrew↔English versification mapping (Psalms offsets, Joel & Malachi chapter renumbers)
+- **Phase 2D-2** — NT entity seed (40 persons + 23 places) via `persons_nt.json` / `places_nt.json`; `name_greek` + `name_greek_transliterated` added to Person/Place/Nation; 726 new verse→entity MENTIONS edges across 18 NT books
+- **Phase 2D-3** — NT→OT QUOTES edges. 116 curated citations across 13 NT books → 16 OT books (Psalms 36, Isaiah 21, Deuteronomy 12 most-cited). Seed file `nt_ot_quotes.json` + idempotent `seed_nt_ot_quotes.py` (clears pre-existing QUOTES before reseed). Edge `notes` field captures LXX-vs-MT deltas, typological readings, attribution puzzles (Matt 27:9 → Zech 11:12 attributed to Jeremiah; Heb 10:5 → Psa 40:7 where LXX σῶμα differs from MT 'ears opened'). Psalms refs use Hebrew versification (superscription = v. 1 shifts 13 of 16 cited psalms +1 vs English)
 
 ### Known gaps / deferred work
 - **KJV OT — 6 books not ingested** (NUM, 1SA, 1KI, 1CH, NEH, ISA): 5,554 verses. Require authoritative per-verse versification table (CrossWire av11n or USFM). Documented in `backend/data/seed/versification_kjv_to_heb.json`.
 - **KJV OT — 66 chapter-boundary verses unmapped** across otherwise-aligned books (Gen 31/32, Exo 7/8, Lev 5/6, Dan 3-6, etc.). Same root cause, same follow-up fix.
-- **No NT entities in graph** — Jesus, Paul, Peter, etc. not yet seeded; 7,927 Greek verses have zero incoming MENTIONS edges.
-- **No NT↔OT QUOTES edges** — infrastructure (edge type) exists; no instances seeded (Matt 1:23 → Isa 7:14, etc.).
+- **NT entity coverage is first-pass only** — 40 persons, 23 places with anchor refs (not exhaustive linkage). Jerusalem not yet seeded (cross-canon place — belongs in `places.json`; deferred). No biographical cross-relationships (e.g., Peter brother_of Andrew); no Herodian dynasty edges; no NT nations (Romans, Greeks).
+- **NT↔OT QUOTES — curated seed only** — 116 high-confidence edges; comprehensive coverage (every NT quotation per STEPBible / UBS5) would require ~350+ edges. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
+- **KJV OT regenerates on graph rebuild** — `seed_graph.py` wipes the verse SQLite cascade (FK ON DELETE CASCADE from verses→translations), so translation reseed is required after any entity-seed change. Should add a doc note or a safer graph-only rebuild path.
+- **Frontend does not yet render `name_greek`** — fields are stored but `PersonNode` / `PersonDetailPanel` / `PlaceCard` only display `name_hebrew` via RTL `<HebrewText>`. NT entity cards currently show English only. Future work: LTR Greek display branch.
 - **No browser-based visual verification** of the verse/read/concordance pages from any session so far — typecheck + API probes are clean but rendered UI not spot-checked.
 - **Pre-existing GenealogyTree.tsx TS errors** (lines 97-98) untouched across all Phase 2C/2D work — unrelated to the verse substrate, `vite build` tolerates them, `tsc -b` flags.
 
 ### Next candidates (pick direction next session)
-- **(a) NT entity seed + MENTIONS seeding** — add Jesus, Paul, Peter, Pilate, NT places etc.; materialize MENTIONS edges from their curated scripture_refs. Symmetrizes OT/NT coverage.
-- **(b) NT↔OT QUOTES edges** — seed NT citations of OT (Matt 1:23 → Isa 7:14, etc.) from a published list (UBS Greek NT has a cross-reference index). First cross-canon analytical feature.
+- **(a) Expand NT entity linkage** — deepen the 40 NT persons (more scripture_refs, biographical edges) or add NT nations + Jerusalem + remaining figures.
+- **(b) Expand QUOTES coverage** — swap the curated ~116 seed for STEPBible TAGNT (CC-BY) or equivalent to reach ~350+ edges. Then add `ALLUDES_TO` + `PARALLEL_TO` (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
 - **(c) Finish KJV OT** — add the 6 deferred books + 66 gap verses via CrossWire av11n mapping.
 - **(d) Second translation** (e.g. ASV 1901, PD) for translation-drift side-by-side.
-- **(e) Fix pre-existing GenealogyTree TS errors** — small cleanup.
-- **(f) Browser-visual QA pass** of everything built in this session — catch any runtime UI issues the typecheck/curl probes wouldn't.
+- **(e) Frontend Greek name display** — branch `PersonNode` / `PersonDetailPanel` / `PlaceCard` to show `name_greek` LTR when `name_hebrew` is absent.
+- **(f) Frontend QUOTES surfacing** — show "cites" / "cited by" lists on VersePage; a cross-canon exegesis panel could visualize the quote graph.
+- **(g) Fix pre-existing GenealogyTree TS errors** — small cleanup.
+- **(h) Browser-visual QA pass** of everything built so far.
