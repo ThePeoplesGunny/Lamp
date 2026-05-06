@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Lamp — Project Instructions
 
 ## Overview
@@ -52,6 +56,13 @@ scripts/
 - Rebuild Hebrew OT verses: `python scripts/seed_verses.py` (requires OSHB cloned into `backend/data/external/morphhb/`)
 - Rebuild Greek NT verses: `python scripts/seed_verses_nt.py` (requires MorphGNT cloned into `backend/data/external/morphgnt/`)
 - API docs: http://localhost:8000/docs
+
+## Testing & linting
+- Backend tests: `cd backend && pytest` (107 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
+- Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
+- Frontend build: `cd frontend && npm run build` currently **fails** on pre-existing `GenealogyTree.tsx` TS errors (lines 97-98). Use `cd frontend && npx vite build` to bypass `tsc -b` until those types are fixed (see "Known gaps").
+- No Python lint/format tool is configured — match existing style.
 
 ## External data sources
 - **OSHB (Open Scriptures Hebrew Bible)** — `github.com/openscriptures/morphhb`. Provides Westminster Leningrad Codex in OSIS XML with per-word lemma, Strong's, and morphology. Text is public domain; lemma/morph data is CC-BY-4.0 (must credit OSHB). Clone into `backend/data/external/morphhb/`. Exact commit captured in each verse's `source` field for provenance.
