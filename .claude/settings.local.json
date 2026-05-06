@@ -9,7 +9,8 @@
       "Bash(py -3.12 --version)",
       "Bash(python:*)",
       "Bash(npm install:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }
