@@ -336,6 +336,842 @@
         {"book": "REV", "chapter": 1, "verse": 9}
       ],
       "notes": "Aegean island where John received the Revelation"
+    },
+
+    {
+      "id": "place:chorazin",
+      "name_english": "Chorazin",
+      "name_greek": "Χοραζίν",
+      "name_greek_transliterated": "Chorazin",
+      "strongs": "G5523",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 11, "verse": 21},
+        {"book": "LUK", "chapter": 10, "verse": 13}
+      ],
+      "notes": "Galilean town near Capernaum; pronounced woes by Jesus alongside Bethsaida"
+    },
+    {
+      "id": "place:bethsaida",
+      "name_english": "Bethsaida",
+      "name_greek": "Βηθσαϊδά",
+      "name_greek_transliterated": "Bēthsaida",
+      "strongs": "G966",
+      "meaning": "house of fishing (Aramaic)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 11, "verse": 21},
+        {"book": "MRK", "chapter": 8, "verse": 22},
+        {"book": "LUK", "chapter": 9, "verse": 10},
+        {"book": "JHN", "chapter": 1, "verse": 44}
+      ],
+      "notes": "Town on north shore of Sea of Galilee; home of Philip, Andrew, and Peter"
+    },
+    {
+      "id": "place:magdala",
+      "name_english": "Magdala",
+      "name_greek": "Μαγδαλά",
+      "name_greek_transliterated": "Magdala",
+      "strongs": "G3093",
+      "meaning": "tower (Aramaic migdal)",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 15, "verse": 39}
+      ],
+      "notes": "Village on the western shore of the Sea of Galilee; home of Mary Magdalene. Some manuscripts read 'Magadan' or 'Dalmanutha'"
+    },
+    {
+      "id": "place:nain",
+      "name_english": "Nain",
+      "name_greek": "Ναΐν",
+      "name_greek_transliterated": "Nain",
+      "strongs": "G3484",
+      "meaning": "pleasantness",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 7, "verse": 11, "verse_end": 17}
+      ],
+      "notes": "Galilean village where Jesus raised the widow's son"
+    },
+    {
+      "id": "place:sychar",
+      "name_english": "Sychar",
+      "name_greek": "Συχάρ",
+      "name_greek_transliterated": "Suchar",
+      "strongs": "G4965",
+      "meaning": "uncertain; possibly identified with Shechem",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 4, "verse": 5, "verse_end": 6}
+      ],
+      "notes": "Samaritan town near Jacob's well; Jesus' encounter with the Samaritan woman"
+    },
+    {
+      "id": "place:bethphage",
+      "name_english": "Bethphage",
+      "name_greek": "Βηθφαγή",
+      "name_greek_transliterated": "Bēthphagē",
+      "strongs": "G967",
+      "meaning": "house of unripe figs",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 21, "verse": 1},
+        {"book": "MRK", "chapter": 11, "verse": 1},
+        {"book": "LUK", "chapter": 19, "verse": 29}
+      ],
+      "notes": "Village on the Mount of Olives near Bethany; starting point of the triumphal entry"
+    },
+    {
+      "id": "place:aenon",
+      "name_english": "Aenon (near Salim)",
+      "name_greek": "Αἰνών",
+      "name_greek_transliterated": "Ainōn",
+      "strongs": "G137",
+      "meaning": "springs (Aramaic)",
+      "place_type": "village",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 3, "verse": 23}
+      ],
+      "notes": "Where John the Baptist baptized 'because there was much water there'"
+    },
+    {
+      "id": "place:areopagus",
+      "name_english": "Areopagus (Mars Hill)",
+      "name_greek": "Ἄρειος Πάγος",
+      "name_greek_transliterated": "Areios Pagos",
+      "strongs": "G697",
+      "meaning": "hill of Ares (Mars)",
+      "place_type": "site",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 19, "verse_end": 34}
+      ],
+      "notes": "Athenian council and rocky outcrop NW of the Acropolis; Paul's address to philosophers"
+    },
+    {
+      "id": "place:pool_of_bethesda",
+      "name_english": "Pool of Bethesda",
+      "name_greek": "Βηθεσδά",
+      "name_greek_transliterated": "Bēthesda",
+      "strongs": "G964",
+      "meaning": "house of mercy (Aramaic)",
+      "place_type": "site",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 5, "verse": 2, "verse_end": 9}
+      ],
+      "notes": "Pool by the Sheep Gate in Jerusalem with five porches; healing of the man invalid 38 years"
+    },
+    {
+      "id": "place:pool_of_siloam",
+      "name_english": "Pool of Siloam",
+      "name_greek": "Σιλωάμ",
+      "name_greek_transliterated": "Silōam",
+      "strongs": "G4611",
+      "meaning": "sent",
+      "place_type": "site",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 9, "verse": 7, "verse_end": 11},
+        {"book": "LUK", "chapter": 13, "verse": 4}
+      ],
+      "notes": "Pool in Jerusalem; Jesus sent the man born blind to wash there"
+    },
+    {
+      "id": "place:solomons_porch",
+      "name_english": "Solomon's Porch (Portico)",
+      "name_greek": "στοὰ Σολομῶντος",
+      "name_greek_transliterated": "stoa Solomōntos",
+      "strongs": "G4672",
+      "meaning": "Solomon's colonnade",
+      "place_type": "site",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 10, "verse": 23},
+        {"book": "ACT", "chapter": 3, "verse": 11},
+        {"book": "ACT", "chapter": 5, "verse": 12}
+      ],
+      "notes": "Eastern colonnade of the Herodian temple precinct in Jerusalem; meeting place of the early church"
+    },
+    {
+      "id": "place:decapolis",
+      "name_english": "Decapolis",
+      "name_greek": "Δεκάπολις",
+      "name_greek_transliterated": "Dekapolis",
+      "strongs": "G1179",
+      "meaning": "ten cities",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 25},
+        {"book": "MRK", "chapter": 5, "verse": 20},
+        {"book": "MRK", "chapter": 7, "verse": 31}
+      ],
+      "notes": "League of ten Hellenistic cities mostly east of the Jordan; the Gerasene demoniac proclaimed Jesus there"
+    },
+
+    {
+      "id": "place:iconium",
+      "name_english": "Iconium",
+      "name_greek": "Ἰκόνιον",
+      "name_greek_transliterated": "Ikonion",
+      "strongs": "G2430",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 51},
+        {"book": "ACT", "chapter": 14, "verse": 1, "verse_end": 6},
+        {"book": "2TI", "chapter": 3, "verse": 11}
+      ],
+      "notes": "City in central Asia Minor (Lycaonia); Paul preached on first missionary journey"
+    },
+    {
+      "id": "place:lystra",
+      "name_english": "Lystra",
+      "name_greek": "Λύστρα",
+      "name_greek_transliterated": "Lustra",
+      "strongs": "G3082",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 14, "verse": 6, "verse_end": 21},
+        {"book": "ACT", "chapter": 16, "verse": 1, "verse_end": 2},
+        {"book": "2TI", "chapter": 3, "verse": 11}
+      ],
+      "notes": "Lycaonian city; Paul healed a lame man and was nearly stoned to death; Timothy's hometown"
+    },
+    {
+      "id": "place:derbe",
+      "name_english": "Derbe",
+      "name_greek": "Δέρβη",
+      "name_greek_transliterated": "Derbē",
+      "strongs": "G1191",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 14, "verse": 6, "verse_end": 20},
+        {"book": "ACT", "chapter": 16, "verse": 1},
+        {"book": "ACT", "chapter": 20, "verse": 4}
+      ],
+      "notes": "City in Lycaonia southeast of Lystra; furthest east point of Paul's first journey"
+    },
+    {
+      "id": "place:perga",
+      "name_english": "Perga",
+      "name_greek": "Πέργη",
+      "name_greek_transliterated": "Pergē",
+      "strongs": "G4011",
+      "meaning": "earthy, of the earth (uncertain)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 13, "verse_end": 14},
+        {"book": "ACT", "chapter": 14, "verse": 25}
+      ],
+      "notes": "Capital of Pamphylia; John Mark left Paul and Barnabas here"
+    },
+    {
+      "id": "place:troas",
+      "name_english": "Troas",
+      "name_greek": "Τρῳάς",
+      "name_greek_transliterated": "Trōas",
+      "strongs": "G5174",
+      "meaning": "Trojan",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 8, "verse_end": 11},
+        {"book": "ACT", "chapter": 20, "verse": 5, "verse_end": 12},
+        {"book": "2CO", "chapter": 2, "verse": 12, "verse_end": 13},
+        {"book": "2TI", "chapter": 4, "verse": 13}
+      ],
+      "notes": "Aegean port near ancient Troy; Paul's vision of the Macedonian man calling for help"
+    },
+    {
+      "id": "place:miletus",
+      "name_english": "Miletus",
+      "name_greek": "Μίλητος",
+      "name_greek_transliterated": "Milētos",
+      "strongs": "G3399",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 15, "verse_end": 38},
+        {"book": "2TI", "chapter": 4, "verse": 20}
+      ],
+      "notes": "Ionian port south of Ephesus; Paul's farewell address to the Ephesian elders"
+    },
+    {
+      "id": "place:assos",
+      "name_english": "Assos",
+      "name_greek": "Ἆσσος",
+      "name_greek_transliterated": "Assos",
+      "strongs": "G789",
+      "meaning": "approaching (uncertain)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 13, "verse_end": 14}
+      ],
+      "notes": "Aegean port between Troas and Mitylene"
+    },
+    {
+      "id": "place:mitylene",
+      "name_english": "Mitylene",
+      "name_greek": "Μιτυλήνη",
+      "name_greek_transliterated": "Mitulēnē",
+      "strongs": "G3412",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 14}
+      ],
+      "notes": "Capital of Lesbos; brief stop on Paul's voyage to Jerusalem"
+    },
+    {
+      "id": "place:patara",
+      "name_english": "Patara",
+      "name_greek": "Πάταρα",
+      "name_greek_transliterated": "Patara",
+      "strongs": "G3959",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 21, "verse": 1, "verse_end": 2}
+      ],
+      "notes": "Lycian port; Paul changed ships here on the journey to Jerusalem"
+    },
+    {
+      "id": "place:myra",
+      "name_english": "Myra",
+      "name_greek": "Μύρα",
+      "name_greek_transliterated": "Mura",
+      "strongs": "G3460",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 27, "verse": 5, "verse_end": 6}
+      ],
+      "notes": "Lycian port; Paul transferred to an Alexandrian grain ship en route to Rome"
+    },
+
+    {
+      "id": "place:neapolis",
+      "name_english": "Neapolis",
+      "name_greek": "Νεάπολις",
+      "name_greek_transliterated": "Neapolis",
+      "strongs": "G3496",
+      "meaning": "new city",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 11}
+      ],
+      "notes": "Macedonian port (modern Kavala); Paul's first European landing"
+    },
+    {
+      "id": "place:amphipolis",
+      "name_english": "Amphipolis",
+      "name_greek": "Ἀμφίπολις",
+      "name_greek_transliterated": "Amphipolis",
+      "strongs": "G295",
+      "meaning": "city on both sides (around)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 1}
+      ],
+      "notes": "Macedonian city on the Via Egnatia between Philippi and Apollonia"
+    },
+    {
+      "id": "place:apollonia",
+      "name_english": "Apollonia",
+      "name_greek": "Ἀπολλωνία",
+      "name_greek_transliterated": "Apollōnia",
+      "strongs": "G624",
+      "meaning": "of Apollo",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 1}
+      ],
+      "notes": "Macedonian city between Amphipolis and Thessalonica"
+    },
+    {
+      "id": "place:cenchrea",
+      "name_english": "Cenchrea",
+      "name_greek": "Κεγχρεαί",
+      "name_greek_transliterated": "Kegchreai",
+      "strongs": "G2747",
+      "meaning": "millet (uncertain)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 18},
+        {"book": "ROM", "chapter": 16, "verse": 1}
+      ],
+      "notes": "Eastern port of Corinth; Paul shaved his head here under a vow; Phoebe a deacon of the church there"
+    },
+
+    {
+      "id": "place:smyrna",
+      "name_english": "Smyrna",
+      "name_greek": "Σμύρνα",
+      "name_greek_transliterated": "Smurna",
+      "strongs": "G4667",
+      "meaning": "myrrh",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 2, "verse": 8, "verse_end": 11}
+      ],
+      "notes": "One of the seven churches of Revelation; persecuted but rich"
+    },
+    {
+      "id": "place:pergamum",
+      "name_english": "Pergamum",
+      "name_greek": "Πέργαμος",
+      "name_greek_transliterated": "Pergamos",
+      "strongs": "G4010",
+      "meaning": "citadel; height",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 2, "verse": 12, "verse_end": 17}
+      ],
+      "notes": "One of the seven churches; 'where Satan's throne is' — likely the great altar of Zeus"
+    },
+    {
+      "id": "place:thyatira",
+      "name_english": "Thyatira",
+      "name_greek": "Θυάτειρα",
+      "name_greek_transliterated": "Thuateira",
+      "strongs": "G2363",
+      "meaning": "uncertain; possibly 'odor of affliction'",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 14},
+        {"book": "REV", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 2, "verse": 18, "verse_end": 29}
+      ],
+      "notes": "City in Lydia; home of Lydia the seller of purple; one of the seven churches"
+    },
+    {
+      "id": "place:sardis",
+      "name_english": "Sardis",
+      "name_greek": "Σάρδεις",
+      "name_greek_transliterated": "Sardeis",
+      "strongs": "G4554",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 3, "verse": 1, "verse_end": 6}
+      ],
+      "notes": "Ancient capital of Lydia; one of the seven churches — 'thou hast a name that thou livest, and art dead'"
+    },
+    {
+      "id": "place:philadelphia_lydia",
+      "name_english": "Philadelphia (Lydia)",
+      "name_greek": "Φιλαδέλφεια",
+      "name_greek_transliterated": "Philadelpheia",
+      "strongs": "G5359",
+      "meaning": "brotherly love",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 3, "verse": 7, "verse_end": 13}
+      ],
+      "notes": "One of the seven churches; commended without rebuke; 'I have set before thee an open door'"
+    },
+    {
+      "id": "place:laodicea",
+      "name_english": "Laodicea",
+      "name_greek": "Λαοδίκεια",
+      "name_greek_transliterated": "Laodikeia",
+      "strongs": "G2993",
+      "meaning": "justice of the people",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 4, "verse": 13, "verse_end": 16},
+        {"book": "REV", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 3, "verse": 14, "verse_end": 22}
+      ],
+      "notes": "City in the Lycus valley near Colossae and Hierapolis; one of the seven churches — 'lukewarm'"
+    },
+    {
+      "id": "place:hierapolis",
+      "name_english": "Hierapolis",
+      "name_greek": "Ἱεράπολις",
+      "name_greek_transliterated": "Hierapolis",
+      "strongs": "G2404",
+      "meaning": "sacred city",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 4, "verse": 13}
+      ],
+      "notes": "Phrygian city near Laodicea; Epaphras labored for the believers there"
+    },
+    {
+      "id": "place:colossae",
+      "name_english": "Colossae",
+      "name_greek": "Κολοσσαί",
+      "name_greek_transliterated": "Kolossai",
+      "strongs": "G2857",
+      "meaning": "punishment (uncertain)",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 1, "verse": 2}
+      ],
+      "notes": "Phrygian city; recipient of Paul's letter to the Colossians"
+    },
+
+    {
+      "id": "place:crete",
+      "name_english": "Crete",
+      "name_greek": "Κρήτη",
+      "name_greek_transliterated": "Krētē",
+      "strongs": "G2914",
+      "meaning": "uncertain",
+      "place_type": "island",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 27, "verse": 7, "verse_end": 21},
+        {"book": "TIT", "chapter": 1, "verse": 5}
+      ],
+      "notes": "Mediterranean island; Paul's ship encountered storms off its coast; Titus left there to organize churches"
+    },
+    {
+      "id": "place:fair_havens",
+      "name_english": "Fair Havens",
+      "name_greek": "Καλοὶ Λιμένες",
+      "name_greek_transliterated": "Kaloi Limenes",
+      "strongs": "G2568",
+      "meaning": "good harbors",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 27, "verse": 8}
+      ],
+      "notes": "Harbor on the southern coast of Crete near Lasea"
+    },
+    {
+      "id": "place:malta",
+      "name_english": "Malta (Melita)",
+      "name_greek": "Μελίτη",
+      "name_greek_transliterated": "Melitē",
+      "strongs": "G3194",
+      "meaning": "honey-sweet (Phoenician)",
+      "place_type": "island",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 1, "verse_end": 10}
+      ],
+      "notes": "Mediterranean island where Paul was shipwrecked; healed Publius's father"
+    },
+    {
+      "id": "place:syracuse",
+      "name_english": "Syracuse",
+      "name_greek": "Συρακοῦσαι",
+      "name_greek_transliterated": "Surakousai",
+      "strongs": "G4946",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 12}
+      ],
+      "notes": "Sicilian port; Paul's ship stopped here three days en route to Rome"
+    },
+    {
+      "id": "place:rhegium",
+      "name_english": "Rhegium",
+      "name_greek": "Ῥήγιον",
+      "name_greek_transliterated": "Rhēgion",
+      "strongs": "G4484",
+      "meaning": "rupture",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 13}
+      ],
+      "notes": "Italian port at the toe of the boot, opposite Sicily"
+    },
+    {
+      "id": "place:puteoli",
+      "name_english": "Puteoli",
+      "name_greek": "Ποτίολοι",
+      "name_greek_transliterated": "Potioloi",
+      "strongs": "G4223",
+      "meaning": "wells",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 13, "verse_end": 14}
+      ],
+      "notes": "Italian port (modern Pozzuoli); Paul disembarked and began the overland journey to Rome"
+    },
+    {
+      "id": "place:appii_forum",
+      "name_english": "Appii Forum (Forum of Appius)",
+      "name_greek": "Ἀππίου Φόρον",
+      "name_greek_transliterated": "Appiou Phoron",
+      "strongs": "G675",
+      "meaning": "Forum of Appius",
+      "place_type": "site",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 15}
+      ],
+      "notes": "Town on the Appian Way ~43 mi south of Rome; Roman Christians met Paul here"
+    },
+    {
+      "id": "place:three_taverns",
+      "name_english": "Three Taverns",
+      "name_greek": "Τρεῖς Ταβέρναι",
+      "name_greek_transliterated": "Treis Tabernai",
+      "strongs": "G4999",
+      "meaning": "three inns",
+      "place_type": "site",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 15}
+      ],
+      "notes": "Inn-stop on the Appian Way ~33 mi south of Rome; Roman Christians met Paul here"
+    },
+    {
+      "id": "place:cyprus",
+      "name_english": "Cyprus",
+      "name_greek": "Κύπρος",
+      "name_greek_transliterated": "Kupros",
+      "strongs": "G2954",
+      "meaning": "henna; copper",
+      "place_type": "island",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 4, "verse": 36},
+        {"book": "ACT", "chapter": 13, "verse": 4, "verse_end": 12},
+        {"book": "ACT", "chapter": 15, "verse": 39}
+      ],
+      "notes": "Mediterranean island; home of Barnabas; first stop on Paul and Barnabas's first missionary journey"
+    },
+    {
+      "id": "place:salamis",
+      "name_english": "Salamis",
+      "name_greek": "Σαλαμίς",
+      "name_greek_transliterated": "Salamis",
+      "strongs": "G4529",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 5}
+      ],
+      "notes": "Eastern port of Cyprus; first city Paul preached in on the first journey"
+    },
+    {
+      "id": "place:paphos",
+      "name_english": "Paphos",
+      "name_greek": "Πάφος",
+      "name_greek_transliterated": "Paphos",
+      "strongs": "G3974",
+      "meaning": "uncertain",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 6, "verse_end": 13}
+      ],
+      "notes": "Cypriot capital; Bar-Jesus/Elymas struck blind; proconsul Sergius Paulus believed"
+    },
+
+    {
+      "id": "place:macedonia",
+      "name_english": "Macedonia",
+      "name_greek": "Μακεδονία",
+      "name_greek_transliterated": "Makedonia",
+      "strongs": "G3109",
+      "meaning": "extended land",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 9, "verse_end": 12},
+        {"book": "ROM", "chapter": 15, "verse": 26},
+        {"book": "1TH", "chapter": 1, "verse": 7, "verse_end": 8}
+      ],
+      "notes": "Roman province in northern Greece; Paul's vision of the man of Macedonia opened European mission"
+    },
+    {
+      "id": "place:achaia",
+      "name_english": "Achaia",
+      "name_greek": "Ἀχαΐα",
+      "name_greek_transliterated": "Achaia",
+      "strongs": "G882",
+      "meaning": "trouble (uncertain)",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 12, "verse_end": 17},
+        {"book": "ROM", "chapter": 15, "verse": 26},
+        {"book": "1TH", "chapter": 1, "verse": 7, "verse_end": 8}
+      ],
+      "notes": "Roman province in southern Greece including Athens and Corinth; Gallio was its proconsul"
+    },
+    {
+      "id": "place:asia_province",
+      "name_english": "Asia (Roman province)",
+      "name_greek": "Ἀσία",
+      "name_greek_transliterated": "Asia",
+      "strongs": "G773",
+      "meaning": "named for Asia, mythological figure",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 6},
+        {"book": "ACT", "chapter": 19, "verse": 10},
+        {"book": "1PE", "chapter": 1, "verse": 1},
+        {"book": "REV", "chapter": 1, "verse": 4}
+      ],
+      "notes": "Roman province in western Asia Minor; capital Ephesus; the seven churches of Revelation are here"
+    },
+    {
+      "id": "place:galatia_region",
+      "name_english": "Galatia (region)",
+      "name_greek": "Γαλατία",
+      "name_greek_transliterated": "Galatia",
+      "strongs": "G1053",
+      "meaning": "land of the Gauls",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 6},
+        {"book": "ACT", "chapter": 18, "verse": 23},
+        {"book": "GAL", "chapter": 1, "verse": 2},
+        {"book": "1PE", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Region/Roman province in central Asia Minor; recipients of Paul's letter to the Galatians"
+    },
+    {
+      "id": "place:phrygia",
+      "name_english": "Phrygia",
+      "name_greek": "Φρυγία",
+      "name_greek_transliterated": "Phrugia",
+      "strongs": "G5435",
+      "meaning": "dry, parched (uncertain)",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 2, "verse": 10},
+        {"book": "ACT", "chapter": 16, "verse": 6},
+        {"book": "ACT", "chapter": 18, "verse": 23}
+      ],
+      "notes": "Region in west-central Asia Minor"
+    },
+    {
+      "id": "place:mysia",
+      "name_english": "Mysia",
+      "name_greek": "Μυσία",
+      "name_greek_transliterated": "Musia",
+      "strongs": "G3465",
+      "meaning": "uncertain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 7, "verse_end": 8}
+      ],
+      "notes": "Region in NW Asia Minor; Paul passed through to reach Troas"
+    },
+    {
+      "id": "place:bithynia",
+      "name_english": "Bithynia",
+      "name_greek": "Βιθυνία",
+      "name_greek_transliterated": "Bithunia",
+      "strongs": "G978",
+      "meaning": "uncertain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 7},
+        {"book": "1PE", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Roman province in NW Asia Minor; the Spirit forbade Paul to enter; recipients of 1 Peter"
+    },
+    {
+      "id": "place:pontus",
+      "name_english": "Pontus",
+      "name_greek": "Πόντος",
+      "name_greek_transliterated": "Pontos",
+      "strongs": "G4195",
+      "meaning": "sea",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 2, "verse": 9},
+        {"book": "ACT", "chapter": 18, "verse": 2},
+        {"book": "1PE", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Region on the southern shore of the Black Sea; Aquila's homeland"
+    },
+    {
+      "id": "place:cappadocia",
+      "name_english": "Cappadocia",
+      "name_greek": "Καππαδοκία",
+      "name_greek_transliterated": "Kappadokia",
+      "strongs": "G2587",
+      "meaning": "uncertain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 2, "verse": 9},
+        {"book": "1PE", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Region in central-eastern Asia Minor"
+    },
+    {
+      "id": "place:pamphylia",
+      "name_english": "Pamphylia",
+      "name_greek": "Παμφυλία",
+      "name_greek_transliterated": "Pamphulia",
+      "strongs": "G3828",
+      "meaning": "of every tribe",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 2, "verse": 10},
+        {"book": "ACT", "chapter": 13, "verse": 13},
+        {"book": "ACT", "chapter": 14, "verse": 24}
+      ],
+      "notes": "Coastal region in southern Asia Minor; Perga its main city"
+    },
+    {
+      "id": "place:pisidia",
+      "name_english": "Pisidia",
+      "name_greek": "Πισιδία",
+      "name_greek_transliterated": "Pisidia",
+      "strongs": "G4099",
+      "meaning": "uncertain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 14},
+        {"book": "ACT", "chapter": 14, "verse": 24}
+      ],
+      "notes": "Mountainous region of southern Asia Minor"
+    },
+    {
+      "id": "place:cilicia",
+      "name_english": "Cilicia",
+      "name_greek": "Κιλικία",
+      "name_greek_transliterated": "Kilikia",
+      "strongs": "G2791",
+      "meaning": "uncertain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 9},
+        {"book": "ACT", "chapter": 15, "verse": 23},
+        {"book": "GAL", "chapter": 1, "verse": 21}
+      ],
+      "notes": "Roman province in SE Asia Minor; Tarsus its principal city"
+    },
+    {
+      "id": "place:lycaonia",
+      "name_english": "Lycaonia",
+      "name_greek": "Λυκαονία",
+      "name_greek_transliterated": "Lukaonia",
+      "strongs": "G3071",
+      "meaning": "wolf-land (uncertain)",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 14, "verse": 6, "verse_end": 11}
+      ],
+      "notes": "Region in central Asia Minor including Iconium, Lystra, and Derbe"
+    },
+    {
+      "id": "place:lycia",
+      "name_english": "Lycia",
+      "name_greek": "Λυκία",
+      "name_greek_transliterated": "Lukia",
+      "strongs": "G3073",
+      "meaning": "uncertain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 27, "verse": 5}
+      ],
+      "notes": "Coastal region in SW Asia Minor; Patara and Myra its principal cities"
     }
+  ],
+  "place_links": [
+    {"source": "nation:romans", "target": "place:rome", "type": "territory_of"},
+    {"source": "nation:samaritans", "target": "place:samaria", "type": "territory_of"},
+    {"source": "nation:cretans", "target": "place:crete", "type": "territory_of"},
+    {"source": "nation:galatians", "target": "place:galatia_region", "type": "territory_of"},
+    {"source": "nation:phoenicians", "target": "place:tyre", "type": "territory_of"},
+    {"source": "nation:phoenicians", "target": "place:sidon", "type": "territory_of"}
   ]
 }

@@ -14,11 +14,26 @@ from lamp.models.common import ScriptureRef
 class EdgeType(StrEnum):
     """All relationship types in the graph."""
 
-    # Genealogical — direction: parent → child, wife → husband
+    # Genealogical — direction conventions:
+    #   parent → child for father_of/mother_of
+    #   husband → wife for wife_of/concubine_of (legacy OT convention)
+    #   husband → wife for husband_of, source is the husband
+    #   sibling → sibling for brother_of/sister_of (symmetric — both directions seeded)
     FATHER_OF = "father_of"
     MOTHER_OF = "mother_of"
     WIFE_OF = "wife_of"
+    HUSBAND_OF = "husband_of"
     CONCUBINE_OF = "concubine_of"
+    BROTHER_OF = "brother_of"
+    SISTER_OF = "sister_of"
+    COUSIN_OF = "cousin_of"
+    RELATIVE_OF = "relative_of"  # kinship unspecified (Greek syngenis)
+    SON_IN_LAW_OF = "son_in_law_of"
+    DAUGHTER_IN_LAW_OF = "daughter_in_law_of"
+
+    # Discipleship and household
+    DISCIPLE_OF = "disciple_of"
+    SLAVE_OF = "slave_of"  # source serves target
 
     # National/tribal
     ANCESTOR_OF_NATION = "ancestor_of_nation"  # person → nation

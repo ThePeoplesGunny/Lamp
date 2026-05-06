@@ -251,6 +251,224 @@
         {"book": "GEN", "chapter": 47, "verse": 6}
       ],
       "notes": "Region in Egypt where Jacob's family settled; best of the land of Egypt"
+    },
+    {
+      "id": "place:jerusalem",
+      "name_english": "Jerusalem",
+      "name_hebrew": "יְרוּשָׁלִַם",
+      "name_hebrew_transliterated": "Yerushalayim",
+      "name_greek": "Ἰερουσαλήμ",
+      "name_greek_transliterated": "Ierousalēm",
+      "strongs": "H3389",
+      "meaning": "foundation of peace; possessing peace",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "JOS", "chapter": 10, "verse": 1},
+        {"book": "2SA", "chapter": 5, "verse": 6, "verse_end": 9},
+        {"book": "1KI", "chapter": 8, "verse": 1},
+        {"book": "PSA", "chapter": 122, "verse": 6},
+        {"book": "MAT", "chapter": 2, "verse": 1},
+        {"book": "MAT", "chapter": 21, "verse": 10},
+        {"book": "LUK", "chapter": 2, "verse": 22},
+        {"book": "JHN", "chapter": 2, "verse": 13},
+        {"book": "ACT", "chapter": 1, "verse": 8},
+        {"book": "ACT", "chapter": 15, "verse": 2},
+        {"book": "GAL", "chapter": 4, "verse": 26},
+        {"book": "REV", "chapter": 21, "verse": 2}
+      ],
+      "notes": "Originally Jebusite city Salem; captured by David and made his capital; site of Solomon's and Herod's temples; center of Jesus' Passion and the early church. Greek form Hierosolyma also used in NT."
+    },
+    {
+      "id": "place:jericho",
+      "name_english": "Jericho",
+      "name_hebrew": "יְרִיחוֹ",
+      "name_hebrew_transliterated": "Yericho",
+      "name_greek": "Ἰεριχώ",
+      "name_greek_transliterated": "Hierichō",
+      "strongs": "H3405",
+      "meaning": "moon-city; place of fragrance",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "JOS", "chapter": 6, "verse": 1, "verse_end": 27},
+        {"book": "MAT", "chapter": 20, "verse": 29},
+        {"book": "LUK", "chapter": 10, "verse": 30},
+        {"book": "LUK", "chapter": 19, "verse": 1},
+        {"book": "HEB", "chapter": 11, "verse": 30}
+      ],
+      "notes": "Ancient walled city near the Jordan; conquered by Joshua; Bartimaeus healed nearby; Zacchaeus encountered Jesus here"
+    },
+    {
+      "id": "place:joppa",
+      "name_english": "Joppa",
+      "name_hebrew": "יָפוֹ",
+      "name_hebrew_transliterated": "Yapho",
+      "name_greek": "Ἰόππη",
+      "name_greek_transliterated": "Ioppē",
+      "strongs": "H3305",
+      "meaning": "beautiful",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "JON", "chapter": 1, "verse": 3},
+        {"book": "ACT", "chapter": 9, "verse": 36, "verse_end": 43},
+        {"book": "ACT", "chapter": 10, "verse": 5, "verse_end": 8}
+      ],
+      "notes": "Mediterranean port (modern Jaffa); Jonah embarked here; Tabitha raised here; Peter's vision before going to Cornelius"
+    },
+    {
+      "id": "place:tyre",
+      "name_english": "Tyre",
+      "name_hebrew": "צֹר",
+      "name_hebrew_transliterated": "Tsor",
+      "name_greek": "Τύρος",
+      "name_greek_transliterated": "Turos",
+      "strongs": "H6865",
+      "meaning": "rock",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "JOS", "chapter": 19, "verse": 29},
+        {"book": "ISA", "chapter": 23, "verse": 1, "verse_end": 18},
+        {"book": "EZK", "chapter": 26, "verse": 1, "verse_end": 21},
+        {"book": "MAT", "chapter": 15, "verse": 21},
+        {"book": "ACT", "chapter": 21, "verse": 3, "verse_end": 7}
+      ],
+      "notes": "Phoenician coastal city; subject of Ezekiel's lament; Jesus traveled to its borders; Paul stopped here"
+    },
+    {
+      "id": "place:sidon",
+      "name_english": "Sidon",
+      "name_hebrew": "צִידוֹן",
+      "name_hebrew_transliterated": "Tsidon",
+      "name_greek": "Σιδών",
+      "name_greek_transliterated": "Sidōn",
+      "strongs": "H6721",
+      "meaning": "fishery; named for Sidon son of Canaan",
+      "place_type": "city",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 10, "verse": 19},
+        {"book": "1KI", "chapter": 17, "verse": 9},
+        {"book": "MAT", "chapter": 11, "verse": 21, "verse_end": 22},
+        {"book": "MAT", "chapter": 15, "verse": 21},
+        {"book": "ACT", "chapter": 27, "verse": 3}
+      ],
+      "notes": "Phoenician city north of Tyre; Elijah went to Zarephath in its territory; Jesus visited its borders"
+    },
+    {
+      "id": "place:sea_of_galilee",
+      "name_english": "Sea of Galilee",
+      "name_hebrew": "יָם כִּנֶּרֶת",
+      "name_hebrew_transliterated": "Yam Kinnereth",
+      "name_greek": "θάλασσα τῆς Γαλιλαίας",
+      "name_greek_transliterated": "thalassa tēs Galilaias",
+      "strongs": "H3672",
+      "meaning": "Heb 'sea of harp' (shape); also called Sea of Tiberias / Lake of Gennesaret",
+      "place_type": "lake",
+      "scripture_refs": [
+        {"book": "NUM", "chapter": 34, "verse": 11},
+        {"book": "JOS", "chapter": 12, "verse": 3},
+        {"book": "MAT", "chapter": 4, "verse": 18},
+        {"book": "MRK", "chapter": 1, "verse": 16},
+        {"book": "JHN", "chapter": 6, "verse": 1},
+        {"book": "JHN", "chapter": 21, "verse": 1}
+      ],
+      "notes": "Freshwater lake in Galilee; OT 'Sea of Chinnereth/Kinnereth' (Num 34:11); NT calls it Sea of Galilee, Sea of Tiberias, or Lake of Gennesaret. Center of Jesus' Galilean ministry"
+    },
+    {
+      "id": "place:jordan_river",
+      "name_english": "Jordan River",
+      "name_hebrew": "יַרְדֵּן",
+      "name_hebrew_transliterated": "Yarden",
+      "name_greek": "Ἰορδάνης",
+      "name_greek_transliterated": "Iordanēs",
+      "strongs": "H3383",
+      "meaning": "descender",
+      "place_type": "river",
+      "scripture_refs": [
+        {"book": "GEN", "chapter": 13, "verse": 10},
+        {"book": "JOS", "chapter": 3, "verse": 14, "verse_end": 17},
+        {"book": "2KI", "chapter": 5, "verse": 10, "verse_end": 14},
+        {"book": "MAT", "chapter": 3, "verse": 6},
+        {"book": "MAT", "chapter": 3, "verse": 13},
+        {"book": "JHN", "chapter": 1, "verse": 28}
+      ],
+      "notes": "Major river flowing south from Mount Hermon to the Dead Sea; Israel crossed at Joshua's leading; Naaman healed here; John baptized in it; Jesus baptized here"
+    },
+    {
+      "id": "place:mount_sinai",
+      "name_english": "Mount Sinai (Horeb)",
+      "name_hebrew": "סִינַי",
+      "name_hebrew_transliterated": "Sinai",
+      "name_greek": "Σινᾶ",
+      "name_greek_transliterated": "Sina",
+      "strongs": "H5514",
+      "meaning": "uncertain; possibly thorny",
+      "place_type": "mountain",
+      "scripture_refs": [
+        {"book": "EXO", "chapter": 19, "verse": 11, "verse_end": 20},
+        {"book": "EXO", "chapter": 24, "verse": 16, "verse_end": 18},
+        {"book": "1KI", "chapter": 19, "verse": 8},
+        {"book": "ACT", "chapter": 7, "verse": 30, "verse_end": 38},
+        {"book": "GAL", "chapter": 4, "verse": 24, "verse_end": 25}
+      ],
+      "notes": "Mountain of God where the Law was given; called Horeb in Deut and 1Kgs traditions; Stephen and Paul reference it in NT theology"
+    },
+    {
+      "id": "place:samaria",
+      "name_english": "Samaria",
+      "name_hebrew": "שֹׁמְרוֹן",
+      "name_hebrew_transliterated": "Shomron",
+      "name_greek": "Σαμάρεια",
+      "name_greek_transliterated": "Samareia",
+      "strongs": "H8111",
+      "meaning": "watch-mountain",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "1KI", "chapter": 16, "verse": 24},
+        {"book": "2KI", "chapter": 17, "verse": 6},
+        {"book": "JHN", "chapter": 4, "verse": 4, "verse_end": 5},
+        {"book": "ACT", "chapter": 1, "verse": 8},
+        {"book": "ACT", "chapter": 8, "verse": 1, "verse_end": 25}
+      ],
+      "notes": "Capital of the northern kingdom built by Omri; later the surrounding region; site of Jesus' encounter with the Samaritan woman; Philip's mission there in Acts"
+    },
+    {
+      "id": "place:galilee",
+      "name_english": "Galilee",
+      "name_hebrew": "גָּלִיל",
+      "name_hebrew_transliterated": "Galil",
+      "name_greek": "Γαλιλαία",
+      "name_greek_transliterated": "Galilaia",
+      "strongs": "H1551",
+      "meaning": "circle, district",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "JOS", "chapter": 20, "verse": 7},
+        {"book": "1KI", "chapter": 9, "verse": 11},
+        {"book": "ISA", "chapter": 9, "verse": 1},
+        {"book": "MAT", "chapter": 4, "verse": 15},
+        {"book": "MAT", "chapter": 4, "verse": 23},
+        {"book": "ACT", "chapter": 9, "verse": 31}
+      ],
+      "notes": "Northern region of Israel; Isaiah's 'Galilee of the Gentiles'; primary setting of Jesus' early ministry"
+    },
+    {
+      "id": "place:judea",
+      "name_english": "Judea",
+      "name_hebrew": "יְהוּדָה",
+      "name_hebrew_transliterated": "Yehudah",
+      "name_greek": "Ἰουδαία",
+      "name_greek_transliterated": "Ioudaia",
+      "strongs": "H3063",
+      "meaning": "praised; tribal/territorial name from Judah",
+      "place_type": "region",
+      "scripture_refs": [
+        {"book": "JOS", "chapter": 15, "verse": 1},
+        {"book": "MAT", "chapter": 2, "verse": 1},
+        {"book": "MAT", "chapter": 3, "verse": 1},
+        {"book": "LUK", "chapter": 1, "verse": 5},
+        {"book": "ACT", "chapter": 1, "verse": 8},
+        {"book": "ROM", "chapter": 15, "verse": 31}
+      ],
+      "notes": "Southern region around Jerusalem; tribal allotment of Judah; the Roman province under Pilate's prefecture and later procurators"
     }
   ],
   "place_links": [

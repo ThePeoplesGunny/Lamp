@@ -558,6 +558,2145 @@
         {"book": "ACT", "chapter": 18, "verse": 26},
         {"book": "ROM", "chapter": 16, "verse": 3}
       ]
+    },
+
+    {
+      "id": "person:herodias",
+      "name_english": "Herodias",
+      "name_greek": "Ἡρῳδιάς",
+      "name_greek_transliterated": "Hērōdias",
+      "strongs": "G2266",
+      "meaning": "feminine of Herod: heroic",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 14, "verse": 3, "verse_end": 11},
+        {"book": "MRK", "chapter": 6, "verse": 17, "verse_end": 28},
+        {"book": "LUK", "chapter": 3, "verse": 19}
+      ],
+      "notes": "Granddaughter of Herod the Great; left her first husband (Herod Philip I) for Herod Antipas; demanded John the Baptist's head"
+    },
+    {
+      "id": "person:salome_daughter_of_herodias",
+      "name_english": "Salome (daughter of Herodias)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 14, "verse": 6, "verse_end": 11},
+        {"book": "MRK", "chapter": 6, "verse": 22, "verse_end": 28}
+      ],
+      "notes": "Unnamed in NT; called Salome by Josephus. Danced before Antipas and asked for John the Baptist's head at her mother Herodias's prompting"
+    },
+    {
+      "id": "person:herod_archelaus",
+      "name_english": "Herod Archelaus",
+      "name_greek": "Ἀρχέλαος",
+      "name_greek_transliterated": "Archelaos",
+      "strongs": "G745",
+      "meaning": "people-ruling",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 2, "verse": 22}
+      ],
+      "notes": "Son of Herod the Great; ethnarch of Judea/Samaria/Idumea (4 BC – AD 6); Joseph avoided Judea because he reigned"
+    },
+    {
+      "id": "person:philip_tetrarch",
+      "name_english": "Philip the Tetrarch",
+      "name_greek": "Φίλιππος",
+      "name_greek_transliterated": "Philippos",
+      "strongs": "G5376",
+      "meaning": "lover of horses",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 3, "verse": 1}
+      ],
+      "notes": "Son of Herod the Great by Cleopatra of Jerusalem; tetrarch of Iturea and Trachonitis; rebuilt Caesarea Philippi. Distinct from Herod Philip I (first husband of Herodias)"
+    },
+    {
+      "id": "person:bartimaeus",
+      "name_english": "Bartimaeus",
+      "name_greek": "Βαρτίμαιος",
+      "name_greek_transliterated": "Bartimaios",
+      "strongs": "G924",
+      "meaning": "son of Timaeus (Aramaic bar + Greek Timaios)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MRK", "chapter": 10, "verse": 46, "verse_end": 52}
+      ],
+      "notes": "Blind beggar at Jericho healed by Jesus"
+    },
+    {
+      "id": "person:jairus",
+      "name_english": "Jairus",
+      "name_greek": "Ἰάϊρος",
+      "name_greek_transliterated": "Iairos",
+      "strongs": "G2383",
+      "meaning": "from Heb Yair: he enlightens",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MRK", "chapter": 5, "verse": 22, "verse_end": 43},
+        {"book": "LUK", "chapter": 8, "verse": 41, "verse_end": 56}
+      ],
+      "notes": "Synagogue ruler whose 12-year-old daughter Jesus raised from death"
+    },
+    {
+      "id": "person:zacchaeus",
+      "name_english": "Zacchaeus",
+      "name_greek": "Ζακχαῖος",
+      "name_greek_transliterated": "Zakchaios",
+      "strongs": "G2195",
+      "meaning": "from Heb Zakkai: pure, innocent",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 19, "verse": 1, "verse_end": 10}
+      ],
+      "notes": "Chief tax collector at Jericho who climbed a sycamore tree"
+    },
+    {
+      "id": "person:joanna",
+      "name_english": "Joanna",
+      "name_greek": "Ἰωάννα",
+      "name_greek_transliterated": "Iōanna",
+      "strongs": "G2489",
+      "meaning": "feminine of Iōannēs: YHWH is gracious",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 8, "verse": 3},
+        {"book": "LUK", "chapter": 24, "verse": 10}
+      ],
+      "notes": "Wife of Chuza (steward of Herod Antipas); supported Jesus' ministry; among the women at the empty tomb"
+    },
+    {
+      "id": "person:susanna",
+      "name_english": "Susanna",
+      "name_greek": "Σουσάννα",
+      "name_greek_transliterated": "Sousanna",
+      "strongs": "G4677",
+      "meaning": "lily (Heb shoshannah)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 8, "verse": 3}
+      ],
+      "notes": "One of the women who supported Jesus' ministry from her means"
+    },
+    {
+      "id": "person:chuza",
+      "name_english": "Chuza",
+      "name_greek": "Χουζᾶς",
+      "name_greek_transliterated": "Chouzas",
+      "strongs": "G5529",
+      "meaning": "uncertain",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 8, "verse": 3}
+      ],
+      "notes": "Steward (epitropos) of Herod Antipas; husband of Joanna"
+    },
+    {
+      "id": "person:mary_of_clopas",
+      "name_english": "Mary (wife of Clopas)",
+      "name_greek": "Μαρία",
+      "name_greek_transliterated": "Maria",
+      "strongs": "G3137",
+      "meaning": "from Heb Miryam",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 27, "verse": 56},
+        {"book": "MRK", "chapter": 15, "verse": 40},
+        {"book": "JHN", "chapter": 19, "verse": 25}
+      ],
+      "notes": "Mother of James the less and Joses; one of the women at the cross and tomb. Often identified with the Mary 'of Clopas' in John 19:25"
+    },
+    {
+      "id": "person:cleopas",
+      "name_english": "Cleopas",
+      "name_greek": "Κλεόπας",
+      "name_greek_transliterated": "Kleopas",
+      "strongs": "G2810",
+      "meaning": "shortened from Kleopatros: of a renowned father",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 24, "verse": 18}
+      ],
+      "notes": "One of the two disciples on the road to Emmaus"
+    },
+    {
+      "id": "person:clopas",
+      "name_english": "Clopas",
+      "name_greek": "Κλωπᾶς",
+      "name_greek_transliterated": "Klōpas",
+      "strongs": "G2832",
+      "meaning": "uncertain Aramaic origin",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 19, "verse": 25}
+      ],
+      "notes": "Husband of one of the Marys at the cross. Possibly the same as Cleopas; possibly a different person (Aramaic vs Greek form)"
+    },
+    {
+      "id": "person:malchus",
+      "name_english": "Malchus",
+      "name_greek": "Μάλχος",
+      "name_greek_transliterated": "Malchos",
+      "strongs": "G3124",
+      "meaning": "from Heb Melech: king",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 18, "verse": 10}
+      ],
+      "notes": "Servant of the high priest whose right ear Peter cut off in Gethsemane"
+    },
+    {
+      "id": "person:simon_of_cyrene",
+      "name_english": "Simon of Cyrene",
+      "name_greek": "Σίμων",
+      "name_greek_transliterated": "Simōn",
+      "strongs": "G4613",
+      "meaning": "from Heb Shimon: hearing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 27, "verse": 32},
+        {"book": "MRK", "chapter": 15, "verse": 21},
+        {"book": "LUK", "chapter": 23, "verse": 26}
+      ],
+      "notes": "Compelled to carry Jesus' cross; father of Alexander and Rufus (Mrk 15:21)"
+    },
+    {
+      "id": "person:rufus",
+      "name_english": "Rufus",
+      "name_greek": "Ῥοῦφος",
+      "name_greek_transliterated": "Rhouphos",
+      "strongs": "G4504",
+      "meaning": "red (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MRK", "chapter": 15, "verse": 21},
+        {"book": "ROM", "chapter": 16, "verse": 13}
+      ],
+      "notes": "Son of Simon of Cyrene; greeted in Romans (likely the same Rufus)"
+    },
+    {
+      "id": "person:alexander_son_of_simon",
+      "name_english": "Alexander (son of Simon of Cyrene)",
+      "name_greek": "Ἀλέξανδρος",
+      "name_greek_transliterated": "Alexandros",
+      "strongs": "G223",
+      "meaning": "defender of men",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MRK", "chapter": 15, "verse": 21}
+      ]
+    },
+    {
+      "id": "person:tiberius_caesar",
+      "name_english": "Tiberius Caesar",
+      "name_greek": "Τιβέριος",
+      "name_greek_transliterated": "Tiberios",
+      "strongs": "G5086",
+      "meaning": "of the Tiber",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 3, "verse": 1}
+      ],
+      "notes": "Roman emperor AD 14–37; reigning during Jesus' public ministry"
+    },
+    {
+      "id": "person:augustus_caesar",
+      "name_english": "Caesar Augustus",
+      "name_greek": "Αὔγουστος",
+      "name_greek_transliterated": "Augoustos",
+      "strongs": "G828",
+      "meaning": "venerable (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 2, "verse": 1}
+      ],
+      "notes": "First Roman emperor (27 BC – AD 14); decreed the census during Jesus' birth"
+    },
+    {
+      "id": "person:quirinius",
+      "name_english": "Quirinius",
+      "name_greek": "Κυρήνιος",
+      "name_greek_transliterated": "Kurēnios",
+      "strongs": "G2958",
+      "meaning": "of Cyrene (uncertain)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 2, "verse": 2}
+      ],
+      "notes": "Roman governor (legate) of Syria; Luke ties his census to Jesus' birth"
+    },
+    {
+      "id": "person:lysanias",
+      "name_english": "Lysanias",
+      "name_greek": "Λυσανίας",
+      "name_greek_transliterated": "Lusanias",
+      "strongs": "G3078",
+      "meaning": "ending sorrow",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 3, "verse": 1}
+      ],
+      "notes": "Tetrarch of Abilene during John the Baptist's ministry"
+    },
+    {
+      "id": "person:salome_disciple",
+      "name_english": "Salome (disciple)",
+      "name_greek": "Σαλώμη",
+      "name_greek_transliterated": "Salōmē",
+      "strongs": "G4539",
+      "meaning": "peaceful (from Heb shalom)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "MRK", "chapter": 15, "verse": 40},
+        {"book": "MRK", "chapter": 16, "verse": 1}
+      ],
+      "notes": "Women at the cross and tomb; possibly the mother of James and John (cf. Mat 27:56)"
+    },
+    {
+      "id": "person:zebedee",
+      "name_english": "Zebedee",
+      "name_greek": "Ζεβεδαῖος",
+      "name_greek_transliterated": "Zebedaios",
+      "strongs": "G2199",
+      "meaning": "from Heb Zebadyah: gift of YHWH",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 4, "verse": 21},
+        {"book": "MRK", "chapter": 1, "verse": 19, "verse_end": 20}
+      ],
+      "notes": "Galilean fisherman; father of James and John the apostle"
+    },
+    {
+      "id": "person:alphaeus",
+      "name_english": "Alphaeus",
+      "name_greek": "Ἀλφαῖος",
+      "name_greek_transliterated": "Alphaios",
+      "strongs": "G256",
+      "meaning": "from Heb Halphai (uncertain)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 3},
+        {"book": "MRK", "chapter": 2, "verse": 14}
+      ],
+      "notes": "Father of James (the less); also father of Levi/Matthew per Mark 2:14"
+    },
+    {
+      "id": "person:judas_brother_of_jesus",
+      "name_english": "Jude (brother of Jesus)",
+      "name_greek": "Ἰούδας",
+      "name_greek_transliterated": "Ioudas",
+      "strongs": "G2455",
+      "meaning": "from Heb Yehudah: praised",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 13, "verse": 55},
+        {"book": "MRK", "chapter": 6, "verse": 3},
+        {"book": "JUD", "chapter": 1, "verse": 1}
+      ],
+      "notes": "One of Jesus' brothers; traditional author of the Epistle of Jude"
+    },
+    {
+      "id": "person:joses_brother_of_jesus",
+      "name_english": "Joses (brother of Jesus)",
+      "name_greek": "Ἰωσῆς",
+      "name_greek_transliterated": "Iōsēs",
+      "strongs": "G2500",
+      "meaning": "shortened form of Joseph",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 13, "verse": 55},
+        {"book": "MRK", "chapter": 6, "verse": 3}
+      ],
+      "notes": "One of Jesus' brothers (Joseph in Matthew, Joses in Mark)"
+    },
+    {
+      "id": "person:simon_brother_of_jesus",
+      "name_english": "Simon (brother of Jesus)",
+      "name_greek": "Σίμων",
+      "name_greek_transliterated": "Simōn",
+      "strongs": "G4613",
+      "meaning": "hearing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 13, "verse": 55},
+        {"book": "MRK", "chapter": 6, "verse": 3}
+      ],
+      "notes": "One of Jesus' brothers"
+    },
+
+    {
+      "id": "person:matthias",
+      "name_english": "Matthias",
+      "name_greek": "Μαθθίας",
+      "name_greek_transliterated": "Maththias",
+      "strongs": "G3159",
+      "meaning": "gift of YHWH (shortened from Mattathias)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 1, "verse": 23, "verse_end": 26}
+      ],
+      "notes": "Chosen by lot to replace Judas Iscariot among the Twelve"
+    },
+    {
+      "id": "person:joseph_barsabbas",
+      "name_english": "Joseph called Barsabbas (Justus)",
+      "name_greek": "Ἰωσὴφ Βαρσαββᾶς",
+      "name_greek_transliterated": "Iōsēph Barsabbas",
+      "strongs": "G923",
+      "meaning": "Barsabbas: son of the Sabbath; Justus: just",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 1, "verse": 23}
+      ],
+      "notes": "Other candidate for Judas's place; lot fell on Matthias"
+    },
+    {
+      "id": "person:ananias_of_jerusalem",
+      "name_english": "Ananias (of Jerusalem)",
+      "name_greek": "Ἁνανίας",
+      "name_greek_transliterated": "Hananias",
+      "strongs": "G367",
+      "meaning": "from Heb Chananyah: YHWH has been gracious",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 5, "verse": 1, "verse_end": 5}
+      ],
+      "notes": "Husband of Sapphira; struck dead for lying about land sale proceeds"
+    },
+    {
+      "id": "person:sapphira",
+      "name_english": "Sapphira",
+      "name_greek": "Σαπφίρη",
+      "name_greek_transliterated": "Sapphirē",
+      "strongs": "G4551",
+      "meaning": "sapphire (Aramaic shappirah: beautiful)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 5, "verse": 1, "verse_end": 10}
+      ],
+      "notes": "Wife of Ananias; struck dead for the same lie"
+    },
+    {
+      "id": "person:gamaliel",
+      "name_english": "Gamaliel",
+      "name_greek": "Γαμαλιήλ",
+      "name_greek_transliterated": "Gamaliēl",
+      "strongs": "G1059",
+      "meaning": "from Heb Gamliel: God is my reward",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 5, "verse": 34, "verse_end": 39},
+        {"book": "ACT", "chapter": 22, "verse": 3}
+      ],
+      "notes": "Pharisee teacher of the law (Hillel's grandson); Paul's teacher; counseled the Sanhedrin to leave the apostles alone"
+    },
+    {
+      "id": "person:theudas",
+      "name_english": "Theudas",
+      "name_greek": "Θευδᾶς",
+      "name_greek_transliterated": "Theudas",
+      "strongs": "G2333",
+      "meaning": "uncertain; possibly 'God-given'",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 5, "verse": 36}
+      ],
+      "notes": "Failed insurrectionist cited by Gamaliel"
+    },
+    {
+      "id": "person:judas_of_galilee",
+      "name_english": "Judas of Galilee",
+      "name_greek": "Ἰούδας",
+      "name_greek_transliterated": "Ioudas",
+      "strongs": "G2455",
+      "meaning": "from Heb Yehudah: praised",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 5, "verse": 37}
+      ],
+      "notes": "Insurrectionist at the time of the census (AD 6); cited by Gamaliel"
+    },
+    {
+      "id": "person:nicolas_proselyte",
+      "name_english": "Nicolas (of Antioch, proselyte)",
+      "name_greek": "Νικόλαος",
+      "name_greek_transliterated": "Nikolaos",
+      "strongs": "G3532",
+      "meaning": "victor of the people",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5}
+      ],
+      "notes": "One of the Seven; proselyte from Antioch. Some patristic traditions associate him with the Nicolaitans of Rev 2"
+    },
+    {
+      "id": "person:prochorus",
+      "name_english": "Prochorus",
+      "name_greek": "Πρόχορος",
+      "name_greek_transliterated": "Prochoros",
+      "strongs": "G4402",
+      "meaning": "leader of the chorus",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5}
+      ],
+      "notes": "One of the Seven appointed to serve tables"
+    },
+    {
+      "id": "person:nicanor",
+      "name_english": "Nicanor",
+      "name_greek": "Νικάνωρ",
+      "name_greek_transliterated": "Nikanōr",
+      "strongs": "G3527",
+      "meaning": "conqueror",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5}
+      ],
+      "notes": "One of the Seven"
+    },
+    {
+      "id": "person:timon",
+      "name_english": "Timon",
+      "name_greek": "Τίμων",
+      "name_greek_transliterated": "Timōn",
+      "strongs": "G5096",
+      "meaning": "honorable",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5}
+      ],
+      "notes": "One of the Seven"
+    },
+    {
+      "id": "person:parmenas",
+      "name_english": "Parmenas",
+      "name_greek": "Παρμενᾶς",
+      "name_greek_transliterated": "Parmenas",
+      "strongs": "G3937",
+      "meaning": "abiding (uncertain)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5}
+      ],
+      "notes": "One of the Seven"
+    },
+    {
+      "id": "person:simon_magus",
+      "name_english": "Simon (Magus)",
+      "name_greek": "Σίμων",
+      "name_greek_transliterated": "Simōn",
+      "strongs": "G4613",
+      "meaning": "hearing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 8, "verse": 9, "verse_end": 24}
+      ],
+      "notes": "Samaritan sorcerer who tried to buy the gift of the Spirit from Peter — origin of the term 'simony'"
+    },
+    {
+      "id": "person:philip_evangelist",
+      "name_english": "Philip the Evangelist",
+      "name_greek": "Φίλιππος",
+      "name_greek_transliterated": "Philippos",
+      "strongs": "G5376",
+      "meaning": "lover of horses",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 6, "verse": 5},
+        {"book": "ACT", "chapter": 8, "verse": 5, "verse_end": 40},
+        {"book": "ACT", "chapter": 21, "verse": 8}
+      ],
+      "notes": "One of the Seven; preached in Samaria; baptized the Ethiopian eunuch. Distinct from Philip the Apostle"
+    },
+    {
+      "id": "person:ethiopian_eunuch",
+      "name_english": "Ethiopian eunuch",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 8, "verse": 27, "verse_end": 39}
+      ],
+      "notes": "Treasurer of Candace queen of the Ethiopians; baptized by Philip after reading Isaiah 53"
+    },
+    {
+      "id": "person:ananias_of_damascus",
+      "name_english": "Ananias of Damascus",
+      "name_greek": "Ἁνανίας",
+      "name_greek_transliterated": "Hananias",
+      "strongs": "G367",
+      "meaning": "from Heb Chananyah: YHWH has been gracious",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 10, "verse_end": 19},
+        {"book": "ACT", "chapter": 22, "verse": 12, "verse_end": 16}
+      ],
+      "notes": "Disciple in Damascus who restored Saul's sight and baptized him"
+    },
+    {
+      "id": "person:tabitha",
+      "name_english": "Tabitha (Dorcas)",
+      "name_greek": "Ταβιθά",
+      "name_greek_transliterated": "Tabitha",
+      "strongs": "G5000",
+      "meaning": "gazelle (Aramaic); Dorcas (Greek) with same meaning",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 36, "verse_end": 42}
+      ],
+      "notes": "Disciple at Joppa; raised from death by Peter"
+    },
+    {
+      "id": "person:aeneas",
+      "name_english": "Aeneas",
+      "name_greek": "Αἰνέας",
+      "name_greek_transliterated": "Aineas",
+      "strongs": "G132",
+      "meaning": "praiseworthy",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 33, "verse_end": 35}
+      ],
+      "notes": "Paralyzed man at Lydda healed by Peter"
+    },
+    {
+      "id": "person:simon_the_tanner",
+      "name_english": "Simon the tanner",
+      "name_greek": "Σίμων",
+      "name_greek_transliterated": "Simōn",
+      "strongs": "G4613",
+      "meaning": "hearing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 9, "verse": 43},
+        {"book": "ACT", "chapter": 10, "verse": 6, "verse_end": 32}
+      ],
+      "notes": "Peter's host at Joppa; Peter received the rooftop vision in his house"
+    },
+    {
+      "id": "person:cornelius",
+      "name_english": "Cornelius",
+      "name_greek": "Κορνήλιος",
+      "name_greek_transliterated": "Kornēlios",
+      "strongs": "G2883",
+      "meaning": "of a horn (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 10, "verse": 1, "verse_end": 48}
+      ],
+      "notes": "Roman centurion of the Italian Cohort at Caesarea; first Gentile convert; God-fearer"
+    },
+    {
+      "id": "person:agabus",
+      "name_english": "Agabus",
+      "name_greek": "Ἄγαβος",
+      "name_greek_transliterated": "Agabos",
+      "strongs": "G13",
+      "meaning": "uncertain",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 11, "verse": 28},
+        {"book": "ACT", "chapter": 21, "verse": 10, "verse_end": 11}
+      ],
+      "notes": "Prophet who foretold the Claudian famine and Paul's bonds in Jerusalem"
+    },
+    {
+      "id": "person:rhoda",
+      "name_english": "Rhoda",
+      "name_greek": "Ῥόδη",
+      "name_greek_transliterated": "Rhodē",
+      "strongs": "G4498",
+      "meaning": "rose",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 12, "verse": 13, "verse_end": 16}
+      ],
+      "notes": "Servant girl who left Peter standing at the gate in her excitement"
+    },
+    {
+      "id": "person:mary_mother_of_john_mark",
+      "name_english": "Mary (mother of John Mark)",
+      "name_greek": "Μαρία",
+      "name_greek_transliterated": "Maria",
+      "strongs": "G3137",
+      "meaning": "from Heb Miryam",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 12, "verse": 12}
+      ],
+      "notes": "Hosted the Jerusalem prayer meeting where Peter went after release from prison"
+    },
+    {
+      "id": "person:john_mark",
+      "name_english": "John Mark",
+      "name_greek": "Ἰωάννης Μᾶρκος",
+      "name_greek_transliterated": "Iōannēs Markos",
+      "strongs": "G3138",
+      "meaning": "Markos: defense (Latin); Iōannēs: YHWH is gracious",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 12, "verse": 12},
+        {"book": "ACT", "chapter": 13, "verse": 13},
+        {"book": "ACT", "chapter": 15, "verse": 37, "verse_end": 39},
+        {"book": "COL", "chapter": 4, "verse": 10},
+        {"book": "2TI", "chapter": 4, "verse": 11},
+        {"book": "1PE", "chapter": 5, "verse": 13}
+      ],
+      "notes": "Cousin of Barnabas; traditional author of the Second Gospel; left Paul at Perga but later restored"
+    },
+    {
+      "id": "person:manaen",
+      "name_english": "Manaen",
+      "name_greek": "Μαναήν",
+      "name_greek_transliterated": "Manaēn",
+      "strongs": "G3127",
+      "meaning": "from Heb Menachem: comforter",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 1}
+      ],
+      "notes": "Foster-brother (suntrophos) of Herod the Tetrarch; prophet/teacher in Antioch"
+    },
+    {
+      "id": "person:elymas",
+      "name_english": "Bar-Jesus (Elymas the sorcerer)",
+      "name_greek": "Ἐλύμας",
+      "name_greek_transliterated": "Elumas",
+      "strongs": "G1681",
+      "meaning": "Elymas: 'sorcerer' or possibly Arabic alim 'wise'; Bar-Jesus: son of Jesus/Joshua",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 6, "verse_end": 12}
+      ],
+      "notes": "Jewish sorcerer at Paphos; struck blind by Paul"
+    },
+    {
+      "id": "person:sergius_paulus",
+      "name_english": "Sergius Paulus",
+      "name_greek": "Σέργιος Παῦλος",
+      "name_greek_transliterated": "Sergios Paulos",
+      "strongs": "G4588",
+      "meaning": "Sergius: Latin gens name",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 7, "verse_end": 12}
+      ],
+      "notes": "Proconsul of Cyprus; converted under Paul's preaching"
+    },
+    {
+      "id": "person:silas",
+      "name_english": "Silas (Silvanus)",
+      "name_greek": "Σιλᾶς",
+      "name_greek_transliterated": "Silas",
+      "strongs": "G4609",
+      "meaning": "uncertain; Silvanus (Latin form) means 'of the forest'",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 15, "verse": 22},
+        {"book": "ACT", "chapter": 15, "verse": 40},
+        {"book": "ACT", "chapter": 16, "verse": 19, "verse_end": 40},
+        {"book": "1TH", "chapter": 1, "verse": 1},
+        {"book": "1PE", "chapter": 5, "verse": 12}
+      ],
+      "notes": "Leading man of the Jerusalem church; Paul's companion on second journey; called Silvanus in epistles"
+    },
+    {
+      "id": "person:judas_barsabbas",
+      "name_english": "Judas Barsabbas",
+      "name_greek": "Ἰούδας Βαρσαββᾶς",
+      "name_greek_transliterated": "Ioudas Barsabbas",
+      "strongs": "G2455",
+      "meaning": "Judas: praised; Barsabbas: son of the Sabbath",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 15, "verse": 22, "verse_end": 32}
+      ],
+      "notes": "Sent with Silas from Jerusalem to Antioch with the council's letter"
+    },
+    {
+      "id": "person:lydia",
+      "name_english": "Lydia",
+      "name_greek": "Λυδία",
+      "name_greek_transliterated": "Ludia",
+      "strongs": "G3070",
+      "meaning": "from Lydia (region)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 16, "verse": 14, "verse_end": 15},
+        {"book": "ACT", "chapter": 16, "verse": 40}
+      ],
+      "notes": "Seller of purple from Thyatira; God-fearer; first European convert; hosted Paul at Philippi"
+    },
+    {
+      "id": "person:jason_of_thessalonica",
+      "name_english": "Jason (of Thessalonica)",
+      "name_greek": "Ἰάσων",
+      "name_greek_transliterated": "Iasōn",
+      "strongs": "G2394",
+      "meaning": "healer",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 5, "verse_end": 9}
+      ],
+      "notes": "Hosted Paul and Silas in Thessalonica; arraigned before the city authorities"
+    },
+    {
+      "id": "person:dionysius_areopagite",
+      "name_english": "Dionysius the Areopagite",
+      "name_greek": "Διονύσιος",
+      "name_greek_transliterated": "Dionusios",
+      "strongs": "G1354",
+      "meaning": "of Dionysus",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 34}
+      ],
+      "notes": "Convert from Paul's Areopagus address; member of the Athenian council"
+    },
+    {
+      "id": "person:damaris",
+      "name_english": "Damaris",
+      "name_greek": "Δάμαρις",
+      "name_greek_transliterated": "Damaris",
+      "strongs": "G1152",
+      "meaning": "uncertain; possibly 'gentle'",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 17, "verse": 34}
+      ],
+      "notes": "Athenian woman who believed after Paul's Areopagus address"
+    },
+    {
+      "id": "person:crispus",
+      "name_english": "Crispus",
+      "name_greek": "Κρίσπος",
+      "name_greek_transliterated": "Krispos",
+      "strongs": "G2921",
+      "meaning": "curled (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 8},
+        {"book": "1CO", "chapter": 1, "verse": 14}
+      ],
+      "notes": "Synagogue ruler at Corinth; one of the few Paul personally baptized"
+    },
+    {
+      "id": "person:sosthenes",
+      "name_english": "Sosthenes",
+      "name_greek": "Σωσθένης",
+      "name_greek_transliterated": "Sōsthenēs",
+      "strongs": "G4988",
+      "meaning": "saving strength",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 17},
+        {"book": "1CO", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Synagogue ruler beaten before Gallio; possibly the same Sosthenes who later co-authored 1 Corinthians with Paul"
+    },
+    {
+      "id": "person:gallio",
+      "name_english": "Gallio",
+      "name_greek": "Γαλλίων",
+      "name_greek_transliterated": "Galliōn",
+      "strongs": "G1058",
+      "meaning": "Latin gens name",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 18, "verse": 12, "verse_end": 17}
+      ],
+      "notes": "Roman proconsul of Achaia (~AD 51-52); refused to judge religious dispute against Paul. Brother of Seneca the philosopher"
+    },
+    {
+      "id": "person:tyrannus",
+      "name_english": "Tyrannus",
+      "name_greek": "Τύραννος",
+      "name_greek_transliterated": "Turannos",
+      "strongs": "G5181",
+      "meaning": "sovereign, tyrant",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 19, "verse": 9}
+      ],
+      "notes": "Owner of the lecture hall (schole) Paul used at Ephesus for two years"
+    },
+    {
+      "id": "person:demetrius_silversmith",
+      "name_english": "Demetrius the silversmith",
+      "name_greek": "Δημήτριος",
+      "name_greek_transliterated": "Dēmētrios",
+      "strongs": "G1216",
+      "meaning": "of Demeter",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 19, "verse": 24, "verse_end": 41}
+      ],
+      "notes": "Silversmith at Ephesus who made shrines of Artemis; instigated the riot against Paul"
+    },
+    {
+      "id": "person:eutychus",
+      "name_english": "Eutychus",
+      "name_greek": "Εὔτυχος",
+      "name_greek_transliterated": "Eutuchos",
+      "strongs": "G2161",
+      "meaning": "fortunate",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 9, "verse_end": 12}
+      ],
+      "notes": "Young man at Troas who fell from a third-story window during Paul's long sermon and was raised"
+    },
+    {
+      "id": "person:trophimus",
+      "name_english": "Trophimus",
+      "name_greek": "Τρόφιμος",
+      "name_greek_transliterated": "Trophimos",
+      "strongs": "G5161",
+      "meaning": "nutritious",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 4},
+        {"book": "ACT", "chapter": 21, "verse": 29},
+        {"book": "2TI", "chapter": 4, "verse": 20}
+      ],
+      "notes": "Ephesian Gentile companion of Paul; whose presence in Jerusalem sparked the riot against Paul"
+    },
+    {
+      "id": "person:tychicus",
+      "name_english": "Tychicus",
+      "name_greek": "Τυχικός",
+      "name_greek_transliterated": "Tuchikos",
+      "strongs": "G5190",
+      "meaning": "fortunate",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 4},
+        {"book": "EPH", "chapter": 6, "verse": 21},
+        {"book": "COL", "chapter": 4, "verse": 7},
+        {"book": "2TI", "chapter": 4, "verse": 12}
+      ],
+      "notes": "Asian companion of Paul; carried Paul's letters to Ephesus and Colossae"
+    },
+    {
+      "id": "person:aristarchus",
+      "name_english": "Aristarchus",
+      "name_greek": "Ἀρίσταρχος",
+      "name_greek_transliterated": "Aristarchos",
+      "strongs": "G708",
+      "meaning": "best ruler",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 19, "verse": 29},
+        {"book": "ACT", "chapter": 20, "verse": 4},
+        {"book": "ACT", "chapter": 27, "verse": 2},
+        {"book": "COL", "chapter": 4, "verse": 10}
+      ],
+      "notes": "Macedonian from Thessalonica; companion of Paul; fellow prisoner"
+    },
+    {
+      "id": "person:gaius_macedonia",
+      "name_english": "Gaius (of Macedonia)",
+      "name_greek": "Γάϊος",
+      "name_greek_transliterated": "Gaios",
+      "strongs": "G1050",
+      "meaning": "Latin praenomen",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 19, "verse": 29},
+        {"book": "ACT", "chapter": 20, "verse": 4}
+      ],
+      "notes": "Companion of Paul seized in the Ephesian theater riot. Multiple Gaiuses in NT"
+    },
+    {
+      "id": "person:secundus",
+      "name_english": "Secundus",
+      "name_greek": "Σεκοῦνδος",
+      "name_greek_transliterated": "Sekoundos",
+      "strongs": "G4580",
+      "meaning": "second (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 4}
+      ],
+      "notes": "Thessalonian companion of Paul on the journey to Jerusalem"
+    },
+    {
+      "id": "person:sopater",
+      "name_english": "Sopater",
+      "name_greek": "Σώπατρος",
+      "name_greek_transliterated": "Sōpatros",
+      "strongs": "G4986",
+      "meaning": "saving father",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 20, "verse": 4}
+      ],
+      "notes": "Berean companion of Paul; possibly the same as Sosipater (Rom 16:21)"
+    },
+    {
+      "id": "person:mnason",
+      "name_english": "Mnason",
+      "name_greek": "Μνάσων",
+      "name_greek_transliterated": "Mnasōn",
+      "strongs": "G3416",
+      "meaning": "memorial",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 21, "verse": 16}
+      ],
+      "notes": "Cypriot disciple, 'an early disciple,' with whom Paul lodged en route to Jerusalem"
+    },
+    {
+      "id": "person:claudius_lysias",
+      "name_english": "Claudius Lysias",
+      "name_greek": "Κλαύδιος Λυσίας",
+      "name_greek_transliterated": "Klaudios Lusias",
+      "strongs": "G2804",
+      "meaning": "Claudius: Latin gens; Lysias: releaser",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 23, "verse": 26},
+        {"book": "ACT", "chapter": 24, "verse": 7}
+      ],
+      "notes": "Roman tribune (chiliarch) of the Jerusalem cohort; rescued Paul from the mob and sent him to Felix"
+    },
+    {
+      "id": "person:felix",
+      "name_english": "Antonius Felix",
+      "name_greek": "Φῆλιξ",
+      "name_greek_transliterated": "Phēlix",
+      "strongs": "G5344",
+      "meaning": "happy (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 23, "verse": 24, "verse_end": 26},
+        {"book": "ACT", "chapter": 24, "verse": 1, "verse_end": 27}
+      ],
+      "notes": "Roman procurator of Judaea (~AD 52-59); kept Paul imprisoned at Caesarea for two years"
+    },
+    {
+      "id": "person:drusilla",
+      "name_english": "Drusilla",
+      "name_greek": "Δρούσιλλα",
+      "name_greek_transliterated": "Drousilla",
+      "strongs": "G1409",
+      "meaning": "watered by the dew",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 24, "verse": 24}
+      ],
+      "notes": "Jewish wife of Felix; daughter of Herod Agrippa I; sister of Agrippa II and Bernice"
+    },
+    {
+      "id": "person:porcius_festus",
+      "name_english": "Porcius Festus",
+      "name_greek": "Πόρκιος Φῆστος",
+      "name_greek_transliterated": "Porkios Phēstos",
+      "strongs": "G5347",
+      "meaning": "Festus: festal (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 24, "verse": 27},
+        {"book": "ACT", "chapter": 25, "verse": 1, "verse_end": 27},
+        {"book": "ACT", "chapter": 26, "verse": 1, "verse_end": 32}
+      ],
+      "notes": "Successor of Felix as procurator (~AD 59-62); heard Paul's appeal to Caesar"
+    },
+    {
+      "id": "person:agrippa_ii",
+      "name_english": "Herod Agrippa II",
+      "name_greek": "Ἀγρίππας",
+      "name_greek_transliterated": "Agrippas",
+      "strongs": "G67",
+      "meaning": "Latin gens name",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 25, "verse": 13, "verse_end": 27},
+        {"book": "ACT", "chapter": 26, "verse": 1, "verse_end": 32}
+      ],
+      "notes": "Last of the Herodian kings; great-grandson of Herod the Great; heard Paul at Caesarea — 'almost thou persuadest me'"
+    },
+    {
+      "id": "person:bernice",
+      "name_english": "Bernice",
+      "name_greek": "Βερνίκη",
+      "name_greek_transliterated": "Bernikē",
+      "strongs": "G959",
+      "meaning": "victory-bringer",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 25, "verse": 13},
+        {"book": "ACT", "chapter": 25, "verse": 23}
+      ],
+      "notes": "Sister of Agrippa II and Drusilla; appeared with Agrippa to hear Paul"
+    },
+    {
+      "id": "person:agrippa_i",
+      "name_english": "Herod Agrippa I",
+      "name_greek": "Ἡρῴδης",
+      "name_greek_transliterated": "Hērōdēs",
+      "strongs": "G2264",
+      "meaning": "heroic",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 12, "verse": 1, "verse_end": 23}
+      ],
+      "notes": "King of Judea (AD 41-44); grandson of Herod the Great; killed James the apostle, imprisoned Peter; struck down by an angel of the Lord"
+    },
+    {
+      "id": "person:julius_centurion",
+      "name_english": "Julius (centurion)",
+      "name_greek": "Ἰούλιος",
+      "name_greek_transliterated": "Ioulios",
+      "strongs": "G2457",
+      "meaning": "Latin gens (descended from Iulus)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 27, "verse": 1, "verse_end": 3},
+        {"book": "ACT", "chapter": 27, "verse": 43}
+      ],
+      "notes": "Centurion of the Augustan Cohort who escorted Paul to Rome; spared the prisoners during shipwreck"
+    },
+    {
+      "id": "person:publius",
+      "name_english": "Publius",
+      "name_greek": "Πόπλιος",
+      "name_greek_transliterated": "Poplios",
+      "strongs": "G4196",
+      "meaning": "Latin praenomen",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 28, "verse": 7, "verse_end": 8}
+      ],
+      "notes": "Chief man of Malta; lodged Paul; Paul healed his father of dysentery"
+    },
+    {
+      "id": "person:theophilus",
+      "name_english": "Theophilus",
+      "name_greek": "Θεόφιλος",
+      "name_greek_transliterated": "Theophilos",
+      "strongs": "G2321",
+      "meaning": "loved by God; God-lover",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "LUK", "chapter": 1, "verse": 3},
+        {"book": "ACT", "chapter": 1, "verse": 1}
+      ],
+      "notes": "'Most excellent' addressee of Luke and Acts. Possibly a Roman official or patron"
+    },
+
+    {
+      "id": "person:luke",
+      "name_english": "Luke",
+      "name_greek": "Λουκᾶς",
+      "name_greek_transliterated": "Loukas",
+      "strongs": "G3065",
+      "meaning": "from Latin Lucanus or Lucius",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 4, "verse": 14},
+        {"book": "2TI", "chapter": 4, "verse": 11},
+        {"book": "PHM", "chapter": 1, "verse": 24}
+      ],
+      "notes": "'The beloved physician'; companion of Paul; traditional author of Luke and Acts (where he appears anonymously in the 'we' passages)"
+    },
+    {
+      "id": "person:demas",
+      "name_english": "Demas",
+      "name_greek": "Δημᾶς",
+      "name_greek_transliterated": "Dēmas",
+      "strongs": "G1214",
+      "meaning": "shortened from Demetrius or Demarchos",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 4, "verse": 14},
+        {"book": "2TI", "chapter": 4, "verse": 10},
+        {"book": "PHM", "chapter": 1, "verse": 24}
+      ],
+      "notes": "Companion of Paul who later 'forsook me, having loved this present world'"
+    },
+    {
+      "id": "person:epaphras",
+      "name_english": "Epaphras",
+      "name_greek": "Ἐπαφρᾶς",
+      "name_greek_transliterated": "Epaphras",
+      "strongs": "G1889",
+      "meaning": "shortened from Epaphroditus: lovely",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 1, "verse": 7},
+        {"book": "COL", "chapter": 4, "verse": 12, "verse_end": 13},
+        {"book": "PHM", "chapter": 1, "verse": 23}
+      ],
+      "notes": "Founded the church at Colossae; labored for believers at Colossae, Laodicea, and Hierapolis"
+    },
+    {
+      "id": "person:onesimus",
+      "name_english": "Onesimus",
+      "name_greek": "Ὀνήσιμος",
+      "name_greek_transliterated": "Onēsimos",
+      "strongs": "G3682",
+      "meaning": "useful, profitable",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 4, "verse": 9},
+        {"book": "PHM", "chapter": 1, "verse": 10, "verse_end": 18}
+      ],
+      "notes": "Runaway slave of Philemon; converted under Paul in Rome; subject of the Epistle to Philemon"
+    },
+    {
+      "id": "person:archippus",
+      "name_english": "Archippus",
+      "name_greek": "Ἄρχιππος",
+      "name_greek_transliterated": "Archippos",
+      "strongs": "G751",
+      "meaning": "horse-master",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "COL", "chapter": 4, "verse": 17},
+        {"book": "PHM", "chapter": 1, "verse": 2}
+      ],
+      "notes": "'Fellow soldier' of Paul; addressed in Philemon alongside Apphia; charged to fulfill his ministry"
+    },
+    {
+      "id": "person:philemon",
+      "name_english": "Philemon",
+      "name_greek": "Φιλήμων",
+      "name_greek_transliterated": "Philēmōn",
+      "strongs": "G5371",
+      "meaning": "affectionate, loving",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "PHM", "chapter": 1, "verse": 1}
+      ],
+      "notes": "Owner of Onesimus; recipient of Paul's epistle on Onesimus's behalf"
+    },
+    {
+      "id": "person:apphia",
+      "name_english": "Apphia",
+      "name_greek": "Ἀπφία",
+      "name_greek_transliterated": "Apphia",
+      "strongs": "G682",
+      "meaning": "uncertain (likely Phrygian)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "PHM", "chapter": 1, "verse": 2}
+      ],
+      "notes": "Addressed in Philemon alongside Philemon and Archippus; likely Philemon's wife"
+    },
+    {
+      "id": "person:epaphroditus",
+      "name_english": "Epaphroditus",
+      "name_greek": "Ἐπαφρόδιτος",
+      "name_greek_transliterated": "Epaphroditos",
+      "strongs": "G1891",
+      "meaning": "favored by Aphrodite; lovely",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "PHP", "chapter": 2, "verse": 25, "verse_end": 30},
+        {"book": "PHP", "chapter": 4, "verse": 18}
+      ],
+      "notes": "Philippian messenger to Paul; nearly died for the work of Christ"
+    },
+    {
+      "id": "person:euodia",
+      "name_english": "Euodia",
+      "name_greek": "Εὐοδία",
+      "name_greek_transliterated": "Euodia",
+      "strongs": "G2136",
+      "meaning": "good journey, success",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "PHP", "chapter": 4, "verse": 2}
+      ],
+      "notes": "Philippian woman urged by Paul to be of the same mind as Syntyche"
+    },
+    {
+      "id": "person:syntyche",
+      "name_english": "Syntyche",
+      "name_greek": "Συντύχη",
+      "name_greek_transliterated": "Suntuchē",
+      "strongs": "G4941",
+      "meaning": "fortunate event",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "PHP", "chapter": 4, "verse": 2}
+      ],
+      "notes": "Philippian woman urged with Euodia to reconcile"
+    },
+    {
+      "id": "person:clement_philippi",
+      "name_english": "Clement",
+      "name_greek": "Κλήμης",
+      "name_greek_transliterated": "Klēmēs",
+      "strongs": "G2815",
+      "meaning": "merciful (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "PHP", "chapter": 4, "verse": 3}
+      ],
+      "notes": "Fellow worker of Paul at Philippi"
+    },
+
+    {
+      "id": "person:phoebe",
+      "name_english": "Phoebe",
+      "name_greek": "Φοίβη",
+      "name_greek_transliterated": "Phoibē",
+      "strongs": "G5402",
+      "meaning": "bright, radiant",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 1, "verse_end": 2}
+      ],
+      "notes": "Servant (diakonos) of the church at Cenchrea; commended as carrier of Romans"
+    },
+    {
+      "id": "person:andronicus",
+      "name_english": "Andronicus",
+      "name_greek": "Ἀνδρόνικος",
+      "name_greek_transliterated": "Andronikos",
+      "strongs": "G408",
+      "meaning": "victorious man",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 7}
+      ],
+      "notes": "'My kinsmen and fellow prisoners; of note among the apostles'; in Christ before Paul"
+    },
+    {
+      "id": "person:junia",
+      "name_english": "Junia",
+      "name_greek": "Ἰουνία",
+      "name_greek_transliterated": "Iounia",
+      "strongs": "G2458",
+      "meaning": "Latin feminine name (or masc. Junias depending on accent)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 7}
+      ],
+      "notes": "Greeted with Andronicus; 'of note among the apostles.' Likely female (Junia) — earliest commentators uniformly read as feminine"
+    },
+    {
+      "id": "person:mary_of_rome",
+      "name_english": "Mary (of Rome)",
+      "name_greek": "Μαρία",
+      "name_greek_transliterated": "Maria",
+      "strongs": "G3137",
+      "meaning": "from Heb Miryam",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 6}
+      ],
+      "notes": "Greeted in Romans; 'bestowed much labor on us'"
+    },
+    {
+      "id": "person:urbanus",
+      "name_english": "Urbanus",
+      "name_greek": "Οὐρβανός",
+      "name_greek_transliterated": "Ourbanos",
+      "strongs": "G3773",
+      "meaning": "of the city (urbane, Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 9}
+      ],
+      "notes": "'Our fellow worker in Christ'"
+    },
+    {
+      "id": "person:stachys",
+      "name_english": "Stachys",
+      "name_greek": "Στάχυς",
+      "name_greek_transliterated": "Stachus",
+      "strongs": "G4720",
+      "meaning": "ear of grain",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 9}
+      ]
+    },
+    {
+      "id": "person:apelles",
+      "name_english": "Apelles",
+      "name_greek": "Ἀπελλῆς",
+      "name_greek_transliterated": "Apellēs",
+      "strongs": "G559",
+      "meaning": "uncertain",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 10}
+      ],
+      "notes": "'Approved in Christ'"
+    },
+    {
+      "id": "person:herodion",
+      "name_english": "Herodion",
+      "name_greek": "Ἡρῳδίων",
+      "name_greek_transliterated": "Hērōdiōn",
+      "strongs": "G2267",
+      "meaning": "diminutive of Herod",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 11}
+      ],
+      "notes": "'My kinsman' — possibly a freedman of the Herodian household"
+    },
+    {
+      "id": "person:tryphena",
+      "name_english": "Tryphena",
+      "name_greek": "Τρύφαινα",
+      "name_greek_transliterated": "Truphaina",
+      "strongs": "G5170",
+      "meaning": "luxurious, dainty",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 12}
+      ]
+    },
+    {
+      "id": "person:tryphosa",
+      "name_english": "Tryphosa",
+      "name_greek": "Τρυφῶσα",
+      "name_greek_transliterated": "Truphōsa",
+      "strongs": "G5173",
+      "meaning": "luxuriating",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 12}
+      ]
+    },
+    {
+      "id": "person:persis",
+      "name_english": "Persis",
+      "name_greek": "Περσίς",
+      "name_greek_transliterated": "Persis",
+      "strongs": "G4069",
+      "meaning": "Persian (woman)",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 12}
+      ],
+      "notes": "'Beloved Persis, who labored much in the Lord'"
+    },
+    {
+      "id": "person:asyncritus",
+      "name_english": "Asyncritus",
+      "name_greek": "Ἀσύγκριτος",
+      "name_greek_transliterated": "Asunkritos",
+      "strongs": "G799",
+      "meaning": "incomparable",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 14}
+      ]
+    },
+    {
+      "id": "person:phlegon",
+      "name_english": "Phlegon",
+      "name_greek": "Φλέγων",
+      "name_greek_transliterated": "Phlegōn",
+      "strongs": "G5393",
+      "meaning": "burning, blazing",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 14}
+      ]
+    },
+    {
+      "id": "person:hermes",
+      "name_english": "Hermes",
+      "name_greek": "Ἑρμῆς",
+      "name_greek_transliterated": "Hermēs",
+      "strongs": "G2060",
+      "meaning": "named for the god Hermes",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 14}
+      ]
+    },
+    {
+      "id": "person:patrobas",
+      "name_english": "Patrobas",
+      "name_greek": "Πατροβᾶς",
+      "name_greek_transliterated": "Patrobas",
+      "strongs": "G3969",
+      "meaning": "shortened from Patrobios: long-lived father",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 14}
+      ]
+    },
+    {
+      "id": "person:hermas",
+      "name_english": "Hermas",
+      "name_greek": "Ἑρμᾶς",
+      "name_greek_transliterated": "Hermas",
+      "strongs": "G2057",
+      "meaning": "shortened from Hermes/Hermolaus",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 14}
+      ]
+    },
+    {
+      "id": "person:philologus",
+      "name_english": "Philologus",
+      "name_greek": "Φιλόλογος",
+      "name_greek_transliterated": "Philologos",
+      "strongs": "G5378",
+      "meaning": "lover of words",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 15}
+      ]
+    },
+    {
+      "id": "person:julia",
+      "name_english": "Julia",
+      "name_greek": "Ἰουλία",
+      "name_greek_transliterated": "Ioulia",
+      "strongs": "G2456",
+      "meaning": "Latin feminine of Julius",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 15}
+      ],
+      "notes": "Possibly wife of Philologus"
+    },
+    {
+      "id": "person:nereus",
+      "name_english": "Nereus",
+      "name_greek": "Νηρεύς",
+      "name_greek_transliterated": "Nēreus",
+      "strongs": "G3517",
+      "meaning": "named for Nereus (sea-god)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 15}
+      ]
+    },
+    {
+      "id": "person:olympas",
+      "name_english": "Olympas",
+      "name_greek": "Ὀλυμπᾶς",
+      "name_greek_transliterated": "Olumpas",
+      "strongs": "G3652",
+      "meaning": "shortened from Olympiodorus",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 15}
+      ]
+    },
+    {
+      "id": "person:tertius",
+      "name_english": "Tertius",
+      "name_greek": "Τέρτιος",
+      "name_greek_transliterated": "Tertios",
+      "strongs": "G5060",
+      "meaning": "third (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 22}
+      ],
+      "notes": "Amanuensis (scribe) of Romans"
+    },
+    {
+      "id": "person:gaius_corinth",
+      "name_english": "Gaius (of Corinth)",
+      "name_greek": "Γάϊος",
+      "name_greek_transliterated": "Gaios",
+      "strongs": "G1050",
+      "meaning": "Latin praenomen",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 23},
+        {"book": "1CO", "chapter": 1, "verse": 14}
+      ],
+      "notes": "'My host, and of the whole church'; baptized by Paul personally at Corinth"
+    },
+    {
+      "id": "person:erastus",
+      "name_english": "Erastus",
+      "name_greek": "Ἔραστος",
+      "name_greek_transliterated": "Erastos",
+      "strongs": "G2037",
+      "meaning": "beloved",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 23},
+        {"book": "ACT", "chapter": 19, "verse": 22},
+        {"book": "2TI", "chapter": 4, "verse": 20}
+      ],
+      "notes": "Treasurer (oikonomos) of Corinth; sent ahead by Paul to Macedonia"
+    },
+    {
+      "id": "person:quartus",
+      "name_english": "Quartus",
+      "name_greek": "Κούαρτος",
+      "name_greek_transliterated": "Kouartos",
+      "strongs": "G2890",
+      "meaning": "fourth (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ROM", "chapter": 16, "verse": 23}
+      ]
+    },
+    {
+      "id": "person:lucius_of_cyrene",
+      "name_english": "Lucius (of Cyrene)",
+      "name_greek": "Λούκιος",
+      "name_greek_transliterated": "Loukios",
+      "strongs": "G3066",
+      "meaning": "Latin praenomen related to lux: light",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 13, "verse": 1},
+        {"book": "ROM", "chapter": 16, "verse": 21}
+      ],
+      "notes": "Prophet/teacher in Antioch; Paul's kinsman in Romans"
+    },
+
+    {
+      "id": "person:stephanas",
+      "name_english": "Stephanas",
+      "name_greek": "Στεφανᾶς",
+      "name_greek_transliterated": "Stephanas",
+      "strongs": "G4734",
+      "meaning": "shortened from Stephanos: crowned",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "1CO", "chapter": 1, "verse": 16},
+        {"book": "1CO", "chapter": 16, "verse": 15, "verse_end": 17}
+      ],
+      "notes": "First-fruits of Achaia; baptized by Paul personally"
+    },
+    {
+      "id": "person:fortunatus",
+      "name_english": "Fortunatus",
+      "name_greek": "Φουρτουνᾶτος",
+      "name_greek_transliterated": "Phourtounatos",
+      "strongs": "G5415",
+      "meaning": "fortunate (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "1CO", "chapter": 16, "verse": 17}
+      ]
+    },
+    {
+      "id": "person:achaicus",
+      "name_english": "Achaicus",
+      "name_greek": "Ἀχαϊκός",
+      "name_greek_transliterated": "Achaikos",
+      "strongs": "G883",
+      "meaning": "of Achaia",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "1CO", "chapter": 16, "verse": 17}
+      ]
+    },
+    {
+      "id": "person:chloe",
+      "name_english": "Chloe",
+      "name_greek": "Χλόη",
+      "name_greek_transliterated": "Chloē",
+      "strongs": "G5514",
+      "meaning": "young verdure, tender shoot",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "1CO", "chapter": 1, "verse": 11}
+      ],
+      "notes": "Whose 'people' (household members) reported divisions in Corinth to Paul"
+    },
+
+    {
+      "id": "person:alexander_coppersmith",
+      "name_english": "Alexander the coppersmith",
+      "name_greek": "Ἀλέξανδρος",
+      "name_greek_transliterated": "Alexandros",
+      "strongs": "G223",
+      "meaning": "defender of men",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 4, "verse": 14, "verse_end": 15}
+      ],
+      "notes": "Did Paul much harm; 'the Lord reward him according to his works'"
+    },
+    {
+      "id": "person:hymenaeus",
+      "name_english": "Hymenaeus",
+      "name_greek": "Ὑμέναιος",
+      "name_greek_transliterated": "Humenaios",
+      "strongs": "G5211",
+      "meaning": "named for Hymen (god of marriage)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "1TI", "chapter": 1, "verse": 20},
+        {"book": "2TI", "chapter": 2, "verse": 17}
+      ],
+      "notes": "Delivered to Satan; said the resurrection is past"
+    },
+    {
+      "id": "person:philetus",
+      "name_english": "Philetus",
+      "name_greek": "Φίλητος",
+      "name_greek_transliterated": "Philētos",
+      "strongs": "G5372",
+      "meaning": "beloved",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 2, "verse": 17}
+      ],
+      "notes": "Paired with Hymenaeus in error about the resurrection"
+    },
+    {
+      "id": "person:onesiphorus",
+      "name_english": "Onesiphorus",
+      "name_greek": "Ὀνησίφορος",
+      "name_greek_transliterated": "Onēsiphoros",
+      "strongs": "G3683",
+      "meaning": "profit-bringer",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 1, "verse": 16, "verse_end": 18},
+        {"book": "2TI", "chapter": 4, "verse": 19}
+      ],
+      "notes": "Often refreshed Paul; sought him out in Rome"
+    },
+    {
+      "id": "person:phygellus",
+      "name_english": "Phygellus",
+      "name_greek": "Φύγελος",
+      "name_greek_transliterated": "Phugelos",
+      "strongs": "G5436",
+      "meaning": "fugitive",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 1, "verse": 15}
+      ],
+      "notes": "'All they which are in Asia be turned away from me' — Phygellus and Hermogenes named"
+    },
+    {
+      "id": "person:hermogenes",
+      "name_english": "Hermogenes",
+      "name_greek": "Ἑρμογένης",
+      "name_greek_transliterated": "Hermogenēs",
+      "strongs": "G2061",
+      "meaning": "begotten of Hermes",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 1, "verse": 15}
+      ]
+    },
+    {
+      "id": "person:eubulus",
+      "name_english": "Eubulus",
+      "name_greek": "Εὔβουλος",
+      "name_greek_transliterated": "Euboulos",
+      "strongs": "G2103",
+      "meaning": "good counsel",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 4, "verse": 21}
+      ]
+    },
+    {
+      "id": "person:pudens",
+      "name_english": "Pudens",
+      "name_greek": "Πούδης",
+      "name_greek_transliterated": "Poudēs",
+      "strongs": "G4227",
+      "meaning": "modest (Latin)",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 4, "verse": 21}
+      ]
+    },
+    {
+      "id": "person:linus",
+      "name_english": "Linus",
+      "name_greek": "Λίνος",
+      "name_greek_transliterated": "Linos",
+      "strongs": "G3044",
+      "meaning": "uncertain",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 4, "verse": 21}
+      ],
+      "notes": "Traditionally identified with the Linus listed by Irenaeus as Peter's successor at Rome"
+    },
+    {
+      "id": "person:claudia",
+      "name_english": "Claudia",
+      "name_greek": "Κλαυδία",
+      "name_greek_transliterated": "Klaudia",
+      "strongs": "G2803",
+      "meaning": "Latin feminine of Claudius",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 4, "verse": 21}
+      ]
+    },
+    {
+      "id": "person:zenas_lawyer",
+      "name_english": "Zenas the lawyer",
+      "name_greek": "Ζηνᾶς",
+      "name_greek_transliterated": "Zēnas",
+      "strongs": "G2211",
+      "meaning": "shortened from Zenodorus: gift of Zeus",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "TIT", "chapter": 3, "verse": 13}
+      ],
+      "notes": "Lawyer (nomikos); Paul asks Titus to help him on his journey"
+    },
+    {
+      "id": "person:artemas",
+      "name_english": "Artemas",
+      "name_greek": "Ἀρτεμᾶς",
+      "name_greek_transliterated": "Artemas",
+      "strongs": "G734",
+      "meaning": "shortened from Artemidoros: gift of Artemis",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "TIT", "chapter": 3, "verse": 12}
+      ]
+    },
+    {
+      "id": "person:carpus",
+      "name_english": "Carpus",
+      "name_greek": "Κάρπος",
+      "name_greek_transliterated": "Karpos",
+      "strongs": "G2591",
+      "meaning": "fruit",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2TI", "chapter": 4, "verse": 13}
+      ],
+      "notes": "Lived at Troas; held Paul's cloak and books"
+    },
+
+    {
+      "id": "person:diotrephes",
+      "name_english": "Diotrephes",
+      "name_greek": "Διοτρέφης",
+      "name_greek_transliterated": "Diotrephēs",
+      "strongs": "G1361",
+      "meaning": "nourished by Zeus",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "3JN", "chapter": 1, "verse": 9, "verse_end": 10}
+      ],
+      "notes": "Loved to have the preeminence; refused John and his messengers"
+    },
+    {
+      "id": "person:demetrius_3jn",
+      "name_english": "Demetrius (3 John)",
+      "name_greek": "Δημήτριος",
+      "name_greek_transliterated": "Dēmētrios",
+      "strongs": "G1216",
+      "meaning": "of Demeter",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "3JN", "chapter": 1, "verse": 12}
+      ],
+      "notes": "'Hath good report of all men, and of the truth itself'"
+    },
+    {
+      "id": "person:gaius_3jn",
+      "name_english": "Gaius (recipient of 3 John)",
+      "name_greek": "Γάϊος",
+      "name_greek_transliterated": "Gaios",
+      "strongs": "G1050",
+      "meaning": "Latin praenomen",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "3JN", "chapter": 1, "verse": 1}
+      ],
+      "notes": "'The wellbeloved Gaius, whom I love in the truth'"
+    },
+
+    {
+      "id": "person:antipas_pergamum",
+      "name_english": "Antipas (martyr at Pergamum)",
+      "name_greek": "Ἀντιπᾶς",
+      "name_greek_transliterated": "Antipas",
+      "strongs": "G493",
+      "meaning": "shortened from Antipatros: like the father",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 2, "verse": 13}
+      ],
+      "notes": "'My faithful martyr, who was slain among you, where Satan dwelleth' — distinct from Herod Antipas"
+    },
+    {
+      "id": "person:jezebel_thyatira",
+      "name_english": "Jezebel (of Thyatira)",
+      "name_greek": "Ἰεζάβελ",
+      "name_greek_transliterated": "Iezabel",
+      "strongs": "G2403",
+      "meaning": "from Heb Izebel: where is the prince",
+      "sex": "female",
+      "scripture_refs": [
+        {"book": "REV", "chapter": 2, "verse": 20, "verse_end": 23}
+      ],
+      "notes": "Self-styled prophetess at Thyatira; symbolic name (after OT queen) used by Christ in the church's rebuke"
+    },
+    {
+      "id": "person:balaam_son_of_beor",
+      "name_english": "Balaam (NT references)",
+      "name_greek": "Βαλαάμ",
+      "name_greek_transliterated": "Balaam",
+      "strongs": "G903",
+      "meaning": "from Heb Bilam: not of the people; or destroyer",
+      "sex": "male",
+      "scripture_refs": [
+        {"book": "2PE", "chapter": 2, "verse": 15},
+        {"book": "JUD", "chapter": 1, "verse": 11},
+        {"book": "REV", "chapter": 2, "verse": 14}
+      ],
+      "notes": "OT prophet (Num 22-24) referenced as type of false-teaching greed in three NT passages"
     }
+  ],
+
+  "nations": [
+    {
+      "id": "nation:romans",
+      "name_english": "Romans",
+      "name_greek": "Ῥωμαῖοι",
+      "name_greek_transliterated": "Rhōmaioi",
+      "strongs": "G4514",
+      "meaning": "Romans (from Rome)",
+      "scripture_refs": [
+        {"book": "JHN", "chapter": 11, "verse": 48},
+        {"book": "ACT", "chapter": 16, "verse": 21},
+        {"book": "ACT", "chapter": 22, "verse": 25, "verse_end": 29},
+        {"book": "ROM", "chapter": 1, "verse": 7}
+      ],
+      "notes": "Roman citizens / inhabitants of the empire. Citizenship status (politeia) was a major plot factor for Paul's protections"
+    },
+    {
+      "id": "nation:samaritans",
+      "name_english": "Samaritans",
+      "name_greek": "Σαμαρῖται",
+      "name_greek_transliterated": "Samaritai",
+      "strongs": "G4541",
+      "meaning": "of Samaria",
+      "scripture_refs": [
+        {"book": "MAT", "chapter": 10, "verse": 5},
+        {"book": "LUK", "chapter": 9, "verse": 52},
+        {"book": "LUK", "chapter": 10, "verse": 33},
+        {"book": "JHN", "chapter": 4, "verse": 9, "verse_end": 40},
+        {"book": "ACT", "chapter": 8, "verse": 25}
+      ],
+      "notes": "Inhabitants of the region of Samaria; treated as ethnically and religiously distinct from Jews. Worshiped on Mt. Gerizim"
+    },
+    {
+      "id": "nation:parthians",
+      "name_english": "Parthians",
+      "name_greek": "Πάρθοι",
+      "name_greek_transliterated": "Parthoi",
+      "strongs": "G3934",
+      "meaning": "Parthians (from Iranian Parthava)",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 2, "verse": 9}
+      ],
+      "notes": "Iranian people of the Parthian Empire; named in the Pentecost crowd"
+    },
+    {
+      "id": "nation:cretans",
+      "name_english": "Cretans",
+      "name_greek": "Κρῆτες",
+      "name_greek_transliterated": "Krētes",
+      "strongs": "G2912",
+      "meaning": "Cretans (people of Crete)",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 2, "verse": 11},
+        {"book": "TIT", "chapter": 1, "verse": 12}
+      ],
+      "notes": "Inhabitants of Crete; cited by Paul (quoting Epimenides): 'the Cretians are alway liars, evil beasts, slow bellies'"
+    },
+    {
+      "id": "nation:idumeans",
+      "name_english": "Idumeans (Edomites, NT)",
+      "name_greek": "Ἰδουμαία",
+      "name_greek_transliterated": "Idoumaia",
+      "strongs": "G2401",
+      "meaning": "of Idumea (NT name for OT Edom)",
+      "scripture_refs": [
+        {"book": "MRK", "chapter": 3, "verse": 8}
+      ],
+      "notes": "NT-era descendants of Edom; some came to hear Jesus. The Herodian dynasty was Idumean by descent"
+    },
+    {
+      "id": "nation:galatians",
+      "name_english": "Galatians",
+      "name_greek": "Γαλάται",
+      "name_greek_transliterated": "Galatai",
+      "strongs": "G1052",
+      "meaning": "people of Galatia (Celtic origin)",
+      "scripture_refs": [
+        {"book": "GAL", "chapter": 3, "verse": 1}
+      ],
+      "notes": "Inhabitants of Galatia; recipients of Paul's epistle"
+    },
+    {
+      "id": "nation:phoenicians",
+      "name_english": "Phoenicians (people of Tyre & Sidon)",
+      "name_greek": "Φοίνικες",
+      "name_greek_transliterated": "Phoinikes",
+      "strongs": "G5403",
+      "meaning": "purple-people (from phoinix: dye)",
+      "scripture_refs": [
+        {"book": "ACT", "chapter": 11, "verse": 19},
+        {"book": "ACT", "chapter": 15, "verse": 3},
+        {"book": "ACT", "chapter": 21, "verse": 2}
+      ],
+      "notes": "Coastal people of Phoenicia (Tyre, Sidon); the Syrophoenician woman in Mark 7 was of this people"
+    }
+  ],
+
+  "nation_links": [],
+
+  "relationships": [
+    {"source": "person:joseph_husband_of_mary", "target": "person:mary_mother_of_jesus", "type": "husband_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 1, "verse": 24}]},
+    {"source": "person:mary_mother_of_jesus", "target": "person:jesus", "type": "mother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 1, "verse": 16}, {"book": "LUK", "chapter": 1, "verse": 31}]},
+    {"source": "person:joseph_husband_of_mary", "target": "person:jesus", "type": "father_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 3, "verse": 23}],
+     "notes": "Legal/adoptive father; Luke notes 'as was supposed' — affirms Joseph's social role while preserving virginal conception"},
+
+    {"source": "person:mary_mother_of_jesus", "target": "person:james_brother_of_jesus", "type": "mother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 13, "verse": 55}]},
+    {"source": "person:mary_mother_of_jesus", "target": "person:joses_brother_of_jesus", "type": "mother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 13, "verse": 55}]},
+    {"source": "person:mary_mother_of_jesus", "target": "person:simon_brother_of_jesus", "type": "mother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 13, "verse": 55}]},
+    {"source": "person:mary_mother_of_jesus", "target": "person:judas_brother_of_jesus", "type": "mother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 13, "verse": 55}]},
+
+    {"source": "person:zechariah_priest", "target": "person:elizabeth", "type": "husband_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 1, "verse": 5}]},
+    {"source": "person:zechariah_priest", "target": "person:john_the_baptist", "type": "father_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 1, "verse": 13}, {"book": "LUK", "chapter": 1, "verse": 60, "verse_end": 63}]},
+    {"source": "person:elizabeth", "target": "person:john_the_baptist", "type": "mother_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 1, "verse": 13}, {"book": "LUK", "chapter": 1, "verse": 57}]},
+    {"source": "person:elizabeth", "target": "person:mary_mother_of_jesus", "type": "relative_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 1, "verse": 36}],
+     "notes": "Greek 'syngenis' (kinswoman); exact relation unspecified"},
+
+    {"source": "person:zebedee", "target": "person:james_son_of_zebedee", "type": "father_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 21}]},
+    {"source": "person:zebedee", "target": "person:john_apostle", "type": "father_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 21}]},
+    {"source": "person:james_son_of_zebedee", "target": "person:john_apostle", "type": "brother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 21}, {"book": "MAT", "chapter": 10, "verse": 2}]},
+
+    {"source": "person:peter", "target": "person:andrew", "type": "brother_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 18}, {"book": "JHN", "chapter": 1, "verse": 40}]},
+
+    {"source": "person:alphaeus", "target": "person:james_son_of_alphaeus", "type": "father_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 3}]},
+
+    {"source": "person:martha", "target": "person:mary_of_bethany", "type": "sister_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 10, "verse": 39}, {"book": "JHN", "chapter": 11, "verse": 1}]},
+    {"source": "person:martha", "target": "person:lazarus_of_bethany", "type": "sister_of",
+     "scripture_refs": [{"book": "JHN", "chapter": 11, "verse": 1}, {"book": "JHN", "chapter": 11, "verse": 19}]},
+    {"source": "person:mary_of_bethany", "target": "person:lazarus_of_bethany", "type": "sister_of",
+     "scripture_refs": [{"book": "JHN", "chapter": 11, "verse": 1}]},
+
+    {"source": "person:caiaphas", "target": "person:annas", "type": "son_in_law_of",
+     "scripture_refs": [{"book": "JHN", "chapter": 18, "verse": 13}]},
+
+    {"source": "person:simon_of_cyrene", "target": "person:rufus", "type": "father_of",
+     "scripture_refs": [{"book": "MRK", "chapter": 15, "verse": 21}]},
+    {"source": "person:simon_of_cyrene", "target": "person:alexander_son_of_simon", "type": "father_of",
+     "scripture_refs": [{"book": "MRK", "chapter": 15, "verse": 21}]},
+    {"source": "person:rufus", "target": "person:alexander_son_of_simon", "type": "brother_of",
+     "scripture_refs": [{"book": "MRK", "chapter": 15, "verse": 21}]},
+
+    {"source": "person:chuza", "target": "person:joanna", "type": "husband_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 8, "verse": 3}]},
+    {"source": "person:clopas", "target": "person:mary_of_clopas", "type": "husband_of",
+     "scripture_refs": [{"book": "JHN", "chapter": 19, "verse": 25}]},
+
+    {"source": "person:herod_the_great", "target": "person:herod_archelaus", "type": "father_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 2, "verse": 22}],
+     "notes": "Reconstructed from Matthew + Josephus (Antiquities 17.20)"},
+    {"source": "person:herod_the_great", "target": "person:herod_antipas", "type": "father_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 14, "verse": 1}],
+     "notes": "Reconstructed from NT references + Josephus"},
+    {"source": "person:herod_the_great", "target": "person:philip_tetrarch", "type": "father_of",
+     "scripture_refs": [{"book": "LUK", "chapter": 3, "verse": 1}],
+     "notes": "Reconstructed from Luke + Josephus"},
+    {"source": "person:herod_archelaus", "target": "person:herod_antipas", "type": "brother_of"},
+    {"source": "person:herod_archelaus", "target": "person:philip_tetrarch", "type": "brother_of"},
+    {"source": "person:herod_antipas", "target": "person:philip_tetrarch", "type": "brother_of"},
+    {"source": "person:herod_antipas", "target": "person:herodias", "type": "husband_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 14, "verse": 3, "verse_end": 4}],
+     "notes": "Antipas married Herodias after she left Herod Philip I (his half-brother) — the unlawful marriage rebuked by John the Baptist"},
+    {"source": "person:herodias", "target": "person:salome_daughter_of_herodias", "type": "mother_of",
+     "scripture_refs": [{"book": "MRK", "chapter": 6, "verse": 22}]},
+
+    {"source": "person:agrippa_i", "target": "person:agrippa_ii", "type": "father_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 25, "verse": 13}],
+     "notes": "Reconstructed from Acts + Josephus"},
+    {"source": "person:agrippa_i", "target": "person:bernice", "type": "father_of"},
+    {"source": "person:agrippa_i", "target": "person:drusilla", "type": "father_of"},
+    {"source": "person:agrippa_ii", "target": "person:bernice", "type": "brother_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 25, "verse": 13}]},
+    {"source": "person:agrippa_ii", "target": "person:drusilla", "type": "brother_of"},
+    {"source": "person:bernice", "target": "person:drusilla", "type": "sister_of"},
+    {"source": "person:felix", "target": "person:drusilla", "type": "husband_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 24, "verse": 24}]},
+
+    {"source": "person:aquila", "target": "person:priscilla", "type": "husband_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 18, "verse": 2}]},
+
+    {"source": "person:mary_mother_of_john_mark", "target": "person:john_mark", "type": "mother_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 12, "verse": 12}]},
+    {"source": "person:barnabas", "target": "person:john_mark", "type": "cousin_of",
+     "scripture_refs": [{"book": "COL", "chapter": 4, "verse": 10}],
+     "notes": "Greek 'anepsios' (cousin)"},
+
+    {"source": "person:ananias_of_jerusalem", "target": "person:sapphira", "type": "husband_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 5, "verse": 1}]},
+
+    {"source": "person:peter", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 18, "verse_end": 20}]},
+    {"source": "person:andrew", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 18, "verse_end": 20}]},
+    {"source": "person:james_son_of_zebedee", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 21, "verse_end": 22}]},
+    {"source": "person:john_apostle", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 4, "verse": 21, "verse_end": 22}]},
+    {"source": "person:philip_apostle", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "JHN", "chapter": 1, "verse": 43}]},
+    {"source": "person:bartholomew", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 3}]},
+    {"source": "person:thomas", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 3}]},
+    {"source": "person:matthew_apostle", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 9, "verse": 9}]},
+    {"source": "person:james_son_of_alphaeus", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 3}]},
+    {"source": "person:thaddaeus", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 3}]},
+    {"source": "person:simon_the_zealot", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 4}]},
+    {"source": "person:judas_iscariot", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "MAT", "chapter": 10, "verse": 4}]},
+    {"source": "person:matthias", "target": "person:jesus", "type": "disciple_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 1, "verse": 26}],
+     "notes": "Chosen by lot to replace Judas Iscariot among the Twelve"},
+
+    {"source": "person:paul", "target": "person:gamaliel", "type": "disciple_of",
+     "scripture_refs": [{"book": "ACT", "chapter": 22, "verse": 3}]},
+    {"source": "person:timothy", "target": "person:paul", "type": "disciple_of",
+     "scripture_refs": [{"book": "1TI", "chapter": 1, "verse": 2}, {"book": "2TI", "chapter": 1, "verse": 2}]},
+    {"source": "person:titus", "target": "person:paul", "type": "disciple_of",
+     "scripture_refs": [{"book": "TIT", "chapter": 1, "verse": 4}]},
+
+    {"source": "person:onesimus", "target": "person:philemon", "type": "slave_of",
+     "scripture_refs": [{"book": "PHM", "chapter": 1, "verse": 10, "verse_end": 16}]}
   ]
 }
