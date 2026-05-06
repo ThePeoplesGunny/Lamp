@@ -1,23 +1,25 @@
-"""Phase 2C-6 — ingest KJV 1769 OT with Hebrew↔English versification mapping.
+"""Phase 2C-7 — ingest KJV 1769 OT with full Hebrew↔English versification map.
 
-KJV OT uses English/Protestant verse numbering, which diverges from the
-Hebrew (Masoretic) numbering in a handful of predictable ways:
+Replaces the Phase 2C-6 ingest. Uses backend/data/seed/versification_kjv_to_heb.json
+which now covers all 39 OT books (no skipped_books) and all chapter-boundary shifts
+verified against OSHB content.
 
-  - Psalms: Hebrew numbers superscriptions as verse 1 (or 1-2); KJV doesn't.
-    A per-chapter offset corrects this.
-  - Joel & Malachi: chapter counts differ (Heb 4/Heb 3 ch respectively,
-    KJV 3/4). Explicit chapter-range remaps handle these.
-  - Numbers, 1 Samuel, 1 Kings, 1 Chronicles, Nehemiah, Isaiah: chapter
-    boundaries shift by >±1 verse in ways that need authoritative per-verse
-    mappings we don't currently have. These books are SKIPPED this phase,
-    to be completed in a follow-up once a published versification table is
-    pulled in.
+Schema:
+  - psalms_offsets: chapter → integer (offset to add to KJV verse number)
+  - book_overrides: book_code → list of overrides
+      {kjv_from: {chapter, verse_min, verse_max},
+       heb: {chapter, verse_offset},
+       extra_targets: [{chapter, verse}, ...]   # optional
+      }
 
-The 31 perfectly-aligned OT books + Psalms + Joel + Malachi cover
-~22,150 of KJV OT's 23,145 verses (~96%).
+Merge semantics:
+  - One KJV verse → multiple Heb verses (e.g. NUM 26:1 = Heb 25:19 + Heb 26:1):
+    encoded via `extra_targets`. KJV text is attached to every listed Heb verse.
+  - Multiple KJV verses → one Heb verse (e.g. NEH 7:67 absorbs KJV 7:67 + KJV 7:68):
+    detected automatically when two KJV mappings resolve to the same target.
+    KJV texts are concatenated with " | " as separator.
 
-Usage:
-    python scripts/seed_translations_kjv_ot.py
+Usage: python scripts/seed_translations_kjv_ot.py
 """
 
 from __future__ import annotations
@@ -25,6 +27,7 @@ from __future__ import annotations
 import json
 import sys
 import time
+from collections import defaultdict
 from pathlib import Path
 
 if hasattr(sys.stdout, "reconfigure"):
@@ -41,7 +44,6 @@ from lamp.models import TranslationText  # noqa: E402
 KJV_SOURCE = REPO_ROOT / "backend" / "data" / "external" / "kjv_scrollmapper.json"
 VERSIFICATION_MAP = REPO_ROOT / "backend" / "data" / "seed" / "versification_kjv_to_heb.json"
 
-# KJV book name → Lamp canonical code (OT only)
 KJV_OT_NAME_TO_LAMP = {
     "Genesis": "GEN", "Exodus": "EXO", "Leviticus": "LEV", "Numbers": "NUM",
     "Deuteronomy": "DEU", "Joshua": "JOS", "Judges": "JDG", "Ruth": "RUT",
@@ -56,63 +58,58 @@ KJV_OT_NAME_TO_LAMP = {
     "Malachi": "MAL",
 }
 
+OT_ORDER = list(KJV_OT_NAME_TO_LAMP.values())
+
 TRANSLATION_ID = "KJV-1769"
 TRANSLATION_SOURCE = "scrollmapper/bible_databases@KJV.json (PD, 1769 Oxford ed.)"
 TRANSLATION_TIER = 4
 
+MERGE_SEPARATOR = " | "
 
-def map_kjv_to_heb(
-    lamp_code: str,
+
+def resolve_kjv_verse(
+    code: str,
     kjv_chapter: int,
     kjv_verse: int,
     vm: dict,
-) -> tuple[int, int] | None:
-    """Translate KJV book/chapter/verse to Hebrew numbering. Returns None if unmapped."""
-    # Psalms — superscription offsets
-    if lamp_code == "PSA":
+) -> list[tuple[int, int]]:
+    """Return list of (heb_chapter, heb_verse) targets for a KJV verse.
+
+    Empty list if no target. Most KJV verses produce a single (ch, v); merge
+    cases (extra_targets in versification map) produce multiple.
+    """
+    # Psalms — uniform per-chapter offset
+    if code == "PSA":
         offset = vm["psalms_offsets"].get(str(kjv_chapter), 0)
-        return (kjv_chapter, kjv_verse + offset)
+        return [(kjv_chapter, kjv_verse + offset)]
 
-    # Joel — chapter-range remaps
-    if lamp_code == "JOL":
-        for override in vm["joel_mapping"]["chapter_overrides"]:
-            if (kjv_chapter == override["kjv_from"]["chapter"] and
-                    override["kjv_from"]["verse_min"] <= kjv_verse <=
-                    override["kjv_from"]["verse_max"]):
-                return (
-                    override["heb"]["chapter"],
-                    kjv_verse + override["heb"]["verse_offset"],
-                )
-        # Fall through: Joel 1:1-20, 2:1-27 align directly
-        return (kjv_chapter, kjv_verse)
+    overrides = vm["book_overrides"].get(code, [])
+    for override in overrides:
+        if override.get("_note") and "kjv_from" not in override:
+            continue
+        f = override["kjv_from"]
+        if kjv_chapter == f["chapter"] and f["verse_min"] <= kjv_verse <= f["verse_max"]:
+            heb = override["heb"]
+            primary = (heb["chapter"], kjv_verse + heb["verse_offset"])
+            targets = [primary]
+            for et in override.get("extra_targets", []):
+                targets.append((et["chapter"], et["verse"]))
+            return targets
 
-    # Malachi — ch 4 remap
-    if lamp_code == "MAL":
-        for override in vm["malachi_mapping"]["chapter_overrides"]:
-            if (kjv_chapter == override["kjv_from"]["chapter"] and
-                    override["kjv_from"]["verse_min"] <= kjv_verse <=
-                    override["kjv_from"]["verse_max"]):
-                return (
-                    override["heb"]["chapter"],
-                    kjv_verse + override["heb"]["verse_offset"],
-                )
-        # Mal 1-3 aligned directly
-        return (kjv_chapter, kjv_verse)
-
-    # All other aligned books: direct pass-through
-    return (kjv_chapter, kjv_verse)
+    # Default: direct pass-through (KJV.ch.v → Heb.ch.v)
+    return [(kjv_chapter, kjv_verse)]
 
 
 def main() -> int:
     if not KJV_SOURCE.exists():
-        print(f"ERROR: {KJV_SOURCE} not found. Run scripts/seed_translations_kjv_nt.py's fetch step first.")
+        print(f"ERROR: {KJV_SOURCE} not found.")
         return 1
     if not VERSIFICATION_MAP.exists():
         print(f"ERROR: {VERSIFICATION_MAP} not found.")
         return 1
 
     print("=" * 72)
-    print(" Lamp — KJV 1769 OT translation ingest (Phase 2C-6)")
+    print(" Lamp — KJV 1769 OT translation ingest (Phase 2C-7, full versification)")
     print("=" * 72)
 
     with open(KJV_SOURCE, encoding="utf-8") as f:
@@ -120,142 +117,150 @@ def main() -> int:
     with open(VERSIFICATION_MAP, encoding="utf-8") as f:
         vm = json.load(f)
 
-    skipped_books = set(vm["skipped_books"].keys()) - {"_doc"}
-    print(f"Skipped books (deferred — complex versification): {sorted(skipped_books)}")
-    print()
-
     store = GraphStore(graph_path=GRAPH_FILE, verse_db_path=VERSES_DB_FILE)
     store.load()
 
-    translations: list[TranslationText] = []
-    per_book: dict[str, dict] = {}  # code -> {ingested, unmapped}
-    unmapped_examples: list[tuple[str, str]] = []  # (kjv_ref, reason)
+    # Aggregate: target_verse_id -> list of KJV texts to concatenate
+    by_target: dict[str, list[str]] = defaultdict(list)
+    per_book_kjv: dict[str, int] = defaultdict(int)
+    per_book_attached: dict[str, int] = defaultdict(int)
+    per_book_unmapped: dict[str, int] = defaultdict(int)
+    unmapped_examples: list[tuple[str, str]] = []
 
     t_start = time.perf_counter()
 
     for book_idx, book_data in enumerate(kjv["books"]):
-        if book_idx >= 39:  # NT — handled by seed_translations_kjv_nt.py
+        if book_idx >= 39:  # NT handled by seed_translations_kjv_nt.py
             break
         kjv_name = book_data["name"]
-        lamp_code = KJV_OT_NAME_TO_LAMP.get(kjv_name)
-        if not lamp_code:
+        code = KJV_OT_NAME_TO_LAMP.get(kjv_name)
+        if not code:
             print(f"  ! unmapped book {kjv_name!r}, skipping")
             continue
-        if lamp_code in skipped_books:
-            per_book[lamp_code] = {"ingested": 0, "skipped_book": True, "kjv_verse_count":
-                sum(len(ch["verses"]) for ch in book_data["chapters"])}
-            continue
-
-        ingested = 0
-        unmapped = 0
 
         for chapter_data in book_data["chapters"]:
-            kjv_chapter = chapter_data["chapter"]
+            kch = chapter_data["chapter"]
             for verse_data in chapter_data["verses"]:
-                kjv_verse = verse_data["verse"]
+                kvs = verse_data["verse"]
                 text = verse_data["text"]
+                per_book_kjv[code] += 1
 
-                mapping = map_kjv_to_heb(lamp_code, kjv_chapter, kjv_verse, vm)
-                if mapping is None:
-                    unmapped += 1
-                    if len(unmapped_examples) < 5:
-                        unmapped_examples.append(
-                            (f"{kjv_name} {kjv_chapter}:{kjv_verse}", "mapping returned None")
-                        )
-                    continue
+                targets = resolve_kjv_verse(code, kch, kvs, vm)
+                attached_any = False
+                for hch, hvs in targets:
+                    target_id = f"verse:{code}.{hch}.{hvs}"
+                    if target_id not in store.G:
+                        if len(unmapped_examples) < 12:
+                            unmapped_examples.append(
+                                (f"{kjv_name} {kch}:{kvs} → {target_id}", "target verse node missing")
+                            )
+                        continue
+                    by_target[target_id].append(text)
+                    attached_any = True
 
-                heb_chapter, heb_verse = mapping
-                verse_id = f"verse:{lamp_code}.{heb_chapter}.{heb_verse}"
+                if attached_any:
+                    per_book_attached[code] += 1
+                else:
+                    per_book_unmapped[code] += 1
 
-                if verse_id not in store.G:
-                    unmapped += 1
-                    if len(unmapped_examples) < 5:
-                        unmapped_examples.append(
-                            (f"{kjv_name} {kjv_chapter}:{kjv_verse} → {verse_id}",
-                             "target verse node missing"),
-                        )
-                    continue
+    # Build TranslationText rows. Multiple KJV verses targeting the same Heb verse
+    # have their texts concatenated with MERGE_SEPARATOR.
+    translations: list[TranslationText] = []
+    merge_count = 0
+    for target_id, texts in by_target.items():
+        if len(texts) > 1:
+            merge_count += 1
+            merged = MERGE_SEPARATOR.join(texts)
+        else:
+            merged = texts[0]
+        translations.append(TranslationText(
+            translation=TRANSLATION_ID,
+            verse_id=target_id,
+            text=merged,
+            source=TRANSLATION_SOURCE,
+            source_tier=TRANSLATION_TIER,
+        ))
 
-                translations.append(TranslationText(
-                    translation=TRANSLATION_ID,
-                    verse_id=verse_id,
-                    text=text,
-                    source=TRANSLATION_SOURCE,
-                    source_tier=TRANSLATION_TIER,
-                ))
-                ingested += 1
-
-        per_book[lamp_code] = {"ingested": ingested, "unmapped": unmapped}
-
-    # Batch insert
     inserted = store.verses.insert_translations(translations)
     t_total = time.perf_counter() - t_start
 
     # Report
-    print(f"{'Book':<6} {'Ingested':>10} {'Unmapped':>10}")
+    print(f"{'Book':<6} {'KJV verses':>11} {'Attached':>10} {'Unmapped':>10}")
     print("-" * 72)
-    total_ingested = 0
-    total_unmapped = 0
-    skipped_verse_count = 0
-    for code in sorted(per_book.keys(), key=lambda c: _canonical_index(c)):
-        info = per_book[code]
-        if info.get("skipped_book"):
-            print(f"{code:<6} {'—':>10} {'—':>10}  [SKIPPED — see versification map]")
-            skipped_verse_count += info.get("kjv_verse_count", 0)
-        else:
-            ing = info["ingested"]
-            unm = info["unmapped"]
-            total_ingested += ing
-            total_unmapped += unm
-            marker = "  ⚠" if unm > 0 else ""
-            print(f"{code:<6} {ing:>10} {unm:>10}{marker}")
+    total_kjv = total_attached = total_unmapped = 0
+    for code in OT_ORDER:
+        if code not in per_book_kjv:
+            continue
+        kjv_n = per_book_kjv[code]
+        att_n = per_book_attached[code]
+        unm_n = per_book_unmapped[code]
+        total_kjv += kjv_n
+        total_attached += att_n
+        total_unmapped += unm_n
+        marker = "  ⚠" if unm_n > 0 else ""
+        print(f"{code:<6} {kjv_n:>11} {att_n:>10} {unm_n:>10}{marker}")
 
     print("-" * 72)
-    print(f"{'TOTAL':<6} {total_ingested:>10} {total_unmapped:>10}  ({t_total:.2f}s)")
+    print(f"{'TOTAL':<6} {total_kjv:>11} {total_attached:>10} {total_unmapped:>10}  ({t_total:.2f}s)")
     print()
-    print(f"Translation rows inserted:      {inserted}")
-    print(f"Verses in skipped books (KJV):  {skipped_verse_count}  (not ingested this phase)")
+    print(f"Translation rows inserted (after merge):  {inserted}")
+    print(f"Heb verses receiving multi-KJV merge:     {merge_count}")
+    if merge_count:
+        for tid, txts in by_target.items():
+            if len(txts) > 1:
+                print(f"  merged at {tid}: {len(txts)} KJV verses concatenated")
 
     if unmapped_examples:
         print()
-        print("Sample unmapped cases:")
+        print("Unmapped cases:")
         for ref, reason in unmapped_examples:
             print(f"  {ref} — {reason}")
 
-    # Spot checks
+    # Spot-checks across all the boundary cases
     print()
     print("Spot checks:")
-    v = store.verses.get_translations_for_verse("verse:GEN.1.1")
-    print(f"  Gen 1:1 KJV: {v[0].text if v else '(none)'}")
-    v = store.verses.get_translations_for_verse("verse:PSA.3.2")
-    print(f"  Ps 3:2 (Heb; KJV Ps 3:1): {v[0].text if v else '(none)'}")
-    v = store.verses.get_translations_for_verse("verse:JOL.3.1")
-    print(f"  Joel 3:1 (Heb; KJV Joel 2:28): {v[0].text if v else '(none)'}")
-    v = store.verses.get_translations_for_verse("verse:MAL.3.19")
-    print(f"  Mal 3:19 (Heb; KJV Mal 4:1): {v[0].text if v else '(none)'}")
+    spots = [
+        ("verse:GEN.1.1", "Gen 1:1"),
+        ("verse:GEN.32.1", "Gen 32:1 Heb (= KJV 31:55, 'Laban rose up')"),
+        ("verse:EXO.7.26", "Exo 7:26 Heb (= KJV 8:1, frog warning)"),
+        ("verse:LEV.5.20", "Lev 5:20 Heb (= KJV 6:1, 'LORD spake')"),
+        ("verse:NUM.17.1", "Num 17:1 Heb (= KJV 16:36, 'Aaron returned')"),
+        ("verse:NUM.25.19", "Num 25:19 Heb (= KJV 26:1a, 'after the plague')"),
+        ("verse:NUM.30.1",  "Num 30:1 Heb (= KJV 29:40, 'Moses told Israel')"),
+        ("verse:DEU.13.1",  "Deu 13:1 Heb (= KJV 12:32, 'observe to do it')"),
+        ("verse:DEU.28.69", "Deu 28:69 Heb (= KJV 29:1, 'words of the covenant')"),
+        ("verse:1SA.21.1",  "1Sa 21:1 Heb (= KJV 20:42b, 'arose and departed')"),
+        ("verse:1KI.5.1",   "1Ki 5:1 Heb (= KJV 4:21, 'Solomon reigned')"),
+        ("verse:1CH.5.27",  "1Ch 5:27 Heb (= KJV 6:1, 'sons of Levi')"),
+        ("verse:NEH.3.33",  "Neh 3:33 Heb (= KJV 4:1, 'Sanballat')"),
+        ("verse:JOB.40.25", "Job 40:25 Heb (= KJV 41:1, 'leviathan')"),
+        ("verse:PSA.3.2",   "Ps 3:2 Heb (= KJV 3:1, 'how are they increased')"),
+        ("verse:PSA.11.7",  "Ps 11:7 Heb (= KJV 11:7, no offset — was wrongly +1)"),
+        ("verse:PSA.51.3",  "Ps 51:3 Heb (= KJV 51:1, 'have mercy', 2-line super)"),
+        ("verse:ISA.9.1",   "Isa 9:1 Heb (= KJV 9:2, after 'land of Zebulun')"),
+        ("verse:JER.8.23",  "Jer 8:23 Heb (= KJV 9:1, 'head were waters')"),
+        ("verse:EZK.21.1",  "Ezk 21:1 Heb (= KJV 20:45, 'word of the LORD')"),
+        ("verse:DAN.3.31",  "Dan 3:31 Heb (= KJV 4:1, 'Nebuchadnezzar to all')"),
+        ("verse:HOS.2.1",   "Hos 2:1 Heb (= KJV 1:10, 'as the sand of the sea')"),
+        ("verse:JOL.3.1",   "Joel 3:1 Heb (= KJV 2:28, 'pour out my Spirit')"),
+        ("verse:JON.2.1",   "Jonah 2:1 Heb (= KJV 1:17, 'great fish')"),
+        ("verse:ZEC.2.1",   "Zec 2:1 Heb (= KJV 1:18, 'four horns')"),
+        ("verse:MAL.3.19",  "Mal 3:19 Heb (= KJV 4:1, 'day cometh')"),
+    ]
+    for vid, label in spots:
+        v = store.verses.get_translations_for_verse(vid)
+        text = v[0].text if v else "(none)"
+        if len(text) > 90:
+            text = text[:90] + "…"
+        print(f"  {label:<55}  {text}")
 
     store.save()
     store.close()
 
     print("\n" + "=" * 72)
-    print(f" RESULT: INGESTED {inserted} KJV OT verses across "
-          f"{sum(1 for i in per_book.values() if not i.get('skipped_book'))} books")
+    print(f" RESULT: INGESTED {inserted} KJV OT verses across {sum(1 for c in per_book_kjv)} books")
     print("=" * 72)
     return 0
-
-
-def _canonical_index(code: str) -> int:
-    """Sort helper — canonical OT order."""
-    order = [
-        "GEN", "EXO", "LEV", "NUM", "DEU", "JOS", "JDG", "RUT", "1SA", "2SA",
-        "1KI", "2KI", "1CH", "2CH", "EZR", "NEH", "EST", "JOB", "PSA", "PRO",
-        "ECC", "SNG", "ISA", "JER", "LAM", "EZK", "DAN", "HOS", "JOL", "AMO",
-        "OBA", "JON", "MIC", "NAM", "HAB", "ZEP", "HAG", "ZEC", "MAL",
-    ]
-    try:
-        return order.index(code)
-    except ValueError:
-        return 999
 
 
 if __name__ == "__main__":

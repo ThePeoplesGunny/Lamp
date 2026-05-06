@@ -1,47 +1,204 @@
 {
-  "_schema": "KJV → Hebrew (OSHB) versification mapping for books where they diverge. Uniform-offset psalms and chapter-renumber books are handled; books with complex chapter-boundary shifts (Num, 1Sam, 1Kgs, 1Chr, Neh, Isa) are listed as `skipped_books` and will be added in a follow-up phase using authoritative per-verse mappings.",
-  "_source_notes": "Psalms offsets derived algorithmically from verse-count differences between KJV and OSHB (Phase 2C-6). Joel and Malachi chapter mappings are sourced from standard versification tables (e.g. BDB, BHS introductions — widely documented textual-tradition divergence).",
+  "_schema": "KJV → Hebrew (OSHB/WLC) versification map. For each KJV OT verse, computes the Hebrew verse_id(s) it should attach to. Two layers: (a) `psalms_offsets` — chapter→offset for Psalms; (b) `book_overrides` — per-book per-range overrides for chapter-boundary shifts. KJV verses without a matching override fall through to direct (KJV.ch.v → Heb.ch.v). An override may carry `extra_targets` to encode merge cases (one KJV verse covers multiple Heb verses, or vice versa).",
+  "_source_notes": "All offsets and overrides verified against OSHB chapter sizes and the KJV scrollmapper text. Boundary-verse content was checked verse-by-verse via _probe_oshb_verses scripts before encoding. Where one KJV verse covers two Heb verses (NUM 26:1 = Heb 25:19+26:1; 1SA 20:42 = Heb 20:42+21:1; 1CH 12:4 = Heb 12:4+5; 1KI 22:43 = Heb 22:43+44; ISA 64:1 = Heb 63:19+64:1) we list the secondary Heb verse under `extra_targets`. Where two KJV verses collapse into one Heb verse (NEH 7:67-68 = Heb 7:67), the ingest concatenates the two KJV texts at the same Heb target.",
+  "_phase": "Phase 2C-7 — full KJV OT versification (closes the 6-skipped-books gap and the 66 chapter-boundary gap verses from Phase 2C-6).",
 
   "psalms_offsets": {
-    "_doc": "For each KJV Psalms chapter with a superscription in the Hebrew, add offset to the KJV verse number to get the Hebrew verse. E.g. offset=1 means KJV Ps 3:1 → Heb Ps 3:2.",
+    "_doc": "OSHB - KJV chapter-size delta. Chapters where Hebrew numbers a 1-line superscription as v.1 get offset +1; two-line superscriptions (Pss 51, 52, 54, 60) get offset +2. Chapters not listed have offset 0 (KJV and OSHB agree on numbering).",
     "3": 1, "4": 1, "5": 1, "6": 1, "7": 1, "8": 1, "9": 1,
-    "11": 1, "12": 1, "13": 1, "14": 1, "15": 1, "16": 1, "17": 1,
-    "18": 1, "19": 1, "20": 1, "21": 1, "22": 1, "23": 1, "24": 1,
-    "25": 1, "26": 1, "27": 1, "28": 1, "29": 1, "30": 1, "31": 1,
-    "32": 1, "34": 1, "36": 1, "38": 1, "39": 1, "40": 1, "41": 1,
-    "42": 1, "44": 1, "45": 1, "46": 1, "47": 1, "48": 1, "49": 1,
-    "50": 1, "51": 2, "52": 2, "53": 1, "54": 2, "55": 1, "56": 1,
-    "57": 1, "58": 1, "59": 1, "60": 2, "61": 1, "62": 1, "63": 1,
-    "64": 1, "65": 1, "67": 1, "68": 1, "69": 1, "70": 1, "75": 1,
-    "76": 1, "77": 1, "80": 1, "81": 1, "83": 1, "84": 1, "85": 1,
-    "88": 1, "89": 1, "92": 1, "102": 1, "108": 1, "140": 1, "142": 1
+    "12": 1,
+    "18": 1, "19": 1, "20": 1, "21": 1, "22": 1,
+    "30": 1, "31": 1,
+    "34": 1, "36": 1, "38": 1, "39": 1, "40": 1, "41": 1, "42": 1,
+    "44": 1, "45": 1, "46": 1, "47": 1, "48": 1, "49": 1,
+    "51": 2, "52": 2, "53": 1, "54": 2, "55": 1, "56": 1, "57": 1, "58": 1, "59": 1,
+    "60": 2, "61": 1, "62": 1, "63": 1, "64": 1, "65": 1,
+    "67": 1, "68": 1, "69": 1, "70": 1,
+    "75": 1, "76": 1, "77": 1,
+    "80": 1, "81": 1,
+    "83": 1, "84": 1, "85": 1,
+    "88": 1, "89": 1,
+    "92": 1,
+    "102": 1, "108": 1,
+    "140": 1, "142": 1
   },
 
-  "joel_mapping": {
-    "_doc": "KJV Joel has 3 chapters; Hebrew has 4. KJV 2:28-32 = Heb 3:1-5 (new chapter); KJV 3:1-21 = Heb 4:1-21.",
-    "chapter_overrides": [
-      {"kjv_from": {"chapter": 2, "verse_min": 28, "verse_max": 32},
-       "heb": {"chapter": 3, "verse_offset": -27}},
-      {"kjv_from": {"chapter": 3, "verse_min": 1, "verse_max": 21},
-       "heb": {"chapter": 4, "verse_offset": 0}}
+  "book_overrides": {
+    "_doc": "Each entry: kjv_from = (chapter, verse_min..verse_max) range in KJV; heb = (chapter, verse_offset) — the Hebrew chapter and the offset to add to KJV verse number to get the Heb verse number. Optional `extra_targets` lists additional Heb (chapter, verse) targets that should also receive this KJV verse's text (for merge cases).",
+
+    "GEN": [
+      {"kjv_from": {"chapter": 31, "verse_min": 55, "verse_max": 55}, "heb": {"chapter": 32, "verse_offset": -54}},
+      {"kjv_from": {"chapter": 32, "verse_min": 1, "verse_max": 32},  "heb": {"chapter": 32, "verse_offset": 1}}
+    ],
+
+    "EXO": [
+      {"kjv_from": {"chapter": 8, "verse_min": 1, "verse_max": 4},   "heb": {"chapter": 7, "verse_offset": 25}},
+      {"kjv_from": {"chapter": 8, "verse_min": 5, "verse_max": 32},  "heb": {"chapter": 8, "verse_offset": -4}},
+      {"kjv_from": {"chapter": 22, "verse_min": 1, "verse_max": 1},  "heb": {"chapter": 21, "verse_offset": 36}},
+      {"kjv_from": {"chapter": 22, "verse_min": 2, "verse_max": 31}, "heb": {"chapter": 22, "verse_offset": -1}}
+    ],
+
+    "LEV": [
+      {"kjv_from": {"chapter": 6, "verse_min": 1, "verse_max": 7},   "heb": {"chapter": 5, "verse_offset": 19}},
+      {"kjv_from": {"chapter": 6, "verse_min": 8, "verse_max": 30},  "heb": {"chapter": 6, "verse_offset": -7}}
+    ],
+
+    "NUM": [
+      {"_note": "NUM 16/17 split (Korah/Aaron's rod boundary) — Heb 17:1-15 = KJV 16:36-50.",
+       "kjv_from": {"chapter": 16, "verse_min": 36, "verse_max": 50}, "heb": {"chapter": 17, "verse_offset": -35}},
+      {"kjv_from": {"chapter": 17, "verse_min": 1, "verse_max": 13},  "heb": {"chapter": 17, "verse_offset": 15}},
+      {"_note": "KJV 26:1 ('And it came to pass after the plague…and the LORD spake unto Moses') covers Heb 25:19 + Heb 26:1.",
+       "kjv_from": {"chapter": 26, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 26, "verse_offset": 0},
+       "extra_targets": [{"chapter": 25, "verse": 19}]},
+      {"kjv_from": {"chapter": 29, "verse_min": 40, "verse_max": 40}, "heb": {"chapter": 30, "verse_offset": -39}},
+      {"kjv_from": {"chapter": 30, "verse_min": 1, "verse_max": 16},  "heb": {"chapter": 30, "verse_offset": 1}}
+    ],
+
+    "DEU": [
+      {"kjv_from": {"chapter": 12, "verse_min": 32, "verse_max": 32}, "heb": {"chapter": 13, "verse_offset": -31}},
+      {"kjv_from": {"chapter": 13, "verse_min": 1, "verse_max": 18},  "heb": {"chapter": 13, "verse_offset": 1}},
+      {"kjv_from": {"chapter": 22, "verse_min": 30, "verse_max": 30}, "heb": {"chapter": 23, "verse_offset": -29}},
+      {"kjv_from": {"chapter": 23, "verse_min": 1, "verse_max": 25},  "heb": {"chapter": 23, "verse_offset": 1}},
+      {"kjv_from": {"chapter": 29, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 28, "verse_offset": 68}},
+      {"kjv_from": {"chapter": 29, "verse_min": 2, "verse_max": 29},  "heb": {"chapter": 29, "verse_offset": -1}}
+    ],
+
+    "1SA": [
+      {"_note": "KJV 20:42 ('And Jonathan said to David, Go in peace... And he arose and departed') covers Heb 20:42 + Heb 21:1.",
+       "kjv_from": {"chapter": 20, "verse_min": 42, "verse_max": 42}, "heb": {"chapter": 20, "verse_offset": 0},
+       "extra_targets": [{"chapter": 21, "verse": 1}]},
+      {"kjv_from": {"chapter": 21, "verse_min": 1, "verse_max": 15},  "heb": {"chapter": 21, "verse_offset": 1}},
+      {"kjv_from": {"chapter": 23, "verse_min": 29, "verse_max": 29}, "heb": {"chapter": 24, "verse_offset": -28}},
+      {"kjv_from": {"chapter": 24, "verse_min": 1, "verse_max": 22},  "heb": {"chapter": 24, "verse_offset": 1}}
+    ],
+
+    "2SA": [
+      {"kjv_from": {"chapter": 18, "verse_min": 33, "verse_max": 33}, "heb": {"chapter": 19, "verse_offset": -32}},
+      {"kjv_from": {"chapter": 19, "verse_min": 1, "verse_max": 43},  "heb": {"chapter": 19, "verse_offset": 1}}
+    ],
+
+    "1KI": [
+      {"_note": "1KI 4/5 split — Heb 5:1-14 = KJV 4:21-34 (Solomon's wisdom and provisions narrative).",
+       "kjv_from": {"chapter": 4, "verse_min": 21, "verse_max": 34}, "heb": {"chapter": 5, "verse_offset": -20}},
+      {"kjv_from": {"chapter": 5, "verse_min": 1, "verse_max": 18},  "heb": {"chapter": 5, "verse_offset": 14}},
+      {"_note": "KJV 22:43 ('And he walked in all the ways of Asa his father… howbeit the high places…') covers Heb 22:43 + Heb 22:44.",
+       "kjv_from": {"chapter": 22, "verse_min": 43, "verse_max": 43}, "heb": {"chapter": 22, "verse_offset": 0},
+       "extra_targets": [{"chapter": 22, "verse": 44}]},
+      {"kjv_from": {"chapter": 22, "verse_min": 44, "verse_max": 53}, "heb": {"chapter": 22, "verse_offset": 1}}
+    ],
+
+    "2KI": [
+      {"kjv_from": {"chapter": 11, "verse_min": 21, "verse_max": 21}, "heb": {"chapter": 12, "verse_offset": -20}},
+      {"kjv_from": {"chapter": 12, "verse_min": 1, "verse_max": 21},  "heb": {"chapter": 12, "verse_offset": 1}}
+    ],
+
+    "1CH": [
+      {"_note": "1CH 5/6 split — Heb 5:27-41 = KJV 6:1-15 (high-priestly genealogy).",
+       "kjv_from": {"chapter": 6, "verse_min": 1, "verse_max": 15},  "heb": {"chapter": 5, "verse_offset": 26}},
+      {"kjv_from": {"chapter": 6, "verse_min": 16, "verse_max": 81}, "heb": {"chapter": 6, "verse_offset": -15}},
+      {"_note": "KJV 12:4 ('Ismaiah the Gibeonite… and Jeremiah, and Jahaziel…') covers Heb 12:4 + Heb 12:5.",
+       "kjv_from": {"chapter": 12, "verse_min": 4, "verse_max": 4},   "heb": {"chapter": 12, "verse_offset": 0},
+       "extra_targets": [{"chapter": 12, "verse": 5}]},
+      {"kjv_from": {"chapter": 12, "verse_min": 5, "verse_max": 40},  "heb": {"chapter": 12, "verse_offset": 1}}
+    ],
+
+    "2CH": [
+      {"kjv_from": {"chapter": 2, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 1, "verse_offset": 17}},
+      {"kjv_from": {"chapter": 2, "verse_min": 2, "verse_max": 18},  "heb": {"chapter": 2, "verse_offset": -1}},
+      {"kjv_from": {"chapter": 14, "verse_min": 1, "verse_max": 1},  "heb": {"chapter": 13, "verse_offset": 22}},
+      {"kjv_from": {"chapter": 14, "verse_min": 2, "verse_max": 15}, "heb": {"chapter": 14, "verse_offset": -1}}
+    ],
+
+    "NEH": [
+      {"_note": "NEH 3/4 split — Heb 3:33-38 = KJV 4:1-6 (Sanballat's mocking).",
+       "kjv_from": {"chapter": 4, "verse_min": 1, "verse_max": 6},   "heb": {"chapter": 3, "verse_offset": 32}},
+      {"kjv_from": {"chapter": 4, "verse_min": 7, "verse_max": 23},  "heb": {"chapter": 4, "verse_offset": -6}},
+      {"_note": "Heb 7:67 absorbs both KJV 7:67 (singing men/women) and KJV 7:68 (horses/mules); thereafter Heb 7:68-72 = KJV 7:69-73.",
+       "kjv_from": {"chapter": 7, "verse_min": 68, "verse_max": 73},  "heb": {"chapter": 7, "verse_offset": -1}},
+      {"kjv_from": {"chapter": 9, "verse_min": 38, "verse_max": 38}, "heb": {"chapter": 10, "verse_offset": -37}},
+      {"kjv_from": {"chapter": 10, "verse_min": 1, "verse_max": 39},  "heb": {"chapter": 10, "verse_offset": 1}}
+    ],
+
+    "JOB": [
+      {"kjv_from": {"chapter": 41, "verse_min": 1, "verse_max": 8},   "heb": {"chapter": 40, "verse_offset": 24}},
+      {"kjv_from": {"chapter": 41, "verse_min": 9, "verse_max": 34},  "heb": {"chapter": 41, "verse_offset": -8}}
+    ],
+
+    "ECC": [
+      {"kjv_from": {"chapter": 5, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 4, "verse_offset": 16}},
+      {"kjv_from": {"chapter": 5, "verse_min": 2, "verse_max": 20},  "heb": {"chapter": 5, "verse_offset": -1}}
+    ],
+
+    "SNG": [
+      {"kjv_from": {"chapter": 6, "verse_min": 13, "verse_max": 13}, "heb": {"chapter": 7, "verse_offset": -12}},
+      {"kjv_from": {"chapter": 7, "verse_min": 1, "verse_max": 13},  "heb": {"chapter": 7, "verse_offset": 1}}
+    ],
+
+    "ISA": [
+      {"kjv_from": {"chapter": 9, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 8, "verse_offset": 22}},
+      {"kjv_from": {"chapter": 9, "verse_min": 2, "verse_max": 21},  "heb": {"chapter": 9, "verse_offset": -1}},
+      {"_note": "KJV 64:1 ('Oh that thou wouldest rend the heavens…') covers Heb 63:19 (closing thought) + Heb 64:1 (continues).",
+       "kjv_from": {"chapter": 64, "verse_min": 1, "verse_max": 1},  "heb": {"chapter": 63, "verse_offset": 18},
+       "extra_targets": [{"chapter": 64, "verse": 1}]},
+      {"kjv_from": {"chapter": 64, "verse_min": 2, "verse_max": 12}, "heb": {"chapter": 64, "verse_offset": -1}}
+    ],
+
+    "JER": [
+      {"kjv_from": {"chapter": 9, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 8, "verse_offset": 22}},
+      {"kjv_from": {"chapter": 9, "verse_min": 2, "verse_max": 26},  "heb": {"chapter": 9, "verse_offset": -1}}
+    ],
+
+    "EZK": [
+      {"kjv_from": {"chapter": 20, "verse_min": 45, "verse_max": 49}, "heb": {"chapter": 21, "verse_offset": -44}},
+      {"kjv_from": {"chapter": 21, "verse_min": 1, "verse_max": 32},  "heb": {"chapter": 21, "verse_offset": 5}}
+    ],
+
+    "DAN": [
+      {"_note": "Heb 3:31-33 = KJV 4:1-3 (Nebuchadnezzar's letter prefix).",
+       "kjv_from": {"chapter": 4, "verse_min": 1, "verse_max": 3},   "heb": {"chapter": 3, "verse_offset": 30}},
+      {"kjv_from": {"chapter": 4, "verse_min": 4, "verse_max": 37},  "heb": {"chapter": 4, "verse_offset": -3}},
+      {"kjv_from": {"chapter": 5, "verse_min": 31, "verse_max": 31}, "heb": {"chapter": 6, "verse_offset": -30}},
+      {"kjv_from": {"chapter": 6, "verse_min": 1, "verse_max": 28},  "heb": {"chapter": 6, "verse_offset": 1}}
+    ],
+
+    "HOS": [
+      {"kjv_from": {"chapter": 1, "verse_min": 10, "verse_max": 11},  "heb": {"chapter": 2, "verse_offset": -9}},
+      {"kjv_from": {"chapter": 2, "verse_min": 1, "verse_max": 23},   "heb": {"chapter": 2, "verse_offset": 2}},
+      {"kjv_from": {"chapter": 11, "verse_min": 12, "verse_max": 12}, "heb": {"chapter": 12, "verse_offset": -11}},
+      {"kjv_from": {"chapter": 12, "verse_min": 1, "verse_max": 14},  "heb": {"chapter": 12, "verse_offset": 1}},
+      {"kjv_from": {"chapter": 13, "verse_min": 16, "verse_max": 16}, "heb": {"chapter": 14, "verse_offset": -15}},
+      {"kjv_from": {"chapter": 14, "verse_min": 1, "verse_max": 9},   "heb": {"chapter": 14, "verse_offset": 1}}
+    ],
+
+    "JOL": [
+      {"_note": "KJV Joel has 3 chapters; Heb has 4. KJV 2:28-32 = Heb 3:1-5; KJV 3:1-21 = Heb 4:1-21.",
+       "kjv_from": {"chapter": 2, "verse_min": 28, "verse_max": 32}, "heb": {"chapter": 3, "verse_offset": -27}},
+      {"kjv_from": {"chapter": 3, "verse_min": 1, "verse_max": 21},  "heb": {"chapter": 4, "verse_offset": 0}}
+    ],
+
+    "JON": [
+      {"kjv_from": {"chapter": 1, "verse_min": 17, "verse_max": 17}, "heb": {"chapter": 2, "verse_offset": -16}},
+      {"kjv_from": {"chapter": 2, "verse_min": 1, "verse_max": 10},  "heb": {"chapter": 2, "verse_offset": 1}}
+    ],
+
+    "MIC": [
+      {"kjv_from": {"chapter": 5, "verse_min": 1, "verse_max": 1},   "heb": {"chapter": 4, "verse_offset": 13}},
+      {"kjv_from": {"chapter": 5, "verse_min": 2, "verse_max": 15},  "heb": {"chapter": 5, "verse_offset": -1}}
+    ],
+
+    "NAM": [
+      {"kjv_from": {"chapter": 1, "verse_min": 15, "verse_max": 15}, "heb": {"chapter": 2, "verse_offset": -14}},
+      {"kjv_from": {"chapter": 2, "verse_min": 1, "verse_max": 13},  "heb": {"chapter": 2, "verse_offset": 1}}
+    ],
+
+    "ZEC": [
+      {"kjv_from": {"chapter": 1, "verse_min": 18, "verse_max": 21}, "heb": {"chapter": 2, "verse_offset": -17}},
+      {"kjv_from": {"chapter": 2, "verse_min": 1, "verse_max": 13},  "heb": {"chapter": 2, "verse_offset": 4}}
+    ],
+
+    "MAL": [
+      {"_note": "KJV Mal has 4 chapters; Heb has 3. KJV 4:1-6 = Heb 3:19-24.",
+       "kjv_from": {"chapter": 4, "verse_min": 1, "verse_max": 6},   "heb": {"chapter": 3, "verse_offset": 18}}
     ]
-  },
-
-  "malachi_mapping": {
-    "_doc": "KJV Malachi has 4 chapters; Hebrew has 3. KJV 4:1-6 = Heb 3:19-24. Chapters 1-3 align verse-for-verse.",
-    "chapter_overrides": [
-      {"kjv_from": {"chapter": 4, "verse_min": 1, "verse_max": 6},
-       "heb": {"chapter": 3, "verse_offset": 18}}
-    ]
-  },
-
-  "skipped_books": {
-    "_doc": "Books whose KJV → Hebrew mapping involves chapter-boundary shifts of more than ±1 verse, requiring authoritative per-verse mappings. Deferred to a follow-up phase. Current KJV text for these books is NOT ingested; verse pages for these books will show only the Hebrew original until the mapping is completed.",
-    "NUM": "Ch 16/17 split differs by 15 verses (Heb 16:1-35 = KJV 16:1-35; KJV 16:36-50 = Heb 17:1-15); plus ±1 shifts at 25:19, 29:40, 30:1.",
-    "1SA": "Chapter boundaries at 21/22 and 23/24 differ by ±1 verse.",
-    "1KI": "Ch 4/5 boundary differs by 14 verses; plus 22:43/44.",
-    "1CH": "Ch 5/6 boundary differs by 15 verses; plus 12:40/41.",
-    "NEH": "Ch 3/4 boundary differs by 6 verses; plus ±1 at 7:68, 9:38, 10:1.",
-    "ISA": "Ch 8/9 boundary differs by 1 verse; plus 63:19/64:1."
   }
 }
