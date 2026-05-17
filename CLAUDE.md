@@ -4,6 +4,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # Lamp — Project Instructions
 
+## Project Intent & Boundaries
+
+**IS:** Investigation platform for original Hebrew/Greek biblical texts — surfaces patterns, connections, and structures not visible through translation. For one user (the developer).
+
+**IS NOT:** A Bible app. A devotional tool. A commentary system. A translation engine. A concordance replacement (though it contains concordance data). Not multi-user. Not deployed publicly (license constraints from MorphGNT/SBLGNT preclude commercial use).
+
+## Locked Decisions
+
+Decisions made with deliberate analysis. Do not relitigate without new evidence (per global P6).
+
+| # | Decision | Rationale | Date |
+|---|----------|-----------|------|
+| 1 | Verse nodes are first-class (Phase 2C-1) | Verses are the atomic unit of biblical text. Everything connects through them. | 2026-04 |
+| 2 | Exegetical/eisegetical boundary enforced at storage layer | Interpretive claims cannot masquerade as textual facts. Edge types declare their category. | 2026-04 |
+| 3 | Hebrew text three-layer storage (consonantal/pointed/cantillated) | Separable layers preserve pre-Masoretic, voweled, and full-accent forms independently. | 2026-04 |
+| 4 | Translations stored separately from canonical verse nodes | Enforces exegesis/eisegesis separation. Translation is interpretation, not source. | 2026-04 |
+| 5 | KJV-to-Hebrew versification uses generalized book_overrides schema | Handles all 39 OT books including structural chapter splits, Psalms offsets, merge cases. | 2026-05 |
+| 6 | STEPBible TAGNT rejected as citation source | TAGNT tags morphology + TIPNR proper-noun origins, NOT OT citation references. Curated path retained. | 2026-05 |
+| 7 | SBL-standard 3-letter book codes (mapped from OSIS on ingest) | Consistent cross-source addressing. | 2026-04 |
+
+## Source Provenance Tiers
+
+| Tier | Authority | Examples |
+|------|-----------|----------|
+| 0 | User attestation | Direct statements about project intent, interpretation choices |
+| 1 | Primary text sources (canonical) | OSHB/WLC (Hebrew OT), MorphGNT/SBLGNT (Greek NT) |
+| 2 | Historic translations (public domain) | KJV 1769 Oxford edition |
+| 3 | Secondary scholarly sources | Published quotation indices, commentaries, STEPBible datasets |
+| 4 | Speculative inference | Interpretive connections not grounded in tier 1-3 |
+
+Claims from tier 3+ must be explicitly noted. Tier 4 cannot be presented as fact.
+
+## Context-Dangerous Zones
+
+- **`backend/data/external/morphhb/`** — full OSHB clone (~50MB). Never bulk-load. Use ingest scripts or grep for specific books.
+- **`backend/data/external/morphgnt/`** — full MorphGNT clone. Same rule.
+- **`backend/data/graphs/lamp.json`** — serialized graph (grows with seeding). Read via GraphStore API, not raw.
+- **`backend/data/verses/verses.db`** — SQLite verse store (31K+ rows). Query via verse_store.py, not raw SQL dumps.
+
 ## Overview
 Biblical analytical tool — investigation platform for original Hebrew/Greek texts. Strips noise, surfaces patterns, connections, and structures not visible through translation.
 
@@ -128,3 +167,20 @@ scripts/
 - **(d) Browser-visual QA pass** of Phase 2D-4/2D-5 + everything built so far. Good URLs to spot-check: `/person/peter` (now has brother_of Andrew, disciple_of Jesus), `/person/herod_antipas` (now has father, brother, wife edges), `/place/jerusalem` (cross-canon — should show OT + NT mentions).
 - **(e) Safer graph-rebuild path** — `seed_graph.py` currently wipes verse SQLite via FK cascade. Could either make it additive (`.load()` + entity-only replace) or add a `reseed_all.sh` that runs the full 6-script chain.
 - **(f) Frontend rendering for new edge types** — `husband_of`, `brother_of`, `disciple_of` etc. are now in the data; `GenealogyTree` (OT-focused) doesn't traverse them. A fresh `RelationshipsPanel` or extended `PersonDetailPanel` could surface them.
+
+## Agents & Skills
+
+Three agents in `.claude/agents/` evaluate data integrity from specialized perspectives:
+- **text-integrity** — Hebrew three-layer fidelity, Greek morphology consistency, encoding correctness
+- **graph-analyst** — Relationship correctness, edge type validity, structural integrity, path analysis
+- **source-validator** — OSHB/MorphGNT consistency, license compliance, data freshness, provenance chain
+
+Three skills in `.claude/commands/`:
+- **/session-start** — state verification (tests, graph stats, verse counts, alignment)
+- **/session-close** — session close (state update, verification, commit)
+- **/verify** — change-type verification matrix (backend, frontend, schema, ingest, text, versification, edge)
+
+## Cross-Project Connections
+
+- **No direct dependencies.** Lamp is self-contained.
+- **Methodological inheritance:** Source provenance tiers and three-layer text fidelity model may inform other projects with structured data requirements.
