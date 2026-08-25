@@ -12,7 +12,7 @@ This agent evaluates text data through three fidelity lenses:
 
 For Greek (MorphGNT): 2-layer model — base text + morphological parsing. Accents and breathing marks preserved. Variant markers maintained.
 
-## Evaluation Protocol (per global P1)
+## Evaluation Protocol
 
 Every evaluation follows:
 
@@ -42,7 +42,7 @@ Every evaluation follows:
 - After any full reseed operation
 - When adding a new text source or translation layer
 
-## Source Provenance (per global P2)
+## Source Provenance — every claim carries an origin and a verification status
 
 - OSHB format documentation → tier 1 (authoritative for Hebrew text structure)
 - Unicode Standard Chapter 9 (Hebrew block) → tier 1 (authoritative for character classification)

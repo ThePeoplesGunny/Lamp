@@ -51,7 +51,7 @@ Report:
 - TECH_DEBT changes (if any)
 - Any discrepancies resolved
 
-## Verification by change type (P9)
+## Verification by change type — the method matches the blast radius
 
 - **Backend logic** → `cd backend && pytest` (full suite)
 - **Frontend component** → `npx vite build` + visual check if possible

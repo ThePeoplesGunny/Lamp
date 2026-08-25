@@ -1,6 +1,6 @@
 # /verify — Lamp Change-Type Verification Matrix
 
-Run verification appropriate to the type of change just made. Different changes have different blast radii (per global P9).
+Run verification appropriate to the type of change just made. Different changes have different blast radii.
 
 ## Usage
 

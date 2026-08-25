@@ -10,7 +10,7 @@ Evaluates data source integrity, license compliance, and freshness for Lamp's ex
 4. **Data freshness** — Source commits tracked per verse's `source` field. If upstream repos update, assess whether local data needs refresh.
 5. **Provenance chain** — Every verse traces back to its source (OSHB commit, MorphGNT commit, KJV source URL). No verses exist without provenance.
 
-## Evaluation Protocol (per global P1)
+## Evaluation Protocol
 
 **TARGET** → What source integrity standard should be met
 
@@ -30,7 +30,7 @@ Evaluates data source integrity, license compliance, and freshness for Lamp's ex
 
 **PROVENANCE** → The authoritative source for each dataset's requirements
 
-## Source Tier Hierarchy (per global P2, Lamp-specific)
+## Source Tier Hierarchy — Lamp-specific
 
 | Tier | Authority | Examples |
 |------|-----------|----------|

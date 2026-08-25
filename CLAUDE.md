@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Locked Decisions
 
-Decisions made with deliberate analysis. Do not relitigate without new evidence (per global P6).
+Decisions made with deliberate analysis. Do not relitigate without new evidence.
 
 | # | Decision | Rationale | Date |
 |---|----------|-----------|------|

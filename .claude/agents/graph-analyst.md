@@ -9,7 +9,7 @@ Evaluates the correctness and integrity of Lamp's property graph — node relati
 3. **Structural integrity** — No orphan nodes (nodes with zero edges except verse nodes which connect via MENTIONS). No self-loops. No duplicate edges. Directed edges point in the correct direction.
 4. **Path analysis** — Genealogical chains are acyclic. Chronological ordering is consistent (no child born before parent in AM years).
 
-## Evaluation Protocol (per global P1)
+## Evaluation Protocol
 
 **TARGET** → What graph property should be true (e.g., "all father_of edges point from male parent to child")
 
@@ -39,7 +39,7 @@ Evaluates the correctness and integrity of Lamp's property graph — node relati
 
 ## Exegetical/Eisegetical Boundary
 
-This is a LOCKED DECISION (per global P6): the boundary between exegetical and eisegetical relationships is enforced at the storage layer.
+This is a LOCKED DECISION: the boundary between exegetical and eisegetical relationships is enforced at the storage layer.
 
 - **Exegetical edges** (directly stated): MENTIONS, QUOTES, father_of, mother_of, wife_of, husband_of, brother_of, sister_of, disciple_of, slave_of, spoken_by, addressed_to, set_in
 - **Eisegetical edges** (interpretive): ALLUDES_TO, PARALLEL_TO, cousin_of (inferred), relative_of (imprecise)
