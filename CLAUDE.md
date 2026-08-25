@@ -176,7 +176,7 @@ Three agents in `.claude/agents/` evaluate data integrity from specialized persp
 - **source-validator** — OSHB/MorphGNT consistency, license compliance, data freshness, provenance chain
 
 Three skills in `.claude/commands/`:
-- **/session-start** — state verification (tests, graph stats, verse counts, alignment)
+- state verification (tests, graph stats, verse counts, alignment) runs from CLAUDE.md's command list; `/session-start` was retired 2026-08-19
 - **/session-close** — session close (state update, verification, commit)
 - **/verify** — change-type verification matrix (backend, frontend, schema, ingest, text, versification, edge)
 
