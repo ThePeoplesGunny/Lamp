@@ -1,0 +1,7 @@
+#!/bin/sh
+# >>> citation-gate (framework) >>>
+# Blocks a commit that ADDS a citation resolving nowhere. Delta only, never the backlog.
+# Authored in _framework_rebuild/.claude/tools/; re-run install_citation_gate.py to update.
+python "C:/claude/_framework_rebuild/.claude/tools/citation_gate.py" "$(git rev-parse --show-toplevel)" || exit 1
+# <<< citation-gate (framework) <<<
+
