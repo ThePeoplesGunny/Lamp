@@ -106,6 +106,55 @@ SCHEMA_MIGRATIONS: list[tuple[str, str, str]] = [
 ]
 
 
+# Columns of the `verses` table, id first. VERSE_UPSERT_SQL is built from this
+# list so the INSERT column list, the placeholder count and the DO UPDATE SET
+# clause can never drift apart. test_upsert_covers_every_verse_column compares
+# it against PRAGMA table_info at run time, so adding a column to SCHEMA_SQL
+# without adding it here fails the suite instead of silently going stale.
+VERSE_COLUMNS: list[str] = [
+    "id",
+    "book",
+    "chapter",
+    "verse",
+    "canon",
+    "language",
+    "text_canonical",
+    "text_consonantal",
+    "text_pointed",
+    "text_cantillated",
+    "text_plain",
+    "text_accented",
+    "parashah_marker",
+    "reversed_nun",
+    "notes_json",
+    "source",
+    "source_tier",
+]
+
+
+def _build_verse_upsert_sql() -> str:
+    """Upsert for `verses` — deliberately NOT "INSERT OR REPLACE".
+
+    SQLite implements REPLACE as DELETE-then-INSERT. With PRAGMA foreign_keys=ON
+    that DELETE fires ON DELETE CASCADE on translations.verse_id and verse_words,
+    so simply re-running an ingest script destroyed every attached translation
+    (31,104 KJV rows) without reporting anything. ON CONFLICT(id) DO UPDATE edits
+    the existing row in place, so child rows survive.
+    """
+    cols = ", ".join(VERSE_COLUMNS)
+    placeholders = ", ".join("?" for _ in VERSE_COLUMNS)
+    updates = ", ".join(
+        f"{c}=excluded.{c}" for c in VERSE_COLUMNS if c != "id"
+    )
+    return (
+        f"INSERT INTO verses ({cols}) VALUES ({placeholders}) "
+        f"ON CONFLICT(id) DO UPDATE SET {updates}"
+    )
+
+
+VERSE_UPSERT_SQL = _build_verse_upsert_sql()
+
+
 class VerseStore:
     """SQLite-backed verse text + translation store.
 
@@ -190,13 +239,7 @@ class VerseStore:
 
         with conn:
             conn.executemany(
-                "INSERT OR REPLACE INTO verses "
-                "(id, book, chapter, verse, canon, language, "
-                "text_canonical, "
-                "text_consonantal, text_pointed, text_cantillated, "
-                "text_plain, text_accented, "
-                "parashah_marker, reversed_nun, notes_json, source, source_tier) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                VERSE_UPSERT_SQL,
                 verse_rows,
             )
             verse_ids = [row[0] for row in verse_rows]

@@ -97,10 +97,10 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (107 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (116 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
-- Frontend build: `cd frontend && npm run build` currently **fails** on pre-existing `GenealogyTree.tsx` TS errors (lines 97-98). Use `cd frontend && npx vite build` to bypass `tsc -b` until those types are fixed (see "Known gaps").
+- Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
 - No Python lint/format tool is configured — match existing style.
 
 ## External data sources
@@ -123,14 +123,18 @@ scripts/
 
 **Version:** 0.2.0
 
-**Graph:** 31,172 verse nodes (23,213 Hebrew + 7,927 Greek + 32 KJV-only slots) + 429 entities (293 persons, 25 nations, 111 places). 2,763 edges (249 entity-entity + 2,370 verse→entity MENTIONS + 144 NT→OT QUOTES).
+**Graph:** 31,172 verse nodes (23,213 Hebrew + 7,927 Greek + 32 KJV-only slots) + 429 entities (293 persons, 25 nations, 111 places). 2,770 edges (249 entity-entity + 2,377 verse→entity MENTIONS + 144 NT→OT QUOTES).
 
 **Corpus:**
 - Hebrew OT (OSHB/WLC): 23,213 verses, 305,516 words with lemma + Strong's + morphology + ketiv/qere + parashah + reversed-nun
 - Greek NT (MorphGNT/SBLGNT): 7,927 verses, 137,554 words with lemma + POS + parsing codes
-- KJV 1769 translations: 31,102 verses attached (7,957 NT + 23,145 OT — full KJV OT, all 39 books)
+- KJV 1769 translations: **31,104 rows** in the `translations` table (7,957 NT + 23,147 OT — full KJV OT, all 39 books).
+  Two different quantities are in play and both are correct: the OT ingest reports **23,145 KJV source verses attached**,
+  while the table holds **23,147 rows**. 5 `extra_targets` entries attach one KJV verse to a second Hebrew verse
+  (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
+  into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 107 passing.
+**Tests:** 116 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -153,19 +157,19 @@ scripts/
 - **Phase 2C-7** — full KJV OT versification. `versification_kjv_to_heb.json` rewritten to a generalized `book_overrides` schema (per-book chapter-range overrides + optional `extra_targets` for merge cases). Closes both prior gaps: the 6 deferred books (NUM, 1SA, 1KI, 1CH, NEH, ISA — 5,554 verses) and the 66 chapter-boundary unmapped verses in aligned books. Also fixes a Phase 2C-6 bug — the Psalms offset table had +1 entries for 15 chapters where OSHB does NOT number the superscription separately (Pss 11, 13, 14, 15, 16, 17, 23, 24, 25, 26, 27, 28, 29, 32, 50); the new table is recomputed mechanically from OSHB↔KJV chapter-size deltas. All boundary verses verified by reading OSHB Hebrew content against expected KJV English at every divergent chapter pair (Num 16/17, 1Kgs 4/5, 1Chr 5/6 = the big structural splits; Gen 31/32, Lev 5/6, Exo 7/8, Deu 12/13, etc. = 51 ±1 trailing/leading shifts). Three Heb verses receive multi-KJV merges (`NEH 7:67`, `ISA 63:19`, `ISA 64:1`) where one KJV verse covers two Heb verses or vice versa — texts concatenated with " | ". Final: 23,145 KJV OT verses attached, 0 unmapped.
 - **Phase 2D-5** — comprehensive NT entity coverage. Persons: 40 → 182 (added 142 named NT figures). Places: 41 → 111 (added Jerusalem + 8 cross-canon places to `places.json`; added 47 NT-only places to `places_nt.json` covering Galilean towns, Pauline travel route, Revelation churches, Asia Minor regions, Mediterranean stops). Nations: 18 → 25 (added Romans, Samaritans, Parthians, Cretans, Idumeans, Galatians, Phoenicians). 61 NT biographical relationships seeded — Holy Family, John the Baptist's family, the Twelve as `disciple_of` Jesus, Bethany siblings, Caiaphas/Annas, Herodian dynasty (Herod the Great → Antipas/Archelaus/Philip Tetrarch + Antipas-Herodias-Salome), Agrippa I → Agrippa II/Bernice/Drusilla, Felix-Drusilla, Aquila-Priscilla, Onesimus-Philemon. New `EdgeType` values added: `husband_of`, `brother_of`, `sister_of`, `cousin_of`, `relative_of`, `son_in_law_of`, `daughter_in_law_of`, `disciple_of`, `slave_of`. MENTIONS edges grew 1,084 → 2,370 from the new anchor refs. 107 tests still pass.
 - **Phase 2D-6 batch 1** — QUOTES expansion, Hebrews. +28 NT→OT edges (Hebrews 16 → 44; overall 116 → 144). STEPBible TAGNT was investigated first as a bulk source per the speculative Next-candidate plan — confirmed it tags morphology + TIPNR proper-noun *origin* anchors (e.g. `Immanuel@Isa.7.14` is where the name was first introduced, NOT a citation marker) but does NOT carry inline OT-citation references; no quotation index exists elsewhere in STEPBible-Data. Fell back to curated expansion using a published quotation index as a factual checklist (a list of references is uncopyrightable). New Hebrews edges preserve LXX/MT deltas (Psa 40:7 σῶμα for MT 'ears opened'; Pro 3:12 LXX 'scourges' vs MT 'as a father delights'; Deu 32:43 4QDeutq agrees with LXX), re-quote relationships (Psa 95:7+11 trio at Heb 3:7,11,15 / 4:3,5,7; Psa 110:4 triple at Heb 5:6 / 7:17 / 7:21; Psa 40:7-8 split at Heb 10:5 / 10:7; Jer 31:31-34 anchor at Heb 8:8 + condensed re-quote at 10:16-17), and hermeneutical moves (Psa 2:7 dual application — enthronement at Heb 1:5, priestly calling at 5:5; Deu 32:35 redirected from Rom 12:19 'don't take vengeance' to Heb 10:30 'God will'; Moses' Deu 9:19 golden-calf trembling relocated to Sinai at Heb 12:21). All 107 tests still pass.
+- **Phase 2D-7** — closed two of the three standing gaps and corrected the record on a third.
+  **(1) GenealogyTree TS errors fixed.** `useNodesState([])` / `useEdgesState([])` inferred their state type as `never[]`, so `setNodes` and `setEdges` (lines 97-98) rejected real nodes and edges. Typed as `useNodesState<Node>([])` / `useEdgesState<Edge>([])`. `npm run build` now exits 0; `npm run lint` exits 0.
+  **(2) Destructive-reseed path closed at the root — and the previously documented mechanism was wrong.** `seed_graph.py` never opened `verses.db` at all; it constructed an empty `GraphStore`, never called `.load()`, and saved over `lamp.json`, erasing all 31,172 verse nodes and 144 verse→verse QUOTES edges. The translation loss happened one step later, during the recovery: `insert_verses` used `INSERT OR REPLACE`, which SQLite performs as DELETE-then-INSERT, firing `ON DELETE CASCADE` on `translations.verse_id`. Both halves fixed. `verse_store.py` now upserts via `INSERT … ON CONFLICT(id) DO UPDATE`, built from a `VERSE_COLUMNS` list so the column list, placeholders and SET clause cannot drift; `seed_graph.py` now loads the existing graph, replaces only person/place/nation nodes, relinks MENTIONS in-process via the new `lamp/ingest/verse_links.py`, and refuses to save if the verse-node count changed. Both old behaviours were replayed against the new tests and confirmed red first: translations 1 → 0 on reseed, verse nodes 3 → 0 and QUOTES 1 → 0 on entity reseed.
+  **(3) MENTIONS edges 2,370 → 2,377.** The live additive rerun recovered 7 edges that were never created because `seed_verse_links.py` last ran before Phase 2C-5 added the 32 KJV-only slots, so those refs were silently skipped as missing verse nodes. All 7 point at four SBLGNT-absent verses (`canonical_len=0`, 0 words, KJV source only): ACT 8:37 → Philip the evangelist + the Ethiopian eunuch; ACT 19:41 → Demetrius the silversmith + Ephesus; ACT 24:7 → Claudius Lysias + Felix; JHN 5:4 → the pool of Bethesda. `verses.db` was byte-identical before and after the run (115,998,720 bytes), confirming the graph reseed does not touch SQLite. 9 new tests; 107 → 116 passing.
 
 ### Known gaps / deferred work
 - **NT↔OT QUOTES — curated expansion in progress** — 144 high-confidence edges. Hebrews batch 1 done (44 edges); planned remaining batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Target ~250+. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
-- **KJV OT regenerates on graph rebuild** — `seed_graph.py` wipes the verse SQLite cascade (FK ON DELETE CASCADE from verses→translations), so translation reseed is required after any entity-seed change. Should add a doc note or a safer graph-only rebuild path.
 - **Browser-visual QA still pending** — Phase 2D-4's `QuotesSection` and Greek-name rendering pass typecheck + API probes but haven't been eyeballed in a browser. Good first things to open: `/verse/MAT.1.23` (virgin birth cite), `/verse/PSA.110.1` (3 NT citers), `/verse/HEB.10.5` (LXX σῶμα note), `/person/paul` (Greek Παῦλος), search header for "Peter".
-- **Pre-existing GenealogyTree.tsx TS errors** (lines 97-98) untouched across all Phase 2C/2D work — unrelated to the verse substrate, `vite build` tolerates them, `tsc -b` flags. `npm run build` therefore fails; use `npx vite build` until the types are fixed.
 
 ### Next candidates (pick direction next session)
 - **(a) Continue QUOTES expansion** — Hebrews batch 1 complete (+28 edges, 144 total). Remaining curated batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Note: STEPBible TAGNT was investigated as a bulk source but does NOT tag OT citations inline (only morphology + TIPNR proper-noun *origin* anchors), so curated path was retained. After QUOTES reach ~250+, add `ALLUDES_TO` + `PARALLEL_TO` edge types (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
 - **(b) Second translation** (e.g. ASV 1901, PD) for translation-drift side-by-side. Now that the KJV↔Heb versification map is solid, a second English translation can reuse the same `versification_kjv_to_heb.json` if it follows KJV numbering.
-- **(c) Fix pre-existing GenealogyTree TS errors** — unblocks `npm run build`; small cleanup.
 - **(d) Browser-visual QA pass** of Phase 2D-4/2D-5 + everything built so far. Good URLs to spot-check: `/person/peter` (now has brother_of Andrew, disciple_of Jesus), `/person/herod_antipas` (now has father, brother, wife edges), `/place/jerusalem` (cross-canon — should show OT + NT mentions).
-- **(e) Safer graph-rebuild path** — `seed_graph.py` currently wipes verse SQLite via FK cascade. Could either make it additive (`.load()` + entity-only replace) or add a `reseed_all.sh` that runs the full 6-script chain.
 - **(f) Frontend rendering for new edge types** — `husband_of`, `brother_of`, `disciple_of` etc. are now in the data; `GenealogyTree` (OT-focused) doesn't traverse them. A fresh `RelationshipsPanel` or extended `PersonDetailPanel` could surface them.
 
 ## Agents & Skills

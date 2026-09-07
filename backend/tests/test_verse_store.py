@@ -133,14 +133,17 @@ def test_batch_insert_and_fetch(store):
     assert len(fetched) == 5
 
 
-def test_insert_or_replace_semantics(store):
+def test_reinsert_updates_verse_and_purges_old_words(store):
     v1 = _make_verse(text_cantillated="original")
     store.insert_verses([v1])
     v2 = _make_verse(text_cantillated="updated")
     store.insert_verses([v2])
     fetched = store.get_verse("verse:GEN.1.1")
     assert fetched.text_cantillated == "updated"
-    # Word replacement: old words purged on re-insert
+    # Old words purged on re-insert. Under the former INSERT OR REPLACE this
+    # happened twice — once via the FK cascade, once via the explicit DELETE in
+    # insert_verses. The upsert deletes nothing, so that explicit DELETE is now
+    # the only thing clearing stale words; this assertion guards it.
     assert store.count_words() == 1
 
 
@@ -192,3 +195,104 @@ def test_translation_fk_cascade(store):
     with store._require():
         store._require().execute("DELETE FROM verses WHERE id = ?", ("verse:GEN.1.1",))
     assert store.get_translations_for_verse("verse:GEN.1.1") == []
+
+
+def test_reinsert_verse_preserves_translations(store):
+    """Re-ingesting a verse must NOT destroy its attached translations.
+
+    Regression guard. insert_verses originally used INSERT OR REPLACE, which
+    SQLite implements as DELETE-then-INSERT. With PRAGMA foreign_keys=ON that
+    DELETE fired the ON DELETE CASCADE on translations.verse_id, so re-running
+    seed_verses.py silently wiped all 31,104 KJV rows. The upsert form updates
+    the row in place and never deletes it, so the translation survives.
+    """
+    store.insert_verses([_make_verse()])
+    store.insert_translations([
+        TranslationText(
+            translation="KJV-1769",
+            verse_id="verse:GEN.1.1",
+            text="In the beginning God created the heaven and the earth.",
+            source="KJV-1769",
+            source_tier=4,
+        ),
+    ])
+    assert len(store.get_translations_for_verse("verse:GEN.1.1")) == 1
+
+    # Re-ingest the same verse id, as a reseed would.
+    store.insert_verses([_make_verse()])
+
+    survivors = store.get_translations_for_verse("verse:GEN.1.1")
+    assert len(survivors) == 1, "reseeding a verse destroyed its translations"
+    assert survivors[0].translation == "KJV-1769"
+
+
+def test_reinsert_verse_refreshes_all_columns(store):
+    """The upsert must refresh every column, not just the ones it happens to list.
+
+    INSERT OR REPLACE rewrote the whole row for free. An ON CONFLICT DO UPDATE
+    only touches enumerated columns, so a forgotten column would leave stale
+    text in place with no error.
+    """
+    store.insert_verses([_make_verse()])
+    updated = _make_verse(
+        text_consonantal="CHANGED-consonantal",
+        text_pointed="CHANGED-pointed",
+        text_cantillated="CHANGED-cantillated",
+        text_plain="CHANGED-plain",
+        text_accented="CHANGED-accented",
+        text_canonical="CHANGED-canonical",
+        parashah_marker="s",
+        reversed_nun=True,
+        source="OSHB-WLC@newcommit",
+        source_tier=2,
+        language="arc",
+    )
+    store.insert_verses([updated])
+
+    fetched = store.get_verse("verse:GEN.1.1")
+    assert fetched is not None
+    assert fetched.text_consonantal == "CHANGED-consonantal"
+    assert fetched.text_pointed == "CHANGED-pointed"
+    assert fetched.text_cantillated == "CHANGED-cantillated"
+    assert fetched.text_plain == "CHANGED-plain"
+    assert fetched.text_accented == "CHANGED-accented"
+    assert fetched.text_canonical == "CHANGED-canonical"
+    assert fetched.parashah_marker == "s"
+    assert fetched.reversed_nun is True
+    assert fetched.source == "OSHB-WLC@newcommit"
+    assert fetched.source_tier == 2
+    assert fetched.language == "arc"
+
+
+def test_upsert_covers_every_verse_column(store):
+    """VERSE_COLUMNS must match the live `verses` table exactly.
+
+    This is the structural gate behind the two tests above. Those check the
+    columns they happen to name; this one asks SQLite what columns actually
+    exist and fails if VERSE_COLUMNS has drifted. Adding a column to SCHEMA_SQL
+    or SCHEMA_MIGRATIONS without adding it here would otherwise leave that
+    column stale on every reseed, with no error raised.
+    """
+    from lamp.verse_store import VERSE_COLUMNS
+
+    live = [row[1] for row in store._require().execute("PRAGMA table_info(verses)")]
+    assert set(live) == set(VERSE_COLUMNS), (
+        f"verses table and VERSE_COLUMNS disagree: "
+        f"only in table={sorted(set(live) - set(VERSE_COLUMNS))}, "
+        f"only in VERSE_COLUMNS={sorted(set(VERSE_COLUMNS) - set(live))}"
+    )
+
+
+def test_verse_write_never_uses_or_replace():
+    """Guard the fix itself.
+
+    REPLACE on `verses` deletes the row before re-inserting it, which cascades
+    into translations and verse_words. Reintroducing it anywhere in the module
+    would re-open the data-loss path, so assert the token is absent from the
+    verse-writing SQL. insert_translations may use OR REPLACE — `translations`
+    has no child table.
+    """
+    from lamp.verse_store import VERSE_UPSERT_SQL
+
+    assert "OR REPLACE" not in VERSE_UPSERT_SQL.upper()
+    assert "ON CONFLICT(id) DO UPDATE" in VERSE_UPSERT_SQL

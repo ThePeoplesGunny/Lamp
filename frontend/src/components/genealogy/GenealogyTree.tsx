@@ -85,8 +85,8 @@ export default function GenealogyTree({
     return { layoutNodes: nodes, layoutEdges: edges };
   }, [treeData]);
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   useEffect(() => {
     // Apply selection styling
