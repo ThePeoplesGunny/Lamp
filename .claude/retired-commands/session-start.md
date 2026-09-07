@@ -8,7 +8,7 @@ Run at the beginning of every session to verify project state before work begins
 2. **Read TECH_DEBT.md** — check lifecycle states, any items marked CRITICAL
 3. **Git status** — `git status`, `git log --oneline -5`
 4. **Backend tests** — `cd backend && python -m pytest --tb=no -q` (record pass count; expected: 107+). **Use `python -m pytest`, not bare `pytest`** — the bare command is not on PATH on this machine and exits `command not found`, which reads as a broken test suite rather than a missing launcher. Verified 2026-08-24: **107 passed in 4.52s**.
-5. **Frontend build** — `cd frontend && npx vite build 2>&1 | tail -5` (note: GenealogyTree.tsx TS errors are KNOWN and expected to fail with `npm run build`; `npx vite build` should succeed)
+5. **Frontend build** — `cd frontend && npm run build` (the GenealogyTree.tsx TS errors this line used to warn about were fixed in Phase 2D-7; `npm run build` exits 0)
 6. **Graph stats** — `cd backend && python -c "from lamp.graph.store import GraphStore; from lamp.config import GRAPH_FILE; g=GraphStore(graph_path=GRAPH_FILE); g.load(); print(f'nodes={g.G.number_of_nodes()} edges={g.G.number_of_edges()}')"` (compare against CLAUDE.md claims). Note: `GraphStore()` with no `graph_path` loads an **empty** graph — the path arg is required; the attribute is `g.G` (not `g.graph`).
 7. **Verse store** — `cd backend && python -c "import sqlite3; c=sqlite3.connect('data/verses/verses.db'); print(c.execute('SELECT COUNT(*) FROM verses').fetchone()[0], 'verses')"` (compare against CLAUDE.md)
 
@@ -24,7 +24,7 @@ Node count and edge count from runtime must match CLAUDE.md "Graph" line (±5 to
 SQLite verse count must match CLAUDE.md corpus numbers (23,213 Hebrew + 7,927 Greek = 31,140 verse rows minimum). If mismatched, a reseed may have occurred without state update.
 
 ### Check 4: Frontend build
-`npx vite build` should succeed even though `npm run build` fails (known GenealogyTree.tsx issue). If vite build also fails, something new broke.
+`npm run build` should exit 0. It failed until Phase 2D-7 on GenealogyTree.tsx TS errors; that is fixed, so a failure now means something new broke.
 
 ### Check 5: Uncommitted changes
 If uncommitted changes exist — from a prior session that didn't close properly, since a close must end in delivery (commit, deploy, save). Describe what's modified. **This very file was found deleted-in-the-working-tree and uncommitted on 2026-08-24, which is exactly the state this check exists to catch.**

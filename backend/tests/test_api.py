@@ -12,6 +12,7 @@ from lamp.main import app
 from lamp.config import SEED_DIR, API_PREFIX
 from lamp.graph.store import GraphStore
 from lamp.api.genealogy import init_store
+from lamp.api.verses import get_store as get_store_for_test
 from lamp.api.verses import init_store as init_verse_store  # nav_router shares the same store global
 from lamp.ingest.genesis_genealogy import load_seed_data
 from lamp.models import Canon, Edge, EdgeType, TranslationText, Verse, VerseWord
@@ -590,3 +591,23 @@ async def test_verse_mentions_carry_transliteration_fields(client):
             "name_greek_transliterated",
         ):
             assert f in m, f"mention payload is missing {f}"
+
+
+@pytest.mark.anyio
+async def test_verse_route_resolves_a_kjv_reference(client):
+    """A reader who sees "Genesis 31:55" must be able to type it.
+
+    The page displays KJV references now, but that id does not exist — Hebrew
+    Genesis 31 stops at 54 and the verse lives at verse:GEN.32.1. Without the
+    fallback every KJV reference at a divergent boundary 404s.
+    """
+    store = get_store_for_test()
+    store.verses.set_kjv_addresses({"verse:GEN.2.1": ("GEN", 1, 99)})
+
+    r = await client.get(f"{API_PREFIX}/verse/GEN.1.99")
+    assert r.status_code == 200, "a KJV reference must resolve"
+    assert r.json()["id"] == "verse:GEN.2.1"
+    assert r.json()["reference"] == "Genesis 1:99"
+
+    # An id that is neither a verse nor a KJV reference is still a 404.
+    assert (await client.get(f"{API_PREFIX}/verse/GEN.99.99")).status_code == 404

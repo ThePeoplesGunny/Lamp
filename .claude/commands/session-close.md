@@ -14,7 +14,7 @@ If $ARGUMENTS is empty, check git diff and recent work to infer context, then co
 Run in parallel:
 1. `git diff --stat` — what changed
 2. `cd backend && pytest --tb=no -q` — test count (must still pass)
-3. `cd frontend && npx vite build 2>&1 | tail -3` — frontend still builds
+3. `cd frontend && npm run build` — frontend still builds (read the exit code bare, not through a pipe)
 4. Graph/verse counts (same commands as session-start)
 5. `git log --oneline -3` — recent commits
 
@@ -54,7 +54,7 @@ Report:
 ## Verification by change type — the method matches the blast radius
 
 - **Backend logic** → `cd backend && pytest` (full suite)
-- **Frontend component** → `npx vite build` + visual check if possible
+- **Frontend component** → `npm run build` (runs `tsc -b && vite build`) + visual check if possible
 - **Schema/graph model** → node/edge count validation + test_graph_integrity
 - **Data import/ingest** → record count comparison + verse_store tests
 - **Hebrew/Greek text** → three-layer integrity: consonantal layer preserved, niqqud intact, cantillation marks present (test_oshb_ingest / test_morphgnt_ingest)

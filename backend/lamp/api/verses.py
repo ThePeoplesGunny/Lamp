@@ -214,6 +214,22 @@ def get_verse(verse_id: str):
         verse_id = f"verse:{verse_id}"
 
     verse = store.get_verse(verse_id)
+
+    if verse is None:
+        # Fall back to reading the reference as a KJV address. The page now
+        # displays KJV references, so a reader who sees "Genesis 31:55" and types
+        # /verse/GEN.31.55 must land somewhere — but that id does not exist:
+        # Hebrew Genesis 31 stops at 54 and the verse lives at verse:GEN.32.1.
+        # Without this, every KJV reference at a divergent boundary 404s.
+        parts = verse_id[len("verse:"):].split(".")
+        if len(parts) == 3 and parts[1].isdigit() and parts[2].isdigit():
+            resolved = store.verses.id_for_kjv_reference(
+                parts[0].upper(), int(parts[1]), int(parts[2])
+            )
+            if resolved:
+                verse = store.get_verse(resolved)
+                verse_id = resolved
+
     if verse is None:
         raise HTTPException(status_code=404, detail=f"Verse not found: {verse_id}")
 

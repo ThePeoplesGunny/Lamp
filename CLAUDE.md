@@ -116,7 +116,7 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (136 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (137 passing as of v0.3.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
 - Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
@@ -140,9 +140,14 @@ scripts/
 
 ## Current State
 
-**Version:** 0.2.0
+**Version:** 0.3.0
 
 **Graph:** 31,172 verse nodes (23,213 Hebrew + 7,927 Greek + 32 KJV-only slots) + 429 entities (293 persons, 25 nations, 111 places). 2,770 edges (249 entity-entity + 2,377 verse→entity MENTIONS + 144 NT→OT QUOTES).
+
+**Storage shape (2026-09-07):** SQLite holds verse identity separately from the texts that witness it —
+`verse_refs` (31,172 identities, 31,103 carrying a KJV address) is the parent of both `verses`
+(31,140 original-language witnesses) and `translations` (31,103 KJV rows). Neither depends on the
+other. 443,070 words hang off the witness. Foreign keys check clean.
 
 **Corpus:**
 - Hebrew OT (OSHB/WLC): 23,213 verses, 305,516 words with lemma + Strong's + morphology + ketiv/qere + parashah + reversed-nun
@@ -153,7 +158,7 @@ scripts/
   (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
   into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 136 passing.
+**Tests:** 137 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational

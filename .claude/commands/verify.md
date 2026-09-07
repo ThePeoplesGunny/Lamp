@@ -17,7 +17,7 @@ All 107+ tests must pass. If adding new functionality, new test(s) should exist.
 
 ### `frontend` — React/TypeScript changes
 ```bash
-cd frontend && npx vite build
+cd frontend && npm run build
 cd frontend && npm run lint
 ```
 Build must succeed (via vite). Lint must pass. If touching GenealogyTree.tsx, attempt `npm run build` to see if TS errors are resolved.

@@ -13,8 +13,9 @@
 **File:** `backend/lamp/graph/store.py:329-345`
 
 ### TD-003 | MEDIUM | No frontend test coverage
-**Found:** 2026-04-06 | **Pedigree:** A1
+**Found:** 2026-04-06 | **Pedigree:** A1 | **Raised 2026-09-07**
 16 .tsx component files, zero test files. All validation is manual. Risk: regressions in routing, data rendering, and error states go undetected.
+2026-09-07 raises the stake: the KJV base-text work put real branching logic into components — `VersePage` picks between three notes headings and two reference forms, `ReadPage` renders a null KJV verse number as an em-dash, `GreekVerseBody` suppresses its layer toggle when there is no witness. All of it was verified by eye in a browser once and nothing re-checks it. Every backend counterpart got a test.
 **Files:** `frontend/src/components/**/*.tsx`
 
 ### TD-004 | MEDIUM | Repeated response marshaling
@@ -36,6 +37,11 @@
 **Found:** 2026-04-06 | **Pedigree:** A1
 `CONTEMPORARY_OF`, `MENTIONED_IN`, `DURING_EVENT` defined in EdgeType enum but never used in any endpoint, seed data, or query method. Not harmful but adds surface area.
 **File:** `backend/lamp/models/relationships.py`
+
+### TD-009 | LOW | `_doc` prose sits inside a dict keyed by book code
+**Found:** 2026-09-07 | **Pedigree:** A1
+`versification_kjv_to_heb.json` puts a `_doc` string inside `book_overrides`, whose other keys are book codes, and another inside `psalms_offsets`. Nothing reads them by book code so the resolver is safe, but any code iterating the mapping must skip underscore keys — `test_every_override_range_is_well_formed` hit exactly this and needed a guard. A sibling `_notes` object would remove the special case.
+**File:** `backend/data/seed/versification_kjv_to_heb.json`
 
 ### TD-008 | LOW | Place type filter hardcoded in frontend
 **Found:** 2026-04-06 | **Pedigree:** B2
