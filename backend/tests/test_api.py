@@ -100,14 +100,14 @@ def setup_store():
             verse_id="verse:GEN.1.1",
             text="In the beginning God created the heaven and the earth.",
             source="test-KJV",
-            source_tier=4,
+            source_tier=2,   # historic translation — see CLAUDE.md's tier table
         ),
         TranslationText(
             translation="ASV-1901",
             verse_id="verse:GEN.1.1",
             text="In the beginning God created the heavens and the earth.",
             source="test-ASV",
-            source_tier=4,
+            source_tier=2,   # historic translation — see CLAUDE.md's tier table
         ),
     ])
 
@@ -410,7 +410,11 @@ async def test_verse_includes_translations(client):
     kjv = next(t for t in data["translations"] if t["translation"] == "KJV-1769")
     assert kjv["text"].startswith("In the beginning")
     assert kjv["source"] == "test-KJV"
-    assert kjv["source_tier"] == 4
+    # Tier 2 = historic translation (public domain). This asserted 4 — the tier the
+    # ingest scripts wrongly stamped — which made the suite encode the defect rather
+    # than catch it. Tier 4 is "speculative inference", which per CLAUDE.md "cannot
+    # be presented as fact"; the KJV is a published 1769 edition.
+    assert kjv["source_tier"] == 2
 
 
 @pytest.mark.anyio

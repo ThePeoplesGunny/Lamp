@@ -73,7 +73,13 @@ KJV_NT_NAME_TO_LAMP = {
 
 TRANSLATION_ID = "KJV-1769"
 TRANSLATION_SOURCE = "scrollmapper/bible_databases@KJV.json (PD, 1769 Oxford ed.)"
-TRANSLATION_TIER = 4  # Translation; lower than primary-source tier 1
+TRANSLATION_TIER = 2  # Historic translation (public domain). CLAUDE.md's tier table
+                      # defines tier 2 as exactly this and names the KJV 1769. This was
+                      # 4 with the comment "lower than primary-source tier 1" — but the
+                      # scale is not a generic ranking: tier 4 means "Speculative
+                      # inference", which "cannot be presented as fact". That tagged all
+                      # 31,104 KJV rows as speculation and printed "tier 4" on every
+                      # verse page.
 
 
 def _minimal_greek_verse(verse_id: str, book: str, chapter: int, verse: int, source: str) -> Verse:
@@ -132,6 +138,17 @@ def main() -> int:
     created_verse_nodes: list[tuple[str, str]] = []  # (verse_id, book+c:v human ref)
     translations: list[TranslationText] = []
 
+    # Slots this script created on an earlier run. They are REFRESHED, not skipped:
+    # a slot written by a previous run keeps whatever metadata that run stamped on
+    # it, so a change to TRANSLATION_TIER or to the note text never reaches the rows
+    # already on disk. That is exactly what happened — correcting the tier from 4 to
+    # 2 left 32 verse rows stale at 4, because the guard below was create-only.
+    # Matching on TRANSLATION_SOURCE keeps this precise: only rows this script wrote
+    # are rewritten, never a verse holding real Hebrew or Greek text.
+    existing_slot_ids = store.verses.verse_ids_by_source(TRANSLATION_SOURCE)
+    print(f"Existing KJV-only slots to refresh: {len(existing_slot_ids)}")
+    print()
+
     print(f"{'Book':<6} {'Verses':>7} {'New slots':>10}  time")
     print("-" * 72)
 
@@ -155,7 +172,7 @@ def main() -> int:
                 text = verse_data["text"]
                 verse_id = f"verse:{lamp_code}.{chapter}.{verse_num}"
 
-                if verse_id not in store.G:
+                if verse_id not in store.G or verse_id in existing_slot_ids:
                     book_new_slots.append(_minimal_greek_verse(
                         verse_id=verse_id,
                         book=lamp_code,
@@ -163,7 +180,8 @@ def main() -> int:
                         verse=verse_num,
                         source=TRANSLATION_SOURCE,
                     ))
-                    created_verse_nodes.append((verse_id, f"{kjv_name} {chapter}:{verse_num}"))
+                    if verse_id not in existing_slot_ids:
+                        created_verse_nodes.append((verse_id, f"{kjv_name} {chapter}:{verse_num}"))
 
                 translations.append(TranslationText(
                     translation=TRANSLATION_ID,

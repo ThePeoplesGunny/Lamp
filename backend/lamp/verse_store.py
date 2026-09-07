@@ -311,6 +311,21 @@ class VerseStore:
             words_by_id.setdefault(row["verse_id"], []).append(row)
         return [_row_to_verse(vr, words_by_id.get(vr["id"], [])) for vr in vrows]
 
+    def verse_ids_by_source(self, source: str) -> set[str]:
+        """Every verse id stamped with this exact `source` string.
+
+        Used by the KJV ingest to find the placeholder slots it created on an
+        earlier run, so it can refresh them instead of skipping them. The source
+        string is the safe discriminator: a slot carries the KJV file as its
+        source, while a real verse carries OSHB-WLC or MorphGNT-SBLGNT, so this
+        can never select a verse that holds actual Hebrew or Greek text.
+        """
+        conn = self._require()
+        return {
+            row[0]
+            for row in conn.execute("SELECT id FROM verses WHERE source = ?", (source,))
+        }
+
     def get_translations_for_verse(self, verse_id: str) -> list[TranslationText]:
         conn = self._require()
         rows = conn.execute(

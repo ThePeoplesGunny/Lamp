@@ -62,7 +62,13 @@ OT_ORDER = list(KJV_OT_NAME_TO_LAMP.values())
 
 TRANSLATION_ID = "KJV-1769"
 TRANSLATION_SOURCE = "scrollmapper/bible_databases@KJV.json (PD, 1769 Oxford ed.)"
-TRANSLATION_TIER = 4
+TRANSLATION_TIER = 2  # Historic translation (public domain). CLAUDE.md's tier table
+                      # defines tier 2 as exactly this and names the KJV 1769. This was
+                      # 4 with the comment "lower than primary-source tier 1" — but the
+                      # scale is not a generic ranking: tier 4 means "Speculative
+                      # inference", which "cannot be presented as fact". That tagged all
+                      # 31,104 KJV rows as speculation and printed "tier 4" on every
+                      # verse page.
 
 MERGE_SEPARATOR = " | "
 
