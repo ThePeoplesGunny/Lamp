@@ -166,20 +166,29 @@ function GreekVerseBody({ verse }: { verse: VerseDetail }) {
   const [layer, setLayer] = useState<GreekLayer>('accented');
   const text = layer === 'plain' ? verse.text_plain : verse.text_accented;
 
+  // The 32 KJV-only slots (verses in the Textus Receptus but absent from the
+  // SBLGNT critical text, e.g. Acts 8:37, John 5:4) carry no Greek text at all.
+  // Without this branch the panel renders as a labelled empty box, which reads
+  // as a loading failure rather than a deliberate textual-critical absence — and
+  // the plain/accented toggle offers a choice between two empty strings.
+  const hasText = text.trim().length > 0;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs uppercase tracking-wide" style={{ color: 'var(--color-text-secondary)' }}>
-          Greek text — {layer}
+          {hasText ? `Greek text — ${layer}` : 'Greek text — none in SBLGNT'}
         </span>
-        <LayerToggle<GreekLayer>
-          value={layer}
-          options={[
-            { value: 'plain', label: 'plain', hint: 'Lowercase, no diacritics — uncial-manuscript-style' },
-            { value: 'accented', label: 'accented', hint: 'Standard published form with accents and breathings' },
-          ]}
-          onChange={setLayer}
-        />
+        {hasText && (
+          <LayerToggle<GreekLayer>
+            value={layer}
+            options={[
+              { value: 'plain', label: 'plain', hint: 'Lowercase, no diacritics — uncial-manuscript-style' },
+              { value: 'accented', label: 'accented', hint: 'Standard published form with accents and breathings' },
+            ]}
+            onChange={setLayer}
+          />
+        )}
       </div>
       <div
         className="rounded border p-6"
@@ -188,9 +197,16 @@ function GreekVerseBody({ verse }: { verse: VerseDetail }) {
           backgroundColor: 'var(--color-bg-tertiary)',
         }}
       >
-        <span lang="grc" style={{ fontSize: '1.375rem', lineHeight: '2' }}>
-          {text}
-        </span>
+        {hasText ? (
+          <span lang="grc" style={{ fontSize: '1.375rem', lineHeight: '2' }}>
+            {text}
+          </span>
+        ) : (
+          <span className="text-sm italic" style={{ color: 'var(--color-text-secondary)' }}>
+            No original-language text — this verse is absent from the SBLGNT critical
+            text. It is present in the KJV/Byzantine tradition; see the translation below.
+          </span>
+        )}
       </div>
     </div>
   );

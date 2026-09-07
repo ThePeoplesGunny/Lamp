@@ -180,3 +180,68 @@ def test_second_run_is_idempotent(monkeypatch, prepared):
 
     assert len(first["nodes"]) == len(second["nodes"])
     assert len(first["edges"]) == len(second["edges"])
+
+
+def test_gate_refuses_to_save_when_verse_nodes_are_lost(monkeypatch, prepared):
+    """The verse-survival check must REFUSE THE WRITE, not report after it.
+
+    The previous version of this script logged the discrepancy after store.save(),
+    which describes a file that is already damaged. Here the seed loader is wrapped
+    so it also drops a verse node, simulating any future change that harms the verse
+    layer. main() must return 1 and lamp.json on disk must be untouched.
+    """
+    graph_path, seed_dir = prepared
+    before = graph_path.read_text(encoding="utf-8")
+
+    module = _load_seed_graph_module()
+    monkeypatch.setattr(module, "GRAPH_FILE", graph_path)
+    monkeypatch.setattr(module, "SEED_DIR", seed_dir)
+
+    real_loader = module.load_seed_data
+
+    def lossy_loader(path, store):
+        counts = real_loader(path, store)
+        store.G.remove_node("verse:GEN.5.1")   # the damage the gate must catch
+        return counts
+
+    monkeypatch.setattr(module, "load_seed_data", lossy_loader)
+
+    assert module.main() == 1, "main() must fail when verse nodes are lost"
+
+    after = graph_path.read_text(encoding="utf-8")
+    assert after == before, "the graph file was written despite the gate failing"
+
+    data = json.loads(after)
+    verse_ids = {n["id"] for n in data["nodes"] if n.get("node_type") == "verse"}
+    assert verse_ids == {"verse:GEN.2.7", "verse:GEN.5.1", "verse:PSA.110.1"}
+
+
+def test_fresh_build_with_no_existing_graph(monkeypatch, tmp_path):
+    """The path a fresh clone hits: no lamp.json yet, so no verse nodes exist.
+
+    The relink must be skipped rather than reporting every ref as a missing verse,
+    and the gate must not fire on the 0 -> 0 verse count.
+    """
+    graph_path = tmp_path / "lamp.json"
+    seed_dir = tmp_path / "seed"
+    seed_dir.mkdir()
+    (seed_dir / "persons.json").write_text(json.dumps({
+        "persons": [{
+            "id": "person:adam",
+            "name_english": "Adam",
+            "sex": "male",
+            "scripture_refs": [{"book": "GEN", "chapter": 2, "verse": 7}],
+        }],
+        "relationships": [],
+        "nations": [],
+        "nation_links": [],
+    }), encoding="utf-8")
+
+    assert not graph_path.exists()
+    assert _run(monkeypatch, graph_path, seed_dir) == 0
+    assert graph_path.exists()
+
+    data = json.loads(graph_path.read_text(encoding="utf-8"))
+    assert {n["id"] for n in data["nodes"]} == {"person:adam"}
+    # No verse nodes, so no MENTIONS could be created — and none were invented.
+    assert [e for e in data["edges"] if e.get("type") == "mentions"] == []

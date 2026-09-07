@@ -97,7 +97,7 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (119 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (121 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
 - Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
@@ -134,7 +134,7 @@ scripts/
   (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
   into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 119 passing.
+**Tests:** 121 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -164,6 +164,8 @@ scripts/
   **(4) Browser-visual QA pass done, two defects found and fixed.** Pages checked in Chrome at 1440x1000: `/verse/PSA.110.1`, `/verse/MAT.1.23`, `/verse/HEB.10.5`, `/verse/ACT.8.37`, `/verse/GEN.32.1`, `/verse/GEN.1.12`, `/person/paul`, `/person/adam`, and the search header. Rendering that was verified correct: Hebrew RTL with cantillation, Greek LTR with accents, mixed-direction notes (Hebrew עַלְמָה and Greek παρθένος inside English sentences — the Psa 40:7 note's Hebrew was confirmed to be stored in logical order, אָזְנַיִם then כָּרִיתָ, so the browser's bidi rendering is correct), `QuotesSection` two-column layout with inline notes, the full genealogy tree (which is the runtime proof of the `useNodesState<Node>` fix), and the KJV-only slots, which render `WORDS (0)` with an explanatory banner rather than breaking.
   Defect A — **two endpoints silently dropped `name_greek_transliterated`.** Phase 2D-4 claimed it was propagated through person/place/search/mentions; it was not. `search_persons` in `api/genealogy.py` and `_summarize_mention` in `api/verses.py` set `name_greek` but not its transliteration, so search returned `null` for Peter while the data held `Petros`. `name_hebrew_transliterated` was missing from both too. Added to both, with 3 tests that go red without the fix.
   Defect B — **the verse notes heading was wrong for 2,059 of 3,152 notes.** A single heading read "Masoretic notes" over a field carrying three unrelated kinds of record: 2,027 KJV versification mappings (a translation-layer artifact, e.g. `KJV:Gen.31.55` on GEN 32:1), 1,093 genuine Masoretic apparatus entries (844 Ketiv/Qere and accent notes, 249 scribal notes), and 32 SBLGNT-absent/Byzantine notes on **Greek NT** verses, where "Masoretic" cannot apply at all. `VersePage` now splits them: KJV mappings render under "KJV versification", and the rest under "Masoretic notes" for tanakh verses or "Textual notes" otherwise.
+  Defect C — **the 32 KJV-only slots rendered a labelled empty box.** `GreekVerseBody` drew the panel and its plain/accented toggle unconditionally, so a verse with no SBLGNT text (Acts 8:37, John 5:4, etc.) showed an empty container and a toggle choosing between two empty strings — it read as a load failure rather than a deliberate textual-critical absence. The panel now says "Greek text — none in SBLGNT", explains the absence in place, and hides the toggle. All 32 such verses are NT; no tanakh verse has empty text.
+  Gate coverage added afterwards: `seed_graph.py`'s refuse-to-save check is now tested by forcing a verse-node loss and asserting `main()` returns 1 **and** the file on disk is byte-identical — verified discriminating by disabling the gate and watching the test fail. The fresh-clone path (no existing `lamp.json`, so the relink is skipped) is covered too. `seed_verse_links.py` was executed after its rewrite: exit 0, 2,377 edges, 0 refs skipped, and a second run produces a byte-identical file. `VERSE_COLUMNS` was checked against the real migrated 116MB database, not just a fresh in-memory schema: 17 columns each side, no drift.
 
 ### Known gaps / deferred work
 - **NT↔OT QUOTES — curated expansion in progress** — 144 high-confidence edges. Hebrews batch 1 done (44 edges); planned remaining batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Target ~250+. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
