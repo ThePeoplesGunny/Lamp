@@ -217,7 +217,21 @@ function ChapterVerseList({
             >
               {v.verse}
             </span>
-            {isHebrew ? (
+            {/*
+              This reader shows the original-language witness, and 32 NT verses
+              have none (present in the KJV, absent from the SBLGNT). They used to
+              render as a bare verse number followed by nothing, which reads as a
+              rendering bug rather than a textual-critical absence. Open the verse
+              to see its KJV base text.
+            */}
+            {v.text_canonical === '' ? (
+              <span
+                className="text-sm italic leading-relaxed"
+                style={{ color: 'var(--color-text-secondary)' }}
+              >
+                no original-language witness — open for the KJV base text
+              </span>
+            ) : isHebrew ? (
               <HebrewText text={v.text_canonical} className="text-lg leading-relaxed" />
             ) : (
               <span lang="grc" className="text-lg leading-relaxed">

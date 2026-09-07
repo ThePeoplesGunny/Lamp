@@ -81,9 +81,12 @@ class Verse(BaseModel):
     # Word-level breakdown with full morphology
     words: list[VerseWord]
 
-    # Provenance (Research Methodology — all claims carry source)
-    source: str                      # Exact version, e.g. "OSHB-WLC@3d15126" or "MorphGNT-SBLGNT@<sha>"
-    source_tier: int                 # Per CLAUDE.md; OSHB and MorphGNT both tier 1
+    # Provenance of the ORIGINAL-LANGUAGE WITNESS (Research Methodology — all
+    # claims carry source). None when the verse has no witness: the 32 verses
+    # present in the KJV 1769 base text but absent from the SBLGNT critical text
+    # have identity and a base text, but nothing to cite here.
+    source: str | None = None        # e.g. "OSHB-WLC@3d15126" | "MorphGNT-SBLGNT@<sha>"
+    source_tier: int | None = None   # Per CLAUDE.md; OSHB and MorphGNT are both tier 2
 
     # Hebrew-specific Masoretic features (default None/False for non-Hebrew)
     # "pe" (petuchah / open) or "samekh" (setumah / closed). Marker appears AFTER verse text.
@@ -93,6 +96,24 @@ class Verse(BaseModel):
 
     # Free-form textual notes (ketiv/qere commentary, BHS variants, MorphGNT notes)
     notes: list[str] = []
+
+
+class VerseRef(BaseModel):
+    """A verse's identity, independent of any text that witnesses it.
+
+    Introduced 2026-09-07 when verse identity was split from the original-language
+    witness. A verse can exist with identity alone: 32 verses are present in the
+    KJV 1769 base text but absent from the SBLGNT critical text, so they have no
+    Greek witness at all. Before the split they were given fabricated empty Greek
+    rows, because the KJV text needed a parent row to hang off.
+    """
+
+    id: str                          # "verse:ACT.8.37"
+    book: str                        # Lamp canonical code
+    chapter: int
+    verse: int
+    canon: Canon
+    notes: list[str] = []            # notes about the verse itself, not about a witness
 
 
 class TranslationText(BaseModel):

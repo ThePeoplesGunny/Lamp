@@ -34,7 +34,7 @@ sys.path.insert(0, str(REPO_ROOT / "backend"))
 
 from lamp.config import GRAPH_FILE, VERSES_DB_FILE  # noqa: E402
 from lamp.graph.store import GraphStore  # noqa: E402
-from lamp.models import Canon, TranslationText, Verse  # noqa: E402
+from lamp.models import Canon, TranslationText, VerseRef  # noqa: E402
 
 
 KJV_SOURCE = REPO_ROOT / "backend" / "data" / "external" / "kjv_scrollmapper.json"
@@ -83,26 +83,21 @@ TRANSLATION_TIER = 1  # THE BASE TEXT. Tier 1 is the canonical layer. CLAUDE.md'
                       # simply a misreading of the scale as a generic ranking.)
 
 
-def _minimal_greek_verse(verse_id: str, book: str, chapter: int, verse: int, source: str) -> Verse:
-    """Create a placeholder Greek verse node for KJV-only verses (e.g. Matt 17:21).
+def _kjv_only_ref(verse_id: str, book: str, chapter: int, verse: int) -> VerseRef:
+    """Identity for a verse present in the KJV but absent from the SBLGNT.
 
-    Greek text layers remain empty — Byzantine/TR ingest later will fill them.
+    This used to build a whole fake Greek verse — empty text layers, no words,
+    the KJV file as its `source` — because `translations` hung off `verses` and
+    the KJV text had to have a parent row. After the 2026-09-07 identity/witness
+    split it does not: the verse gets an identity and a base text, and simply has
+    no original-language witness, which is the truth about it.
     """
-    from lamp.models.verse import VerseWord  # local import to avoid top-level cycle cost
-    _ = VerseWord  # unused directly; Verse.words is just []
-    return Verse(
+    return VerseRef(
         id=verse_id,
         book=book,
         chapter=chapter,
         verse=verse,
         canon=Canon.NT,
-        language="grc",
-        text_canonical="",     # no Greek source for this slot yet
-        text_accented="",
-        text_plain="",
-        words=[],
-        source=source,
-        source_tier=TRANSLATION_TIER,
         notes=[
             "Verse absent from SBLGNT critical text; present in KJV/Byzantine. "
             "Greek text will be populated when Byzantine/TR source is ingested."
@@ -146,7 +141,7 @@ def main() -> int:
     # 2 left 32 verse rows stale at 4, because the guard below was create-only.
     # Matching on TRANSLATION_SOURCE keeps this precise: only rows this script wrote
     # are rewritten, never a verse holding real Hebrew or Greek text.
-    existing_slot_ids = store.verses.verse_ids_by_source(TRANSLATION_SOURCE)
+    existing_slot_ids = store.verses.verse_ids_without_witness()
     print(f"Existing KJV-only slots to refresh: {len(existing_slot_ids)}")
     print()
 
@@ -164,7 +159,7 @@ def main() -> int:
 
         t0 = time.perf_counter()
         book_verse_count = 0
-        book_new_slots: list[Verse] = []
+        book_new_slots: list[VerseRef] = []
 
         for chapter_data in book_data["chapters"]:
             chapter = chapter_data["chapter"]
@@ -174,12 +169,11 @@ def main() -> int:
                 verse_id = f"verse:{lamp_code}.{chapter}.{verse_num}"
 
                 if verse_id not in store.G or verse_id in existing_slot_ids:
-                    book_new_slots.append(_minimal_greek_verse(
+                    book_new_slots.append(_kjv_only_ref(
                         verse_id=verse_id,
                         book=lamp_code,
                         chapter=chapter,
                         verse=verse_num,
-                        source=TRANSLATION_SOURCE,
                     ))
                     if verse_id not in existing_slot_ids:
                         created_verse_nodes.append((verse_id, f"{kjv_name} {chapter}:{verse_num}"))
@@ -194,7 +188,7 @@ def main() -> int:
                 book_verse_count += 1
 
         if book_new_slots:
-            store.add_verses(book_new_slots)
+            store.add_verse_refs(book_new_slots)
         per_book_counts[lamp_code] = book_verse_count
 
         t1 = time.perf_counter()

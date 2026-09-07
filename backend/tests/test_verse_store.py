@@ -10,7 +10,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from lamp.models import Canon, TranslationText, Verse, VerseWord
+from lamp.models import Canon, TranslationText, Verse, VerseRef, VerseWord
 from lamp.verse_store import VerseStore
 
 
@@ -180,8 +180,16 @@ def test_translation_insert_and_fetch(store):
     assert {t.translation for t in translations} == {"KJV-1769", "ASV-1901"}
 
 
-def test_translation_fk_cascade(store):
-    """Deleting a verse should cascade-delete its translations."""
+def test_deleting_verse_identity_cascades_to_everything(store):
+    """Deleting the verse ITSELF removes the base text and the witness with it.
+
+    Rewritten 2026-09-07. This used to delete from `verses` and assert the
+    translations went too — correct when `translations` hung off `verses`, and
+    exactly the behaviour the identity/witness split removed. The cascade now
+    runs from identity: dropping the verse drops everything about it, while
+    dropping only a witness leaves the base text standing
+    (test_deleting_a_witness_leaves_the_base_text_standing).
+    """
     store.insert_verses([_make_verse()])
     store.insert_translations([
         TranslationText(
@@ -189,12 +197,16 @@ def test_translation_fk_cascade(store):
             verse_id="verse:GEN.1.1",
             text="...",
             source="KJV-1769",
-            source_tier=4,
+            source_tier=1,
         ),
     ])
-    with store._require():
-        store._require().execute("DELETE FROM verses WHERE id = ?", ("verse:GEN.1.1",))
+    conn = store._require()
+    with conn:
+        conn.execute("DELETE FROM verse_refs WHERE id = ?", ("verse:GEN.1.1",))
+
     assert store.get_translations_for_verse("verse:GEN.1.1") == []
+    assert store.get_verse("verse:GEN.1.1") is None
+    assert store.count_words() == 0
 
 
 def test_reinsert_verse_preserves_translations(store):
@@ -296,3 +308,122 @@ def test_verse_write_never_uses_or_replace():
 
     assert "OR REPLACE" not in VERSE_UPSERT_SQL.upper()
     assert "ON CONFLICT(id) DO UPDATE" in VERSE_UPSERT_SQL
+
+
+def test_deleting_a_witness_leaves_the_base_text_standing(store):
+    """THE acceptance test for the identity/witness split.
+
+    Under Locked Decision 8 the KJV 1769 is the base text and the
+    original-language text is a supporting witness. Removing a witness must
+    therefore not destroy the base text. Before the split, `translations` had
+    ON DELETE CASCADE onto `verses`, so deleting the Hebrew or Greek row for a
+    verse silently deleted its KJV text — the base text dying as a side effect
+    of dropping a supporting source.
+
+    The words go with the witness, because they are part of it.
+    """
+    store.insert_verses([_make_verse()])
+    store.insert_translations([
+        TranslationText(
+            translation="KJV-1769",
+            verse_id="verse:GEN.1.1",
+            text="In the beginning God created the heaven and the earth.",
+            source="KJV-1769",
+            source_tier=1,
+        ),
+    ])
+    assert len(store.get_translations_for_verse("verse:GEN.1.1")) == 1
+    assert store.count_words() == 1
+
+    # Drop the original-language witness only.
+    conn = store._require()
+    with conn:
+        conn.execute("DELETE FROM verses WHERE id = ?", ("verse:GEN.1.1",))
+
+    survivors = store.get_translations_for_verse("verse:GEN.1.1")
+    assert len(survivors) == 1, "deleting a witness destroyed the KJV base text"
+    assert survivors[0].text.startswith("In the beginning")
+    assert store.count_words() == 0, "words belong to the witness and should go with it"
+
+
+def test_upsert_covers_every_verse_ref_column(store):
+    """Same structural gate as the witness table, for verse_refs."""
+    from lamp.verse_store import VERSE_REF_COLUMNS
+
+    live = [row[1] for row in store._require().execute("PRAGMA table_info(verse_refs)")]
+    assert set(live) == set(VERSE_REF_COLUMNS), (
+        f"verse_refs and VERSE_REF_COLUMNS disagree: "
+        f"only in table={sorted(set(live) - set(VERSE_REF_COLUMNS))}, "
+        f"only in VERSE_REF_COLUMNS={sorted(set(VERSE_REF_COLUMNS) - set(live))}"
+    )
+
+
+def _kjv_only(store, verse_id="verse:ACT.8.37", book="ACT", chapter=8, verse=37):
+    """A verse with identity and a base text but no original-language witness."""
+    store.insert_verse_refs([
+        VerseRef(
+            id=verse_id, book=book, chapter=chapter, verse=verse,
+            canon=Canon.NT,
+            notes=["Verse absent from SBLGNT critical text; present in KJV/Byzantine."],
+        ),
+    ])
+    store.insert_translations([
+        TranslationText(
+            translation="KJV-1769", verse_id=verse_id,
+            text="And Philip said, If thou believest with all thine heart, thou mayest.",
+            source="KJV-1769", source_tier=1,
+        ),
+    ])
+
+
+def test_kjv_only_verse_needs_no_fabricated_witness(store):
+    """A KJV verse can now exist with no original-language row behind it.
+
+    This is the whole point of the split. Acts 8:37 is in the KJV and absent from
+    the SBLGNT; it used to require a fabricated empty Greek row in `verses`, with
+    the KJV file as its source, purely so the base text had a parent.
+    """
+    _kjv_only(store)
+
+    assert store.count_verses() == 1, "the verse exists"
+    assert store.count_witnesses() == 0, "and has no fabricated witness row"
+
+    v = store.get_verse("verse:ACT.8.37")
+    assert v is not None, "a witness-less verse must not read as 'not found'"
+    assert v.book == "ACT" and v.chapter == 8 and v.verse == 37
+    assert v.text_canonical == ""
+    assert v.words == []
+    assert v.source is None and v.source_tier is None, (
+        "no witness means no witness provenance to cite"
+    )
+    assert v.language == "grc", "display language falls back to the canon"
+    assert v.notes and "absent from SBLGNT" in v.notes[0]
+
+    kjv = store.get_translations_for_verse("verse:ACT.8.37")
+    assert len(kjv) == 1 and kjv[0].source_tier == 1
+
+
+def test_kjv_only_verse_stays_visible_in_navigation(store):
+    """Identity drives navigation, so a witness-less verse is still reachable.
+
+    If these queries read the witness table, Acts 8:37 would vanish from /read
+    and prev/next would silently skip it — invisible to any count-based check.
+    """
+    store.insert_verses([
+        _make_verse(verse_id="verse:ACT.8.36", book="ACT", chapter=8, verse=36,
+                    canon=Canon.NT, language="grc"),
+        _make_verse(verse_id="verse:ACT.8.38", book="ACT", chapter=8, verse=38,
+                    canon=Canon.NT, language="grc"),
+    ])
+    _kjv_only(store)
+
+    listed = store.chapter_verses("ACT", 8)
+    assert [r["verse"] for r in listed] == [36, 37, 38], "KJV-only verse dropped out of /read"
+
+    assert store.next_verse_id("verse:ACT.8.36") == "verse:ACT.8.37"
+    assert store.prev_verse_id("verse:ACT.8.38") == "verse:ACT.8.37"
+
+    books = {b["book"]: b for b in store.books_summary()}
+    assert books["ACT"]["verse_count"] == 3, "identity drives the count"
+    assert books["ACT"]["language"] == "grc", "language still derived from the witnesses"
+    assert store.count_by_book()["ACT"] == 3

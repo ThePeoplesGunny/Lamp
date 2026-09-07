@@ -690,7 +690,19 @@ export default function VersePage() {
           className="text-xs pt-4 border-t"
           style={{ color: 'var(--color-text-secondary)', borderColor: 'var(--color-border)' }}
         >
-          source: <code>{verse.source}</code> · tier {verse.source_tier} · id: <code>{verse.id}</code>
+          {/*
+            source/source_tier describe the original-language witness, and are null
+            for the 32 verses that have none. Rendering them anyway printed
+            "source:  · tier  ·" with empty gaps.
+          */}
+          {verse.source ? (
+            <>
+              source: <code>{verse.source}</code> · tier {verse.source_tier} ·{' '}
+            </>
+          ) : (
+            <>no original-language witness · </>
+          )}
+          id: <code>{verse.id}</code>
         </div>
       </div>
     </div>

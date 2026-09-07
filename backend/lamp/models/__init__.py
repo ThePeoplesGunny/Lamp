@@ -6,7 +6,7 @@ from lamp.models.person import Person
 from lamp.models.place import Place
 from lamp.models.nation import Nation
 from lamp.models.relationships import Edge, EdgeType, PARENTAL_EDGES, SPOUSAL_EDGES
-from lamp.models.verse import Verse, VerseWord, TranslationText
+from lamp.models.verse import Verse, VerseRef, VerseWord, TranslationText
 
 __all__ = [
     "ScriptureRef",
@@ -18,6 +18,7 @@ __all__ = [
     "PARENTAL_EDGES",
     "SPOUSAL_EDGES",
     "Verse",
+    "VerseRef",
     "VerseWord",
     "TranslationText",
     "Canon",

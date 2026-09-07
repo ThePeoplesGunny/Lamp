@@ -16,6 +16,7 @@ from lamp.models import (
     Edge,
     EdgeType,
     Verse,
+    VerseRef,
     PARENTAL_EDGES,
     SPOUSAL_EDGES,
 )
@@ -102,6 +103,33 @@ class GraphStore:
                 reversed_nun=v.reversed_nun,
             )
         return self.verses.insert_verses(verses)
+
+    def add_verse_refs(self, refs: list[VerseRef]) -> int:
+        """Add verse nodes that have no original-language witness.
+
+        The graph node is identical in kind to any other verse node — Locked
+        Decision 1 still holds, verses are first-class — but SQLite gets only an
+        identity row, not a fabricated empty witness. This is what the 32 verses
+        present in the KJV and absent from the SBLGNT need.
+
+        `language` on the graph node is derived from the canon, because there is
+        no witness to take it from.
+        """
+        default_language = {"tanakh": "hbo", "nt": "grc", "lxx": "grc"}
+        for r in refs:
+            canon = str(r.canon)
+            self.G.add_node(
+                r.id,
+                node_type="verse",
+                book=r.book,
+                chapter=r.chapter,
+                verse=r.verse,
+                canon=canon,
+                language=default_language.get(canon, "grc"),
+                parashah_marker=None,
+                reversed_nun=False,
+            )
+        return self.verses.insert_verse_refs(refs)
 
     # ── Edge operations ──────────────────────────────────────────
 

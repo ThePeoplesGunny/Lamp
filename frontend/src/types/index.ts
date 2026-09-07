@@ -276,8 +276,10 @@ export interface VerseDetail {
   translations: Translation[];
   prev_id: string | null;
   next_id: string | null;
-  source: string;
-  source_tier: number;
+  // Provenance of the ORIGINAL-LANGUAGE WITNESS. null when the verse has no
+  // witness — the 32 verses in the KJV base text but absent from the SBLGNT.
+  source: string | null;
+  source_tier: number | null;
 }
 
 /** Short verse reference for lists of "verses mentioning X". */
