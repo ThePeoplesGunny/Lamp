@@ -85,11 +85,12 @@ def resolve_kjv_verse(
     Empty list if no target. Most KJV verses produce a single (ch, v); merge
     cases (extra_targets in versification map) produce multiple.
     """
-    # Psalms — uniform per-chapter offset
-    if code == "PSA":
-        offset = vm["psalms_offsets"].get(str(kjv_chapter), 0)
-        return [(kjv_chapter, kjv_verse + offset)]
-
+    # Per-range overrides are consulted FIRST, for every book including Psalms.
+    # This used to short-circuit on PSA straight to the uniform per-chapter
+    # offset, which cannot express Psalm 13: its offset is +1 for KJV 13:1-4,
+    # while KJV 13:5 and 13:6 BOTH land on Hebrew 13:6. With a flat offset of 0
+    # the whole psalm was attached one verse early — the superscription
+    # (לַמְנַצֵּחַ מִזְמוֹר לְדָוִד, Heb 13:1) received the text of KJV 13:1.
     overrides = vm["book_overrides"].get(code, [])
     for override in overrides:
         if override.get("_note") and "kjv_from" not in override:
@@ -102,6 +103,11 @@ def resolve_kjv_verse(
             for et in override.get("extra_targets", []):
                 targets.append((et["chapter"], et["verse"]))
             return targets
+
+    # Psalms — uniform per-chapter offset, for chapters with no override above.
+    if code == "PSA":
+        offset = vm["psalms_offsets"].get(str(kjv_chapter), 0)
+        return [(kjv_chapter, kjv_verse + offset)]
 
     # Default: direct pass-through (KJV.ch.v → Heb.ch.v)
     return [(kjv_chapter, kjv_verse)]
@@ -187,6 +193,32 @@ def main() -> int:
             source=TRANSLATION_SOURCE,
             source_tier=TRANSLATION_TIER,
         ))
+
+    # Drop KJV rows this run no longer targets, scoped to the OT. insert_translations
+    # only inserts and updates, so a verse that STOPS being a target keeps whatever a
+    # previous run attached to it. That is how Psalm 13:1 — the superscription — held
+    # the text of KJV 13:1 after the mapping was corrected: nothing deleted it. Without
+    # this the script cannot fully propagate a map correction, only add to one.
+    target_ids = {t.verse_id for t in translations}
+    conn = store.verses._require()
+    stale = [
+        row[0] for row in conn.execute(
+            "SELECT t.verse_id FROM translations t "
+            "JOIN verse_refs r ON r.id = t.verse_id "
+            "WHERE t.translation = ? AND r.canon = 'tanakh'",
+            (TRANSLATION_ID,),
+        )
+        if row[0] not in target_ids
+    ]
+    if stale:
+        with conn:
+            conn.executemany(
+                "DELETE FROM translations WHERE translation = ? AND verse_id = ?",
+                [(TRANSLATION_ID, vid) for vid in stale],
+            )
+        print(f"Removed {len(stale)} stale KJV OT row(s) no longer mapped:")
+        for vid in stale[:10]:
+            print(f"  {vid}")
 
     inserted = store.verses.insert_translations(translations)
     t_total = time.perf_counter() - t_start

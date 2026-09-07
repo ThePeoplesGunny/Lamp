@@ -116,7 +116,7 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (125 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (129 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
 - Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
@@ -147,13 +147,13 @@ scripts/
 **Corpus:**
 - Hebrew OT (OSHB/WLC): 23,213 verses, 305,516 words with lemma + Strong's + morphology + ketiv/qere + parashah + reversed-nun
 - Greek NT (MorphGNT/SBLGNT): 7,927 verses, 137,554 words with lemma + POS + parsing codes
-- KJV 1769 translations: **31,104 rows** in the `translations` table (7,957 NT + 23,147 OT — full KJV OT, all 39 books).
+- KJV 1769 translations: **31,103 rows** in the `translations` table (7,957 NT + 23,146 OT — full KJV OT, all 39 books).
   Two different quantities are in play and both are correct: the OT ingest reports **23,145 KJV source verses attached**,
   while the table holds **23,147 rows**. 5 `extra_targets` entries attach one KJV verse to a second Hebrew verse
   (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
   into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 125 passing.
+**Tests:** 129 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -206,6 +206,12 @@ scripts/
   - **Notes have two owners** — identity notes on `verse_refs` (e.g. "absent from the SBLGNT"), witness notes on `verses` (Masoretic ketiv/qere and accent notes, and the `KJV:` mapping markers that arrive in the OSHB source). Two columns rather than one prevents the two ingest paths overwriting each other; the migration routes each note by whether its row was about to lose its witness.
   - **A pre-existing blank row fixed** — `/read` rendered the 32 witness-less verses as a bare verse number followed by nothing, which reads as a rendering bug. It now says "no original-language witness — open for the KJV base text". This predates the split; the fabricated rows had empty text too.
   - Tests 121 → 125. The acceptance test (delete a witness, assert the base text survives) was written first and confirmed red against the old schema.
+- **Phase 2D-11** — **Psalm 13 was attached one verse early**, found while reconciling the two independent versification sources before starting the KJV-addressing work. OSHB numbers the superscription (לַמְנַצֵּחַ מִזְמוֹר לְדָוִד) as Heb 13:1, so KJV 13:1-4 belong at Heb 13:2-5, and Heb 13:6 carries **both** KJV 13:5 and 13:6. The map had offset 0, so every KJV verse in the psalm sat one verse too early and the superscription itself displayed the text of KJV 13:1.
+  - **Why the Phase 2C-7 recomputation missed it.** That pass rebuilt `psalms_offsets` "mechanically from OSHB↔KJV chapter-size deltas" and read Psalm 13 as offset 0 because both chapters have six verses. The equal count is a coincidence: Hebrew adds a superscription verse at the top and merges two KJV verses at the bottom. A chapter-size delta cannot see that — the instrument worked and measured the wrong quantity.
+  - **Fix.** `resolve_kjv_verse()` now consults `book_overrides` before the Psalms offset table, which it previously short-circuited past; a uniform per-chapter offset cannot express "offset +1 for KJV 1-4, and KJV 5 and 6 both onto Heb 13:6". A `PSA` override encodes it. Psalm 13 becomes the 4th reverse merge alongside NEH 7:67, ISA 63:19 and ISA 64:1.
+  - **A second defect, found by the first.** `insert_translations` only inserts and updates, so a verse that STOPS being a target keeps whatever an earlier run attached. Correcting the map left the stale KJV text sitting on Heb 13:1 — nothing deleted it. The OT ingest now removes KJV rows it no longer targets, scoped to the tanakh, so a map correction propagates fully instead of only adding.
+  - **Reconciliation result** (the check that found this): OSHB `KJV:` notes and `versification_kjv_to_heb.json` agree on 2,017 of 2,026 verses. Of the 9 disagreements, 4 are `extra_targets` merge cases, 4 are Psalm 13 (notes right, map wrong), and 1 is 1KI 22:21, where the note is a *partial-overlap* marker rather than a remapping — the Hebrew verse contains all of KJV 22:21 plus the opening clause of 22:22, and the existing attachment is correct. So the OSHB notes are not a verse-mapping table and cannot be used as one wholesale.
+  - KJV OT rows 23,147 → 23,146 (the merged Psalm 13 pair). Tests 125 → 129, including a guard that nothing may target a superscription.
 
 ### Known gaps / deferred work
 - **Versification is still Hebrew-primary** — `versification_kjv_to_heb.json` maps KJV numbering *onto* the Hebrew spine, and verse IDs (`verse:GEN.32.1`) follow Hebrew numbering. Under Locked Decision 8 the KJV should be the addressing spine with the Hebrew mapped onto it. This is the largest piece of deferred work: it touches 31,172 node IDs, 2,770 edges, every `scripture_refs` entry in the seed files, and `nt_ot_quotes.json`, which deliberately uses Hebrew Psalms numbering. Not to be attempted without a migration plan and a reversible checkpoint.
