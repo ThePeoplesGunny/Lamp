@@ -189,4 +189,7 @@ def test_source_provenance_captured(genesis):
     verses, _ = genesis
     v = verses[0]
     assert v.source.startswith("OSHB-WLC@")
-    assert v.source_tier == 1
+    # Tier 2 = original-language witness, supporting the KJV 1769 base text.
+    # Was 1 until the 2026-09-07 base-text decision (CLAUDE.md Locked Decision 8)
+    # moved the KJV to tier 1 and the original languages beneath it.
+    assert v.source_tier == 2

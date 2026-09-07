@@ -100,14 +100,14 @@ def setup_store():
             verse_id="verse:GEN.1.1",
             text="In the beginning God created the heaven and the earth.",
             source="test-KJV",
-            source_tier=2,   # historic translation — see CLAUDE.md's tier table
+            source_tier=1,   # the base text — CLAUDE.md Locked Decision 8
         ),
         TranslationText(
             translation="ASV-1901",
             verse_id="verse:GEN.1.1",
             text="In the beginning God created the heavens and the earth.",
             source="test-ASV",
-            source_tier=2,   # historic translation — see CLAUDE.md's tier table
+            source_tier=1,   # English text layer, same tier as the KJV base text
         ),
     ])
 
@@ -410,11 +410,12 @@ async def test_verse_includes_translations(client):
     kjv = next(t for t in data["translations"] if t["translation"] == "KJV-1769")
     assert kjv["text"].startswith("In the beginning")
     assert kjv["source"] == "test-KJV"
-    # Tier 2 = historic translation (public domain). This asserted 4 — the tier the
-    # ingest scripts wrongly stamped — which made the suite encode the defect rather
-    # than catch it. Tier 4 is "speculative inference", which per CLAUDE.md "cannot
-    # be presented as fact"; the KJV is a published 1769 edition.
-    assert kjv["source_tier"] == 2
+    # Tier 1 = the base text (CLAUDE.md Locked Decision 8, 2026-09-07: the KJV 1769
+    # is the text this project is about). This assertion has moved twice: it read 4
+    # — "speculative inference" — which made the suite encode a defect rather than
+    # catch it, was corrected to 2 (historic translation), then to 1 when the
+    # base-text decision inverted the tier table.
+    assert kjv["source_tier"] == 1
 
 
 @pytest.mark.anyio

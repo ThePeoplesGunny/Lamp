@@ -345,8 +345,21 @@ class VerseStore:
 
     # ── Stats ─────────────────────────────────────────────────
 
-    def count_verses(self) -> int:
-        return self._require().execute("SELECT COUNT(*) FROM verses").fetchone()[0]
+    def count_verses(self, canon: str | None = None) -> int:
+        """Number of verse rows, optionally restricted to one canon.
+
+        The canon filter exists because a whole-table count is the wrong
+        comparison for a single-corpus ingest: seed_verses.py checked its 23,213
+        parsed Hebrew verses against every row in the database, so from the moment
+        the Greek NT was added it reported ISSUES DETECTED and exited 1 on every
+        successful run.
+        """
+        conn = self._require()
+        if canon is None:
+            return conn.execute("SELECT COUNT(*) FROM verses").fetchone()[0]
+        return conn.execute(
+            "SELECT COUNT(*) FROM verses WHERE canon = ?", (canon,)
+        ).fetchone()[0]
 
     def count_words(self) -> int:
         return self._require().execute("SELECT COUNT(*) FROM verse_words").fetchone()[0]

@@ -191,7 +191,11 @@ def parse_book(txt_path: Path, source: str | None = None) -> tuple[list[Verse], 
             text_plain=plain_text,
             words=verse_words,
             source=source,
-            source_tier=1,
+            # Tier 2 = original-language witness, supporting the KJV base text.
+            # Was tier 1 until the 2026-09-07 base-text decision, which made the
+            # KJV 1769 the canonical layer (tier 1) and moved OSHB/MorphGNT to the
+            # supporting-witness tier beneath it. See CLAUDE.md, Locked Decision 8.
+            source_tier=2,
         ))
         current_words.clear()
 

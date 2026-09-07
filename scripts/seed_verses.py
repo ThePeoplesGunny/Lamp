@@ -139,10 +139,17 @@ def main() -> int:
     t_save = time.perf_counter() - t0
     print(f"  graph saved in {t_save:.2f}s")
 
-    # Verify SQLite counts match what we parsed
-    sqlite_verse_count = store.verses.count_verses()
+    # Verify SQLite counts match what we parsed. Scope the comparison to the
+    # tanakh: this script ingests Hebrew OT only, while the database also holds
+    # the Greek NT and the KJV-only slots. Comparing against a whole-table count
+    # made this check unsatisfiable the moment Phase 2C-2 landed — 23,213 parsed
+    # against 31,172 stored — so every successful run reported ISSUES DETECTED
+    # and returned exit code 1.
+    sqlite_verse_count = store.verses.count_verses(canon="tanakh")
+    sqlite_total_count = store.verses.count_verses()
     sqlite_word_count = store.verses.count_words()
-    print(f"  SQLite verses: {sqlite_verse_count}")
+    print(f"  SQLite tanakh verses: {sqlite_verse_count}  (parsed this run: {total_verses})")
+    print(f"  SQLite verses, all canons: {sqlite_total_count}")
     print(f"  SQLite words:  {sqlite_word_count}")
 
     post_stats = store.stats()

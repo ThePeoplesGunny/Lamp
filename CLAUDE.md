@@ -6,7 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Intent & Boundaries
 
-**IS:** Investigation platform for original Hebrew/Greek biblical texts — surfaces patterns, connections, and structures not visible through translation. For one user (the developer).
+**IS:** Investigation platform built on the **KJV 1769 as the base text**. The KJV is the heart of this project; the original-language witnesses (OSHB/WLC Hebrew, MorphGNT/SBLGNT Greek) and everything else in the repo exist to support and illuminate it. Surfaces patterns, connections, and structures in the text. For one user (the developer).
+
+**Base-text decision (2026-09-07, operator-stated):** "the heart of this project is the KJV.. everything else supports." This governs the provenance tiers and Locked Decisions 2, 4 and 8 below. It is a tier-0 attestation — the operator's statement about his own project — and is not to be relitigated against the earlier original-languages-are-canonical framing, which it replaces.
 
 **IS NOT:** A Bible app. A devotional tool. A commentary system. A translation engine. A concordance replacement (though it contains concordance data). Not multi-user. Not deployed publicly (license constraints from MorphGNT/SBLGNT preclude commercial use).
 
@@ -17,24 +19,34 @@ Decisions made with deliberate analysis. Do not relitigate without new evidence.
 | # | Decision | Rationale | Date |
 |---|----------|-----------|------|
 | 1 | Verse nodes are first-class (Phase 2C-1) | Verses are the atomic unit of biblical text. Everything connects through them. | 2026-04 |
-| 2 | Exegetical/eisegetical boundary enforced at storage layer | Interpretive claims cannot masquerade as textual facts. Edge types declare their category. | 2026-04 |
+| 2 | Exegetical/eisegetical boundary enforced at storage layer | Interpretive claims cannot masquerade as textual facts. Edge types declare their category. **Amended 2026-09-07:** the boundary still holds and the edge-type machinery is unchanged; what moved is the base it is drawn against. "Textual fact" now means what the KJV 1769 says. Original-language readings are supporting evidence about that text, not the text itself. | 2026-04, amended 2026-09 |
 | 3 | Hebrew text three-layer storage (consonantal/pointed/cantillated) | Separable layers preserve pre-Masoretic, voweled, and full-accent forms independently. | 2026-04 |
-| 4 | Translations stored separately from canonical verse nodes | Enforces exegesis/eisegesis separation. Translation is interpretation, not source. | 2026-04 |
+| 4 | KJV text stored in its own table, separate from the original-language verse rows | **Rewritten 2026-09-07.** The separation stands, but its meaning is inverted. It was "translation is interpretation, not source". It now reads: the KJV is the source, and the separate table keeps it from being confused with the original-language witnesses that support it. The storage layout has not changed yet — see the two open items under "Known gaps" — so the KJV is still an FK-dependent child of a verse row, which contradicts this decision and is scheduled to be fixed. | 2026-04, rewritten 2026-09 |
 | 5 | KJV-to-Hebrew versification uses generalized book_overrides schema | Handles all 39 OT books including structural chapter splits, Psalms offsets, merge cases. | 2026-05 |
 | 6 | STEPBible TAGNT rejected as citation source | TAGNT tags morphology + TIPNR proper-noun origins, NOT OT citation references. Curated path retained. | 2026-05 |
 | 7 | SBL-standard 3-letter book codes (mapped from OSIS on ingest) | Consistent cross-source addressing. | 2026-04 |
+| 8 | **KJV 1769 is the base text; original languages are supporting witnesses** | Operator attestation, 2026-09-07: "the heart of this project is the KJV.. everything else supports." Sets the provenance tiers below (KJV tier 1, OSHB/MorphGNT tier 2) and governs decisions 2 and 4. | 2026-09 |
 
 ## Source Provenance Tiers
 
 | Tier | Authority | Examples |
 |------|-----------|----------|
 | 0 | User attestation | Direct statements about project intent, interpretation choices |
-| 1 | Primary text sources (canonical) | OSHB/WLC (Hebrew OT), MorphGNT/SBLGNT (Greek NT) |
-| 2 | Historic translations (public domain) | KJV 1769 Oxford edition |
+| 1 | **The base text (canonical)** | **KJV 1769 Oxford edition** |
+| 2 | Original-language witnesses (supporting) | OSHB/WLC (Hebrew), MorphGNT/SBLGNT (Greek) |
 | 3 | Secondary scholarly sources | Published quotation indices, commentaries, STEPBible datasets |
 | 4 | Speculative inference | Interpretive connections not grounded in tier 1-3 |
 
 Claims from tier 3+ must be explicitly noted. Tier 4 cannot be presented as fact.
+
+**Inverted 2026-09-07** per Locked Decision 8. Tiers 1 and 2 previously held the
+original languages and the KJV respectively. The tier values in the database were
+migrated by re-running the ingest scripts, not by hand-patching rows: KJV
+translations and the 32 KJV-sourced slot verses are `source_tier = 1`; the 23,213
+OSHB and 7,927 MorphGNT verses are `source_tier = 2`. The tier is set in exactly
+four places — `TRANSLATION_TIER` in `seed_translations_kjv_nt.py` and
+`seed_translations_kjv_ot.py`, and `source_tier=` in `lamp/ingest/oshb.py` and
+`lamp/ingest/morphgnt.py`.
 
 ## Context-Dangerous Zones
 
@@ -44,7 +56,7 @@ Claims from tier 3+ must be explicitly noted. Tier 4 cannot be presented as fact
 - **`backend/data/verses/verses.db`** — SQLite verse store (31K+ rows). Query via verse_store.py, not raw SQL dumps.
 
 ## Overview
-Biblical analytical tool — investigation platform for original Hebrew/Greek texts. Strips noise, surfaces patterns, connections, and structures not visible through translation.
+Biblical analytical tool — investigation platform built on the KJV 1769 as the base text, with the original-language witnesses (OSHB/WLC Hebrew, MorphGNT/SBLGNT Greek) supporting it. Strips noise, surfaces patterns, connections, and structures in the text.
 
 ## Architecture
 - **Backend:** FastAPI + Python 3.12, NetworkX graph engine, JSON graph + SQLite verse store
@@ -106,7 +118,7 @@ scripts/
 ## External data sources
 - **OSHB (Open Scriptures Hebrew Bible)** — `github.com/openscriptures/morphhb`. Provides Westminster Leningrad Codex in OSIS XML with per-word lemma, Strong's, and morphology. Text is public domain; lemma/morph data is CC-BY-4.0 (must credit OSHB). Clone into `backend/data/external/morphhb/`. Exact commit captured in each verse's `source` field for provenance.
 - **MorphGNT / SBLGNT** — `github.com/morphgnt/sblgnt`. SBL Greek New Testament with per-word parsing and lemmatization. **License structure differs from OSHB:** the SBLGNT text itself is governed by the [SBLGNT EULA](http://sblgnt.com/license/) (permits non-commercial academic/personal/research use with attribution — *not* CC-BY); the morphological parsing and lemmatization is CC-BY-**SA** 3.0 (Share-Alike). Implication: if Lamp is ever publicly released, the SA clause forces a CC-BY-SA-3.0-compatible license for derivatives using the MorphGNT data. Clone into `backend/data/external/morphgnt/`. Exact commit captured per verse.
-- **KJV 1769** — downloaded from `scrollmapper/bible_databases` (formats/json/KJV.json). Public domain — King James Version 1769 Oxford edition. Used as the primary translation-history reference layer. Stored in the `translations` table keyed by (`KJV-1769`, verse_id). NT fully ingested (Phase 2C-5). OT fully ingested (Phase 2C-7) via `backend/data/seed/versification_kjv_to_heb.json` — generalized `book_overrides` schema covers all 39 OT books; Psalms offsets handle superscriptions (incl. 2-line in 51/52/54/60); structural chapter splits (Num 16/17, 1Kgs 4/5, 1Chr 5/6, Neh 3/4) and ±1 trailing/leading shifts handled per-book; 5 merge cases use `extra_targets` for one-KJV-verse-to-many-Heb-verses, and 3 reverse merges (KJV-many-to-Heb-one) concatenate at ingest time. 23,145 KJV OT verses attached, 0 unmapped.
+- **KJV 1769** — downloaded from `scrollmapper/bible_databases` (formats/json/KJV.json). Public domain — King James Version 1769 Oxford edition. **This is the project's base text** (Locked Decision 8), stored at `source_tier = 1`. Stored in the `translations` table keyed by (`KJV-1769`, verse_id). NT fully ingested (Phase 2C-5). OT fully ingested (Phase 2C-7) via `backend/data/seed/versification_kjv_to_heb.json` — generalized `book_overrides` schema covers all 39 OT books; Psalms offsets handle superscriptions (incl. 2-line in 51/52/54/60); structural chapter splits (Num 16/17, 1Kgs 4/5, 1Chr 5/6, Neh 3/4) and ±1 trailing/leading shifts handled per-book; 5 merge cases use `extra_targets` for one-KJV-verse-to-many-Heb-verses, and 3 reverse merges (KJV-many-to-Heb-one) concatenate at ingest time. 23,145 KJV OT verses attached, 0 unmapped.
 
 ## Conventions
 - Node IDs are namespaced: `person:adam`, `place:eden`, `nation:canaanites`, `verse:GEN.5.3`
@@ -117,7 +129,7 @@ scripts/
 - Book codes are SBL-standard uppercase 3-letter (GEN, EXO, PSA, 1SA, NAM, …). OSIS codes (Gen, Exod, Ps, 1Sam, Nah) are mapped to Lamp codes on ingest via `lamp.models.book_codes`.
 - Hebrew text is preserved in three separable layers: consonantal (pre-Masoretic), pointed (niqqud), cantillated (full Masoretic with te'amim). Total-accuracy directive — Ketiv/Qere, parashah markers, and reversed nun (nun hafukha) are all preserved as distinct features.
 - Chronology uses Anno Mundi (AM) year system where calculable
-- Translations live in a separate store from canonical verse nodes by design (enforces exegesis/eisegesis separation at the storage layer)
+- The KJV base text lives in the `translations` table, separate from the original-language verse rows. The separation is deliberate, but note its meaning inverted on 2026-09-07: it now keeps the base text distinct from the supporting witnesses, rather than keeping an interpretation out of the source. The storage layout has NOT caught up — the KJV is still an FK-dependent child of a verse row, which is listed under Known gaps.
 
 ## Current State
 
@@ -169,8 +181,19 @@ scripts/
 - **Phase 2D-8** — KJV provenance tier corrected, 4 → 2. Every one of the 31,104 KJV rows, and the 32 KJV-only slot verse rows, were stamped `source_tier = 4`. Tier 4 in this project's own table means "Speculative inference" and carries the rule "Tier 4 cannot be presented as fact"; tier 2 is defined as "Historic translations (public domain)" and names the KJV 1769 Oxford edition explicitly. Root cause was in `seed_translations_kjv_nt.py`: `TRANSLATION_TIER = 4  # Translation; lower than primary-source tier 1` — the author wanted a value below tier 1 and read the scale as a generic ranking rather than a set of defined categories. Every verse page printed "tier 4" on the KJV panel. Fixed in both ingest scripts and re-run; `test_api.py` had been asserting `source_tier == 4`, so the suite encoded the defect instead of catching it — that assertion now asserts 2.
   A second defect surfaced while fixing it: the NT script's slot guard read `if verse_id not in store.G`, so it only ever *created* KJV-only slots and never refreshed them. The tier correction therefore did not reach the 32 rows already on disk. The guard now also refreshes slots matching `TRANSLATION_SOURCE`, added via `VerseStore.verse_ids_by_source()`; matching on the source string is what keeps it safe, since a slot carries the KJV file as its source while real verses carry OSHB-WLC or MorphGNT-SBLGNT, so it can never rewrite a verse holding actual Hebrew or Greek text.
   That re-run is also the first live proof of the Phase 2D-7 upsert on the real 116MB database: the 32 slot verses were genuinely rewritten (tier 4 → 2 shows the write happened) while the 32 translations attached to them survived. Under the old `INSERT OR REPLACE` that identical write would have cascade-deleted all 32. Totals unchanged: 31,172 verses, 443,070 words, 31,104 translations, 7,927 SBLGNT verses with text intact.
+- **Phase 2D-9** — **base-text inversion.** Operator statement 2026-09-07: "the heart of this project is the KJV.. everything else supports." The KJV 1769 is now the base text (tier 1) and the original-language witnesses support it (tier 2). What changed, in one pass so no enforcer was left pointing the old way:
+  - **Tiers in code** — `TRANSLATION_TIER` 2 → 1 in both KJV ingest scripts; `source_tier` 1 → 2 in `lamp/ingest/oshb.py` and `lamp/ingest/morphgnt.py`. Those four constants are the only places the tier is set.
+  - **Tiers in data** — migrated by re-running all four ingest scripts against their sources, not by hand-patching rows. Result: KJV 31,104 translations + 32 slot verses at tier 1; 23,213 OSHB + 7,927 MorphGNT verses at tier 2. Totals unchanged throughout: 31,172 verses, 443,070 words, 31,104 translations.
+  - **Governance** — Project Intent rewritten; Locked Decision 2 amended (the exegesis/eisegesis boundary and its edge-type machinery are unchanged, but "textual fact" now means what the KJV says); Locked Decision 4 rewritten; new Locked Decision 8 records the base-text call; tier table inverted; Conventions and the KJV source entry swept.
+  - **UI** — the KJV panel now leads the verse page, above the Hebrew/Greek witness. Its heading was "Translations (n) — Reference layer, never replaces the original text"; it now reads "Base text — KJV 1769 — the text this project is about, original-language witnesses below support it".
+  - **Memory** — `feedback_exegesis.md` and `project_verse_node_architecture.md` both asserted the originals were canonical; both corrected. `project_context.md` records the operator's words.
+  - **Tests** — three assertions encoded the old tiers and failed on the inversion, which is the suite doing its job: `test_api.py` KJV tier → 1, `test_oshb_ingest.py` and `test_morphgnt_ingest.py` → 2.
+  - **A broken detector found on the way.** `seed_verses.py` computed `ok = total_warnings == 0 and sqlite_verse_count == total_verses`, comparing the 23,213 Hebrew verses it parsed against a whole-table count of 31,172. From the moment Phase 2C-2 added the Greek NT this could never be true, so every successful run printed "ISSUES DETECTED" and returned exit code 1. `count_verses()` now takes an optional `canon` and the comparison is scoped to the tanakh; the script reports INGEST OK and exits 0. `seed_verses_nt.py` checks warnings only and was never affected.
+  - **The upsert proved at full scale.** Re-ingesting all 23,213 Hebrew verses while translations were attached left all 31,104 translations intact. Under the pre-2D-7 `INSERT OR REPLACE` that single run would have destroyed all 23,147 OT translations.
 
 ### Known gaps / deferred work
+- **The KJV is still stored as a dependent of the thing it now outranks** — `translations` has `FOREIGN KEY (verse_id) REFERENCES verses(id) ON DELETE CASCADE`, so a KJV verse cannot exist without an original-language verse row to hang off. This directly contradicts Locked Decision 8. The visible symptom is the 32 KJV-only slots: verses in the KJV but absent from the SBLGNT (Acts 8:37, John 5:4, and 30 more) required manufacturing empty Greek verse rows — zero text, zero words — purely as hangers. Fix is a schema change giving KJV verses standing of their own.
+- **Versification is still Hebrew-primary** — `versification_kjv_to_heb.json` maps KJV numbering *onto* the Hebrew spine, and verse IDs (`verse:GEN.32.1`) follow Hebrew numbering. Under Locked Decision 8 the KJV should be the addressing spine with the Hebrew mapped onto it. This is the largest piece of deferred work: it touches 31,172 node IDs, 2,770 edges, every `scripture_refs` entry in the seed files, and `nt_ot_quotes.json`, which deliberately uses Hebrew Psalms numbering. Not to be attempted without a migration plan and a reversible checkpoint.
 - **NT↔OT QUOTES — curated expansion in progress** — 144 high-confidence edges. Hebrews batch 1 done (44 edges); planned remaining batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Target ~250+. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
 
 ### Next candidates (pick direction next session)

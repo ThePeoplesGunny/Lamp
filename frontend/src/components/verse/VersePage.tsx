@@ -203,8 +203,9 @@ function GreekVerseBody({ verse }: { verse: VerseDetail }) {
           </span>
         ) : (
           <span className="text-sm italic" style={{ color: 'var(--color-text-secondary)' }}>
-            No original-language text — this verse is absent from the SBLGNT critical
-            text. It is present in the KJV/Byzantine tradition; see the translation below.
+            No original-language witness — this verse is absent from the SBLGNT critical
+            text. The base text above is unaffected; only the supporting apparatus is
+            missing here.
           </span>
         )}
       </div>
@@ -315,10 +316,10 @@ function TranslationsSection({
           className="text-xs uppercase tracking-wide"
           style={{ color: 'var(--color-text-secondary)' }}
         >
-          Translations ({translations.length})
+          Base text — KJV 1769
         </h3>
         <span className="text-[10px]" style={{ color: 'var(--color-text-secondary)' }}>
-          Reference layer — never replaces the original text
+          The text this project is about — original-language witnesses below support it
         </span>
       </div>
       {canonicalTextIsEmpty && (
@@ -326,8 +327,9 @@ function TranslationsSection({
           className="text-xs mb-2 italic"
           style={{ color: 'var(--color-accent)' }}
         >
-          Note: no original-language text available for this verse (absent from SBLGNT
-          critical text). Translation shown below is from KJV/Byzantine tradition.
+          Note: this verse has no surviving original-language witness in the SBLGNT
+          critical text. That affects the supporting apparatus only — the base text
+          below is unchanged.
         </div>
       )}
       <div className="space-y-2">
@@ -592,16 +594,23 @@ export default function VersePage() {
       <VerseHeader verse={verse} onPrev={handlePrev} onNext={handleNext} />
 
       <div className="max-w-4xl mx-auto px-6 py-6 space-y-6">
+        {/*
+          Base text first. Per Locked Decision 8 (2026-09-07) the KJV 1769 is the text
+          this project is about, so it leads the page; the Hebrew or Greek witness that
+          supports it follows. This order was reversed until that decision — the KJV sat
+          below the original-language panel, under the heading "Reference layer — never
+          replaces the original text".
+        */}
+        <TranslationsSection
+          translations={verse.translations}
+          canonicalTextIsEmpty={verse.text_canonical === ''}
+        />
+
         {verse.language === 'hbo' ? (
           <HebrewVerseBody verse={verse} />
         ) : (
           <GreekVerseBody verse={verse} />
         )}
-
-        <TranslationsSection
-          translations={verse.translations}
-          canonicalTextIsEmpty={verse.text_canonical === ''}
-        />
 
         <div>
           <h3
