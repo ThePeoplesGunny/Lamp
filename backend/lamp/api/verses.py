@@ -41,7 +41,9 @@ def _summarize_mention(node: dict) -> dict:
         "node_type": node.get("node_type"),
         "name_english": node.get("name_english"),
         "name_hebrew": node.get("name_hebrew"),
+        "name_hebrew_transliterated": node.get("name_hebrew_transliterated"),
         "name_greek": node.get("name_greek"),
+        "name_greek_transliterated": node.get("name_greek_transliterated"),
     }
 
 

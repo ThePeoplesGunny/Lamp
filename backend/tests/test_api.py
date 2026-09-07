@@ -512,3 +512,66 @@ async def test_lexeme_search_results_ordered_canonically(client):
             co = canon_order.get(res["canon"], 99)
             assert co >= prior_order, "canon order violated"
             prior_order = co
+
+
+@pytest.mark.anyio
+async def test_search_carries_both_transliteration_fields(client):
+    """The search payload must expose the same name fields the person endpoint does.
+
+    Regression guard. The search result builder set name_greek but silently
+    dropped name_greek_transliterated, even though every one of the 280 nodes
+    carrying a Greek name also carries its transliteration. A component reading
+    the field got undefined with no error anywhere.
+    """
+    r = await client.get(f"{API_PREFIX}/genealogy/search?q=Peter")
+    assert r.status_code == 200
+    hits = [d for d in r.json() if d["id"] == "person:peter"]
+    assert hits, "person:peter not found by search"
+    peter = hits[0]
+    assert peter["name_greek"] == "Πέτρος"
+    assert peter["name_greek_transliterated"] == "Petros"
+    assert "name_hebrew_transliterated" in peter
+
+
+@pytest.mark.anyio
+async def test_search_and_person_agree_on_name_fields(client):
+    """Search and /person must describe the same entity with the same fields.
+
+    Two endpoints returning different subsets of an entity's names is how the
+    dropped field went unnoticed: /person had it, search did not.
+    """
+    name_fields = {
+        "name_english",
+        "name_hebrew",
+        "name_hebrew_transliterated",
+        "name_greek",
+        "name_greek_transliterated",
+    }
+    search = await client.get(f"{API_PREFIX}/genealogy/search?q=Peter")
+    person = await client.get(f"{API_PREFIX}/genealogy/person/person:peter")
+    assert search.status_code == 200 and person.status_code == 200
+
+    hit = next(d for d in search.json() if d["id"] == "person:peter")
+    detail = person.json()
+    assert name_fields <= set(hit), f"search is missing {name_fields - set(hit)}"
+    assert name_fields <= set(detail), f"person is missing {name_fields - set(detail)}"
+    for f in name_fields:
+        assert hit[f] == detail[f], f"search and person disagree on {f}"
+
+
+@pytest.mark.anyio
+async def test_verse_mentions_carry_transliteration_fields(client):
+    """The mentions summary dropped name_greek_transliterated the same way search did."""
+    r = await client.get(f"{API_PREFIX}/verse/verse:GEN.1.1")
+    assert r.status_code == 200
+    mentions = r.json()["mentions"]
+    assert mentions, "expected at least one mention on GEN.1.1"
+    for m in mentions:
+        for f in (
+            "name_english",
+            "name_hebrew",
+            "name_hebrew_transliterated",
+            "name_greek",
+            "name_greek_transliterated",
+        ):
+            assert f in m, f"mention payload is missing {f}"

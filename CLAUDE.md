@@ -97,7 +97,7 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (116 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (119 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
 - Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
@@ -134,7 +134,7 @@ scripts/
   (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
   into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 116 passing.
+**Tests:** 119 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -161,15 +161,16 @@ scripts/
   **(1) GenealogyTree TS errors fixed.** `useNodesState([])` / `useEdgesState([])` inferred their state type as `never[]`, so `setNodes` and `setEdges` (lines 97-98) rejected real nodes and edges. Typed as `useNodesState<Node>([])` / `useEdgesState<Edge>([])`. `npm run build` now exits 0; `npm run lint` exits 0.
   **(2) Destructive-reseed path closed at the root — and the previously documented mechanism was wrong.** `seed_graph.py` never opened `verses.db` at all; it constructed an empty `GraphStore`, never called `.load()`, and saved over `lamp.json`, erasing all 31,172 verse nodes and 144 verse→verse QUOTES edges. The translation loss happened one step later, during the recovery: `insert_verses` used `INSERT OR REPLACE`, which SQLite performs as DELETE-then-INSERT, firing `ON DELETE CASCADE` on `translations.verse_id`. Both halves fixed. `verse_store.py` now upserts via `INSERT … ON CONFLICT(id) DO UPDATE`, built from a `VERSE_COLUMNS` list so the column list, placeholders and SET clause cannot drift; `seed_graph.py` now loads the existing graph, replaces only person/place/nation nodes, relinks MENTIONS in-process via the new `lamp/ingest/verse_links.py`, and refuses to save if the verse-node count changed. Both old behaviours were replayed against the new tests and confirmed red first: translations 1 → 0 on reseed, verse nodes 3 → 0 and QUOTES 1 → 0 on entity reseed.
   **(3) MENTIONS edges 2,370 → 2,377.** The live additive rerun recovered 7 edges that were never created because `seed_verse_links.py` last ran before Phase 2C-5 added the 32 KJV-only slots, so those refs were silently skipped as missing verse nodes. All 7 point at four SBLGNT-absent verses (`canonical_len=0`, 0 words, KJV source only): ACT 8:37 → Philip the evangelist + the Ethiopian eunuch; ACT 19:41 → Demetrius the silversmith + Ephesus; ACT 24:7 → Claudius Lysias + Felix; JHN 5:4 → the pool of Bethesda. `verses.db` was byte-identical before and after the run (115,998,720 bytes), confirming the graph reseed does not touch SQLite. 9 new tests; 107 → 116 passing.
+  **(4) Browser-visual QA pass done, two defects found and fixed.** Pages checked in Chrome at 1440x1000: `/verse/PSA.110.1`, `/verse/MAT.1.23`, `/verse/HEB.10.5`, `/verse/ACT.8.37`, `/verse/GEN.32.1`, `/verse/GEN.1.12`, `/person/paul`, `/person/adam`, and the search header. Rendering that was verified correct: Hebrew RTL with cantillation, Greek LTR with accents, mixed-direction notes (Hebrew עַלְמָה and Greek παρθένος inside English sentences — the Psa 40:7 note's Hebrew was confirmed to be stored in logical order, אָזְנַיִם then כָּרִיתָ, so the browser's bidi rendering is correct), `QuotesSection` two-column layout with inline notes, the full genealogy tree (which is the runtime proof of the `useNodesState<Node>` fix), and the KJV-only slots, which render `WORDS (0)` with an explanatory banner rather than breaking.
+  Defect A — **two endpoints silently dropped `name_greek_transliterated`.** Phase 2D-4 claimed it was propagated through person/place/search/mentions; it was not. `search_persons` in `api/genealogy.py` and `_summarize_mention` in `api/verses.py` set `name_greek` but not its transliteration, so search returned `null` for Peter while the data held `Petros`. `name_hebrew_transliterated` was missing from both too. Added to both, with 3 tests that go red without the fix.
+  Defect B — **the verse notes heading was wrong for 2,059 of 3,152 notes.** A single heading read "Masoretic notes" over a field carrying three unrelated kinds of record: 2,027 KJV versification mappings (a translation-layer artifact, e.g. `KJV:Gen.31.55` on GEN 32:1), 1,093 genuine Masoretic apparatus entries (844 Ketiv/Qere and accent notes, 249 scribal notes), and 32 SBLGNT-absent/Byzantine notes on **Greek NT** verses, where "Masoretic" cannot apply at all. `VersePage` now splits them: KJV mappings render under "KJV versification", and the rest under "Masoretic notes" for tanakh verses or "Textual notes" otherwise.
 
 ### Known gaps / deferred work
 - **NT↔OT QUOTES — curated expansion in progress** — 144 high-confidence edges. Hebrews batch 1 done (44 edges); planned remaining batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Target ~250+. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
-- **Browser-visual QA still pending** — Phase 2D-4's `QuotesSection` and Greek-name rendering pass typecheck + API probes but haven't been eyeballed in a browser. Good first things to open: `/verse/MAT.1.23` (virgin birth cite), `/verse/PSA.110.1` (3 NT citers), `/verse/HEB.10.5` (LXX σῶμα note), `/person/paul` (Greek Παῦλος), search header for "Peter".
 
 ### Next candidates (pick direction next session)
 - **(a) Continue QUOTES expansion** — Hebrews batch 1 complete (+28 edges, 144 total). Remaining curated batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Note: STEPBible TAGNT was investigated as a bulk source but does NOT tag OT citations inline (only morphology + TIPNR proper-noun *origin* anchors), so curated path was retained. After QUOTES reach ~250+, add `ALLUDES_TO` + `PARALLEL_TO` edge types (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
 - **(b) Second translation** (e.g. ASV 1901, PD) for translation-drift side-by-side. Now that the KJV↔Heb versification map is solid, a second English translation can reuse the same `versification_kjv_to_heb.json` if it follows KJV numbering.
-- **(d) Browser-visual QA pass** of Phase 2D-4/2D-5 + everything built so far. Good URLs to spot-check: `/person/peter` (now has brother_of Andrew, disciple_of Jesus), `/person/herod_antipas` (now has father, brother, wife edges), `/place/jerusalem` (cross-canon — should show OT + NT mentions).
 - **(f) Frontend rendering for new edge types** — `husband_of`, `brother_of`, `disciple_of` etc. are now in the data; `GenealogyTree` (OT-focused) doesn't traverse them. A fresh `RelationshipsPanel` or extended `PersonDetailPanel` could surface them.
 
 ## Agents & Skills

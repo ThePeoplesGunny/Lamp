@@ -86,7 +86,9 @@ export interface SearchResult {
   id: string;
   name_english: string;
   name_hebrew?: string;
+  name_hebrew_transliterated?: string;
   name_greek?: string;
+  name_greek_transliterated?: string;
   strongs?: string;
   node_type?: string;
   meaning?: string;
@@ -219,7 +221,9 @@ export interface VerseMention {
   node_type?: string;
   name_english?: string;
   name_hebrew?: string;
+  name_hebrew_transliterated?: string;
   name_greek?: string;
+  name_greek_transliterated?: string;
 }
 
 /** A translation of a single verse, attached to the canonical verse node. */

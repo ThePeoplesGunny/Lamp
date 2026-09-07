@@ -614,18 +614,52 @@ export default function VersePage() {
           onNavigate={handleQuoteNavigate}
         />
 
-        {verse.notes.length > 0 && (
-          <div>
-            <h3 className="text-xs uppercase tracking-wide mb-2" style={{ color: 'var(--color-text-secondary)' }}>
-              Masoretic notes
-            </h3>
-            <ul className="text-sm space-y-1" style={{ color: 'var(--color-text-secondary)' }}>
-              {verse.notes.map((n, i) => (
-                <li key={i}>• {n}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/*
+          The notes field carries two unrelated kinds of record, so it gets two
+          headings. A note like "KJV:Gen.31.55" is a versification mapping — an
+          artifact of the KJV translation layer, saying nothing about the original
+          text. Everything else is textual apparatus: Masoretic Ketiv/Qere and
+          accent notes on Hebrew verses, SBLGNT-vs-Byzantine notes on Greek ones.
+
+          This was previously a single heading reading "Masoretic notes", which was
+          wrong for 2,059 of the 3,152 notes in the corpus — every one of the 2,027
+          KJV versification markers, and all 32 notes on Greek NT verses, where
+          "Masoretic" cannot apply at all.
+        */}
+        {(() => {
+          const versification = verse.notes.filter((n) => n.startsWith('KJV:'));
+          const textual = verse.notes.filter((n) => !n.startsWith('KJV:'));
+          const headingClass = 'text-xs uppercase tracking-wide mb-2';
+          const secondary = { color: 'var(--color-text-secondary)' };
+          return (
+            <>
+              {textual.length > 0 && (
+                <div>
+                  <h3 className={headingClass} style={secondary}>
+                    {verse.canon === 'tanakh' ? 'Masoretic notes' : 'Textual notes'}
+                  </h3>
+                  <ul className="text-sm space-y-1" style={secondary}>
+                    {textual.map((n, i) => (
+                      <li key={i}>• {n}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {versification.length > 0 && (
+                <div>
+                  <h3 className={headingClass} style={secondary}>
+                    KJV versification
+                  </h3>
+                  <ul className="text-sm space-y-1" style={secondary}>
+                    {versification.map((n, i) => (
+                      <li key={i}>• {n}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </>
+          );
+        })()}
 
         <div
           className="text-xs pt-4 border-t"
