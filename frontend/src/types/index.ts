@@ -312,7 +312,11 @@ export interface BookSummary {
 /** Lightweight verse for the chapter verse-list. */
 export interface ChapterVerse {
   id: string;
-  verse: number;
+  // KJV verse number. null for the 69 verses the KJV has no verse for — the
+  // Psalms superscriptions, 3JN 1:15 and REV 12:18.
+  verse: number | null;
+  witness_verse: number;
+  witness_chapter: number;
   text_canonical: string;
   parashah_marker?: string | null;
   reversed_nun: boolean;

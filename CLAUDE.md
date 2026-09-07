@@ -116,7 +116,7 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (133 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (136 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
 - Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
@@ -153,7 +153,7 @@ scripts/
   (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
   into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 133 passing.
+**Tests:** 136 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -217,9 +217,13 @@ scripts/
   - `clear_kjv_addresses(canon)` runs before each KJV reseed, so a verse that stops being a target does not keep a stale address — the same failure that left stale translation rows behind.
   - The KJV index is created after `_apply_migrations()`, not inside `SCHEMA_SQL`: on an existing database `CREATE TABLE IF NOT EXISTS` is a no-op, so the columns do not exist while the schema script runs.
 - **Phase 2D-11b** — **Isaiah 64:1 was carrying a duplicated KJV verse**, found by auditing all five `extra_targets` after the Psalm 13 fix. The `ISA` rule sent KJV 64:1 to Heb 63:19 *and* to Heb 64:1, on the note "covers Heb 63:19 + Heb 64:1 (continues)". But Heb 64:1 is כִּקְדֹחַ אֵשׁ הֲמָסִים, "As when the melting fire burneth", which is KJV 64:2 — and it already received KJV 64:2 through the `-1` offset, so the two merged. Its own OSHB note says `KJV:Isa.64.2`. It was the only one of the five whose Hebrew verse had its own KJV counterpart and the only one whose text came out merged; the other four are correct. Merges 4 → 3.
+- **Phase 2D-13** — **navigation grouped and numbered by the KJV.** `/read/GEN/31` now runs to verse 55 and ends on the verse the witness numbers 32:1; `/read/GEN/32` starts at KJV 1. Book chapter counts follow the KJV too: Joel reports 3 and Malachi 4, where the Hebrew has 4 and 3.
+  - **No new columns and no window functions were needed.** Chapters group on `COALESCE(kjv_chapter, chapter)` and rows order by the *witness's* `(chapter, verse)`. That ordering is safe because witness order never inverts KJV order — checked across all 66 books, 0 inversions — and it is what makes the 69 addressless verses sort correctly without a special case: a two-line superscription (Pss 51, 52, 54, 60) precedes KJV v.1 by being earlier in the witness, and `3JN 1:15` / `REV 12:18` follow their neighbours for the same reason. Ordering by `COALESCE(kjv_verse, verse)` instead would have put the second superscription line *after* KJV 51:1.
+  - **`prev`/`next` needed no change at all** — they already walked witness order within a book, which the inversion check shows is KJV order.
+  - **The chapter payload now carries both numberings.** `verse` is the KJV number (null where the KJV has none) and `witness_verse`/`witness_chapter` sit beside it. The reader prints an amber `—` for a null and puts the witness numbering on the hover title.
+  - **`books_summary` mixes units deliberately**, and says so in the code: `chapter_count` counts KJV chapters, while `verse_count` counts verse identities — Psalms reports 2,527 rather than the KJV's 2,461, because the 67 superscriptions are rows `/read` lists and you can open.
 
 ### Known gaps / deferred work
-- **Navigation ordering is still witness-primary** — `/read` groups verses by the witness's chapter and `prev`/`next` walk witness numbering, so at a divergent boundary the chapter list shows a KJV reference from the neighbouring chapter (e.g. `/read/GEN/32` opens with "Genesis 31:55"). Display and lookup are KJV-first (Phase 2D-12); the ordering is not. Fixing it means grouping `chapter_verses`, `books_summary` chapter counts and prev/next by `kjv_chapter`/`kjv_verse`, and deciding where the 69 verses with no KJV address sort.
 - **Internal verse IDs remain witness-numbered** — `verse:GEN.32.1` still addresses the verse displayed as Genesis 31:55. The ID is an opaque key and nothing user-facing depends on its shape, so this is deliberate rather than outstanding. Rewriting the 1,967 divergent IDs would touch graph node keys, 2,770 edge endpoints, four SQLite tables, every `scripture_refs` entry in the seed files, and `nt_ot_quotes.json` (which uses Hebrew Psalms numbering) — for no change the user can see. Available if wanted; not needed by anything now.
 - **NT↔OT QUOTES — curated expansion in progress** — 144 high-confidence edges. Hebrews batch 1 done (44 edges); planned remaining batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Target ~250+. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
 

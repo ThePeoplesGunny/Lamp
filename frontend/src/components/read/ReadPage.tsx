@@ -211,11 +211,22 @@ function ChapterVerseList({
           }}
         >
           <div className="flex items-baseline gap-3">
+            {/*
+              The KJV verse number, because /read is grouped and numbered by the
+              base text. Where the KJV has no verse — a Psalms superscription,
+              3JN 1:15, REV 12:18 — a dash stands in its place rather than a
+              blank, and the witness's own number is on the hover title.
+            */}
             <span
               className="text-xs flex-shrink-0 w-10 text-right"
-              style={{ color: 'var(--color-text-secondary)' }}
+              style={{ color: v.verse === null ? 'var(--color-accent)' : 'var(--color-text-secondary)' }}
+              title={
+                v.verse === null
+                  ? `No KJV verse here — witness numbering ${v.witness_chapter}:${v.witness_verse}`
+                  : `witness numbering ${v.witness_chapter}:${v.witness_verse}`
+              }
             >
-              {v.verse}
+              {v.verse ?? '—'}
             </span>
             {/*
               This reader shows the original-language witness, and 32 NT verses

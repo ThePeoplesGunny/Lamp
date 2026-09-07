@@ -93,6 +93,16 @@ def setup_store():
         type=EdgeType.MENTIONS,
     ))
 
+    # KJV addresses. The ingest always writes these, and /read now groups by the
+    # KJV chapter, so a fixture without them would have every verse fall back to
+    # its witness numbering and report a null verse number.
+    store.verses.set_kjv_addresses({
+        "verse:GEN.1.1": ("GEN", 1, 1),
+        "verse:GEN.1.2": ("GEN", 1, 2),
+        "verse:GEN.2.1": ("GEN", 2, 1),
+        "verse:MAT.1.1": ("MAT", 1, 1),
+    })
+
     # Gen 1:1 has a KJV translation attached (for /verse translation payload tests)
     store.verses.insert_translations([
         TranslationText(

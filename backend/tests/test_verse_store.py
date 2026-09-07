@@ -416,6 +416,12 @@ def test_kjv_only_verse_stays_visible_in_navigation(store):
                     canon=Canon.NT, language="grc"),
     ])
     _kjv_only(store)
+    # The ingest always writes addresses; NT numbering is shared with the KJV.
+    store.set_kjv_addresses({
+        "verse:ACT.8.36": ("ACT", 8, 36),
+        "verse:ACT.8.37": ("ACT", 8, 37),
+        "verse:ACT.8.38": ("ACT", 8, 38),
+    })
 
     listed = store.chapter_verses("ACT", 8)
     assert [r["verse"] for r in listed] == [36, 37, 38], "KJV-only verse dropped out of /read"
@@ -490,3 +496,78 @@ def test_verse_with_no_kjv_address_keeps_its_witness_numbering(store):
     v = store.get_verse("verse:PSA.13.1")
     assert v.kjv_verse is None and v.kjv_chapter is None and v.kjv_book is None
     assert (v.book, v.chapter, v.verse) == ("PSA", 13, 1)
+
+
+def test_chapter_grouping_follows_the_kjv_boundary(store):
+    """/read groups by KJV chapter, so a verse crosses the boundary with it.
+
+    Hebrew Genesis 32:1 is KJV Genesis 31:55. Grouped by witness numbering it
+    opened chapter 32; grouped by the base text it closes chapter 31, where its
+    text belongs. No gap and no duplicate across the boundary — which a
+    count-only check would not catch, since the totals are the same either way.
+    """
+    store.insert_verses([
+        _make_verse(verse_id="verse:GEN.31.54", book="GEN", chapter=31, verse=54),
+        _make_verse(verse_id="verse:GEN.32.1", book="GEN", chapter=32, verse=1),
+        _make_verse(verse_id="verse:GEN.32.2", book="GEN", chapter=32, verse=2),
+        _make_verse(verse_id="verse:GEN.32.3", book="GEN", chapter=32, verse=3),
+    ])
+    store.set_kjv_addresses({
+        "verse:GEN.31.54": ("GEN", 31, 54),
+        "verse:GEN.32.1": ("GEN", 31, 55),   # crosses the boundary
+        "verse:GEN.32.2": ("GEN", 32, 1),
+        "verse:GEN.32.3": ("GEN", 32, 2),
+    })
+
+    ch31 = store.chapter_verses("GEN", 31)
+    assert [r["verse"] for r in ch31] == [54, 55]
+    assert ch31[-1]["id"] == "verse:GEN.32.1", "KJV 31:55 must close chapter 31"
+
+    ch32 = store.chapter_verses("GEN", 32)
+    assert [r["verse"] for r in ch32] == [1, 2], "chapter 32 starts at KJV 1"
+    assert ch32[0]["id"] == "verse:GEN.32.2"
+
+    # Every verse appears exactly once across the two chapters.
+    ids = [r["id"] for r in ch31] + [r["id"] for r in ch32]
+    assert len(ids) == len(set(ids)) == 4
+
+
+def test_superscriptions_sort_ahead_of_kjv_verse_one(store):
+    """A two-line superscription must not sort after the verse it precedes.
+
+    Psalms 51, 52, 54 and 60 carry two superscription lines, neither of which
+    has a KJV verse. Ordering by the KJV number with a fallback to the witness
+    number would put the SECOND line after KJV 51:1; ordering by witness
+    numbering keeps both ahead of it, which is safe because witness order never
+    inverts KJV order.
+    """
+    store.insert_verses([
+        _make_verse(verse_id=f"verse:PSA.51.{v}", book="PSA", chapter=51, verse=v)
+        for v in (1, 2, 3, 4)
+    ])
+    store.set_kjv_addresses({
+        "verse:PSA.51.3": ("PSA", 51, 1),
+        "verse:PSA.51.4": ("PSA", 51, 2),
+    })   # 51:1 and 51:2 are the superscription — no KJV verse
+
+    listed = store.chapter_verses("PSA", 51)
+    assert [r["id"] for r in listed] == [
+        "verse:PSA.51.1", "verse:PSA.51.2", "verse:PSA.51.3", "verse:PSA.51.4",
+    ]
+    assert [r["verse"] for r in listed] == [None, None, 1, 2]
+    assert [r["witness_verse"] for r in listed] == [1, 2, 3, 4]
+
+
+def test_books_summary_counts_kjv_chapters(store):
+    """chapter_count follows the KJV, since /read is grouped by it."""
+    store.insert_verses([
+        _make_verse(verse_id="verse:GEN.31.54", book="GEN", chapter=31, verse=54),
+        _make_verse(verse_id="verse:GEN.32.1", book="GEN", chapter=32, verse=1),
+    ])
+    store.set_kjv_addresses({
+        "verse:GEN.31.54": ("GEN", 31, 54),
+        "verse:GEN.32.1": ("GEN", 31, 55),
+    })
+    gen = next(b for b in store.books_summary() if b["book"] == "GEN")
+    assert gen["chapter_count"] == 31, "no KJV chapter 32 exists in this fixture"
+    assert gen["verse_count"] == 2

@@ -692,9 +692,18 @@ class VerseStore:
             # commonest witness language in the book via MAX() over the join;
             # grouping BY language here would split a book in two the moment one
             # of its verses had no witness.
+            # chapter_count counts KJV chapters, since /read is now grouped by
+            # them — Joel reports 3 and Malachi 4, the KJV's counts, where the
+            # Hebrew has 4 and 3.
+            #
+            # The two counts are in different units, deliberately. verse_count is
+            # the number of verse IDENTITIES in the book, which is the number of
+            # rows /read will list — Psalms reports 2,527, not the KJV's 2,461,
+            # because the 67 superscriptions are rows you can open even though
+            # the KJV has no verse for them.
             "SELECT r.book AS book, r.canon AS canon, "
             "       MAX(v.language) AS language, "
-            "       MAX(r.chapter) AS chapter_count, "
+            "       MAX(COALESCE(r.kjv_chapter, r.chapter)) AS chapter_count, "
             "       COUNT(*) AS verse_count "
             "FROM verse_refs r LEFT JOIN verses v ON v.id = r.id "
             "GROUP BY r.book, r.canon "
@@ -803,19 +812,36 @@ class VerseStore:
         callers that need them fetch the verse individually.
         """
         rows = self._require().execute(
-            "SELECT r.id AS id, r.verse AS verse, "
+            # Grouped by the KJV chapter, because the KJV is the base text
+            # (Locked Decision 8). COALESCE covers the 69 verses with no KJV
+            # address — they stay in their witness chapter, which is where they
+            # belong: a Psalms superscription is part of its psalm.
+            #
+            # Ordered by WITNESS numbering, which is safe because witness order
+            # never inverts KJV order — verified across all 66 books, 0
+            # inversions. That is what lets this avoid a stored sort key: a
+            # two-line superscription (Pss 51, 52, 54, 60) sorts ahead of KJV
+            # v.1 simply by being earlier in the witness, and 3JN 1:15 and
+            # REV 12:18 sort after their neighbours for the same reason.
+            "SELECT r.id AS id, "
+            "       r.kjv_verse AS verse, "
+            "       r.verse AS witness_verse, "
+            "       r.chapter AS witness_chapter, "
             "       COALESCE(v.text_canonical, '') AS text_canonical, "
             "       v.parashah_marker AS parashah_marker, "
             "       COALESCE(v.reversed_nun, 0) AS reversed_nun "
             "FROM verse_refs r LEFT JOIN verses v ON v.id = r.id "
-            "WHERE r.book = ? AND r.chapter = ? "
-            "ORDER BY r.verse",
+            "WHERE r.book = ? AND COALESCE(r.kjv_chapter, r.chapter) = ? "
+            "ORDER BY r.chapter, r.verse",
             (book, chapter),
         ).fetchall()
         return [
             {
                 "id": r["id"],
+                # The KJV verse number, None where the KJV has no verse here.
                 "verse": r["verse"],
+                "witness_verse": r["witness_verse"],
+                "witness_chapter": r["witness_chapter"],
                 "text_canonical": r["text_canonical"],
                 "parashah_marker": r["parashah_marker"],
                 "reversed_nun": bool(r["reversed_nun"]),
