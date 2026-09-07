@@ -133,6 +133,7 @@ def main() -> int:
     per_book_counts: dict[str, int] = {}
     created_verse_nodes: list[tuple[str, str]] = []  # (verse_id, book+c:v human ref)
     translations: list[TranslationText] = []
+    kjv_addresses: dict[str, tuple[str, int, int]] = {}
 
     # Slots this script created on an earlier run. They are REFRESHED, not skipped:
     # a slot written by a previous run keeps whatever metadata that run stamped on
@@ -178,6 +179,11 @@ def main() -> int:
                     if verse_id not in existing_slot_ids:
                         created_verse_nodes.append((verse_id, f"{kjv_name} {chapter}:{verse_num}"))
 
+                # KJV and SBLGNT share NT versification, so the base-text address
+                # is the verse's own. Written explicitly rather than left NULL so
+                # no query needs a fallback for the NT half of the corpus.
+                kjv_addresses[verse_id] = (lamp_code, chapter, verse_num)
+
                 translations.append(TranslationText(
                     translation=TRANSLATION_ID,
                     verse_id=verse_id,
@@ -193,6 +199,10 @@ def main() -> int:
 
         t1 = time.perf_counter()
         print(f"{lamp_code:<6} {book_verse_count:>7} {len(book_new_slots):>10}  {t1-t0:.2f}s")
+
+    store.verses.clear_kjv_addresses("nt")
+    addressed = store.verses.set_kjv_addresses(kjv_addresses)
+    print(f"KJV addresses written for {addressed} NT verse(s)")
 
     inserted = store.verses.insert_translations(translations)
     t_total = time.perf_counter() - t_start

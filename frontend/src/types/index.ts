@@ -249,7 +249,13 @@ export interface QuoteRef {
 /** Full verse payload from /api/v1/verse/{id}. */
 export interface VerseDetail {
   id: string;
-  reference: string;              // "Genesis 1:1"
+  // Address in the KJV 1769 base text — this is what the page displays.
+  reference: string;              // "Genesis 31:55"
+  kjv_reference: string | null;   // null where the KJV has no verse here
+  witness_reference: string;      // the witness's own numbering, e.g. "Genesis 32:1"
+  kjv_book: string | null;
+  kjv_chapter: number | null;
+  kjv_verse: number | null;
   book: string;
   book_name: string;
   chapter: number;

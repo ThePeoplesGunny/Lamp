@@ -26,9 +26,38 @@ function VerseHeader({
       style={{ borderColor: 'var(--color-border)' }}
     >
       <div className="flex items-center gap-3">
+        {/*
+          The heading is the verse's address in the KJV, the base text. It used to
+          be the witness's own numbering, so this page headed itself "Genesis 32:1"
+          while displaying the KJV text of Genesis 31:55. Where the two differ —
+          1,967 verses — the witness numbering is shown beside it rather than
+          dropped, because the Hebrew apparatus below is numbered that way.
+        */}
         <h2 className="text-xl font-semibold" style={{ color: 'var(--color-text-primary)' }}>
           {verse.reference}
         </h2>
+        {verse.kjv_reference === null ? (
+          // No KJV verse here, so the heading fell back to witness numbering.
+          // Say so: Heb Psalms 13:1 is the superscription, and KJV 13:1 is the
+          // NEXT verse — without this the two pages would both head "Psalms 13:1".
+          <span
+            className="text-xs"
+            style={{ color: 'var(--color-accent)' }}
+            title="The KJV has no verse at this position; the heading uses the witness's own numbering"
+          >
+            witness numbering — no KJV verse here
+          </span>
+        ) : (
+          verse.witness_reference !== verse.reference && (
+            <span
+              className="text-xs"
+              style={{ color: 'var(--color-text-secondary)' }}
+              title="This verse is numbered differently in the original-language witness"
+            >
+              witness numbering: {verse.witness_reference}
+            </span>
+          )
+        )}
         <span
           className="text-xs px-2 py-0.5 rounded border"
           style={{

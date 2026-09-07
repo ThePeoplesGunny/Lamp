@@ -222,9 +222,29 @@ def get_verse(verse_id: str):
     cited_by = [_summarize_quote_ref(v) for v in store.get_cited_by(verse_id)]
     translations = store.verses.get_translations_for_verse(verse_id)
 
+    # `reference` is the verse's address in the KJV 1769, because the KJV is the
+    # base text (Locked Decision 8). book/chapter/verse remain the WITNESS's own
+    # numbering — Hebrew for the OT — and are surfaced separately as
+    # `witness_reference`. The two differ for 1,967 verses: /verse/GEN.32.1 used
+    # to head the page "Genesis 32:1" while displaying the KJV text of Genesis
+    # 31:55. `kjv_reference` is null for the 69 verses the KJV has no verse for
+    # (66 Psalms superscriptions, plus 3JN 1:15 and REV 12:18, which the SBLGNT
+    # has and the KJV does not), and `reference` then falls back to the witness.
+    witness_reference = _format_reference(verse.book, verse.chapter, verse.verse)
+    kjv_reference = (
+        _format_reference(verse.kjv_book, verse.kjv_chapter, verse.kjv_verse)
+        if verse.kjv_verse is not None
+        else None
+    )
+
     return {
         "id": verse.id,
-        "reference": _format_reference(verse.book, verse.chapter, verse.verse),
+        "reference": kjv_reference or witness_reference,
+        "kjv_reference": kjv_reference,
+        "witness_reference": witness_reference,
+        "kjv_book": verse.kjv_book,
+        "kjv_chapter": verse.kjv_chapter,
+        "kjv_verse": verse.kjv_verse,
         "book": verse.book,
         "book_name": LAMP_CODE_TO_NAME.get(verse.book, verse.book),
         "chapter": verse.chapter,

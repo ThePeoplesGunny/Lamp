@@ -706,7 +706,7 @@
         }
       },
       {
-        "_note": "KJV 64:1 ('Oh that thou wouldest rend the heavens…') covers Heb 63:19 (closing thought) + Heb 64:1 (continues).",
+        "_note": "KJV 64:1 ('Oh that thou wouldest rend the heavens…') renders the second half of Heb 63:19, so the two KJV verses 63:19 and 64:1 merge onto that one Hebrew verse. It does NOT continue into Heb 64:1. This entry previously carried extra_targets [{chapter:64, verse:1}] on that claim, which duplicated KJV 64:1 onto Heb 64:1 — a verse that already receives KJV 64:2 through the -1 offset below. Heb 64:1 is כִּקְדֹחַ אֵשׁ הֲמָסִים, 'As when the melting fire burneth', which is KJV 64:2; the OSHB note on it says KJV:Isa.64.2. It was the only one of the five extra_targets whose Hebrew verse had its own KJV counterpart, and the only one whose text came out merged.",
         "kjv_from": {
           "chapter": 64,
           "verse_min": 1,
@@ -715,13 +715,7 @@
         "heb": {
           "chapter": 63,
           "verse_offset": 18
-        },
-        "extra_targets": [
-          {
-            "chapter": 64,
-            "verse": 1
-          }
-        ]
+        }
       },
       {
         "kjv_from": {

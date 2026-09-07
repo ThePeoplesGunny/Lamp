@@ -97,6 +97,13 @@ class Verse(BaseModel):
     # Free-form textual notes (ketiv/qere commentary, BHS variants, MorphGNT notes)
     notes: list[str] = []
 
+    # Address in the KJV 1769 base text (Locked Decision 8). book/chapter/verse
+    # above are the WITNESS's numbering — Hebrew for the OT, where the two
+    # diverge for 2,027 verses. None where the KJV has no verse here.
+    kjv_book: str | None = None
+    kjv_chapter: int | None = None
+    kjv_verse: int | None = None
+
 
 class VerseRef(BaseModel):
     """A verse's identity, independent of any text that witnesses it.
@@ -114,6 +121,12 @@ class VerseRef(BaseModel):
     verse: int
     canon: Canon
     notes: list[str] = []            # notes about the verse itself, not about a witness
+
+    # Address in the KJV 1769 base text. None where the KJV has no verse — the
+    # 66 Hebrew superscriptions numbered as v.1.
+    kjv_book: str | None = None
+    kjv_chapter: int | None = None
+    kjv_verse: int | None = None
 
 
 class TranslationText(BaseModel):

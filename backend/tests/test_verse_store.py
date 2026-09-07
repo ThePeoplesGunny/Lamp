@@ -427,3 +427,66 @@ def test_kjv_only_verse_stays_visible_in_navigation(store):
     assert books["ACT"]["verse_count"] == 3, "identity drives the count"
     assert books["ACT"]["language"] == "grc", "language still derived from the witnesses"
     assert store.count_by_book()["ACT"] == 3
+
+
+def test_kjv_address_is_recorded_and_resolvable(store):
+    """The KJV address is first-class data on identity, and resolves back."""
+    store.insert_verses([
+        _make_verse(verse_id="verse:GEN.32.1", book="GEN", chapter=32, verse=1),
+        _make_verse(verse_id="verse:GEN.32.2", book="GEN", chapter=32, verse=2),
+    ])
+    store.set_kjv_addresses({
+        "verse:GEN.32.1": ("GEN", 31, 55),   # the boundary case
+        "verse:GEN.32.2": ("GEN", 32, 1),
+    })
+
+    v = store.get_verse("verse:GEN.32.1")
+    assert (v.book, v.chapter, v.verse) == ("GEN", 32, 1), "witness numbering is unchanged"
+    assert (v.kjv_book, v.kjv_chapter, v.kjv_verse) == ("GEN", 31, 55)
+
+    assert store.id_for_kjv_reference("GEN", 31, 55) == "verse:GEN.32.1"
+    assert store.id_for_kjv_reference("GEN", 32, 1) == "verse:GEN.32.2"
+    assert store.id_for_kjv_reference("GEN", 99, 1) is None
+
+
+def test_kjv_lookup_is_deterministic_when_two_verses_share_an_address(store):
+    """Not a bijection: 5 KJV verses attach to two Hebrew verses each.
+
+    Whichever row the engine happens to return first is not an answer, so the
+    lookup orders by witness numbering and returns the start of the span.
+    """
+    store.insert_verses([
+        _make_verse(verse_id="verse:NUM.25.19", book="NUM", chapter=25, verse=19),
+        _make_verse(verse_id="verse:NUM.26.1", book="NUM", chapter=26, verse=1),
+    ])
+    store.set_kjv_addresses({
+        "verse:NUM.25.19": ("NUM", 26, 1),
+        "verse:NUM.26.1": ("NUM", 26, 1),
+    })
+    for _ in range(3):
+        assert store.id_for_kjv_reference("NUM", 26, 1) == "verse:NUM.25.19"
+
+
+def test_clearing_kjv_addresses_is_scoped_to_one_canon(store):
+    """A reseed of one canon must not blank the other's addresses."""
+    store.insert_verses([
+        _make_verse(verse_id="verse:GEN.1.1", book="GEN", chapter=1, verse=1),
+        _make_verse(verse_id="verse:MAT.1.1", book="MAT", chapter=1, verse=1,
+                    canon=Canon.NT, language="grc"),
+    ])
+    store.set_kjv_addresses({
+        "verse:GEN.1.1": ("GEN", 1, 1),
+        "verse:MAT.1.1": ("MAT", 1, 1),
+    })
+    store.clear_kjv_addresses("tanakh")
+
+    assert store.get_verse("verse:GEN.1.1").kjv_verse is None
+    assert store.get_verse("verse:MAT.1.1").kjv_verse == 1
+
+
+def test_verse_with_no_kjv_address_keeps_its_witness_numbering(store):
+    """Psalms superscriptions have no KJV verse; the address stays null."""
+    store.insert_verses([_make_verse(verse_id="verse:PSA.13.1", book="PSA", chapter=13, verse=1)])
+    v = store.get_verse("verse:PSA.13.1")
+    assert v.kjv_verse is None and v.kjv_chapter is None and v.kjv_book is None
+    assert (v.book, v.chapter, v.verse) == ("PSA", 13, 1)

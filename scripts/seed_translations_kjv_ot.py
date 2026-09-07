@@ -135,6 +135,7 @@ def main() -> int:
 
     # Aggregate: target_verse_id -> list of KJV texts to concatenate
     by_target: dict[str, list[str]] = defaultdict(list)
+    kjv_addresses: dict[str, tuple[str, int, int]] = {}
     per_book_kjv: dict[str, int] = defaultdict(int)
     per_book_attached: dict[str, int] = defaultdict(int)
     per_book_unmapped: dict[str, int] = defaultdict(int)
@@ -169,12 +170,23 @@ def main() -> int:
                             )
                         continue
                     by_target[target_id].append(text)
+                    # The verse's address in the base text. Where two KJV verses
+                    # merge onto one Hebrew verse (Psa 13:6, Neh 7:67, Isa 63:19,
+                    # Isa 64:1) the FIRST is kept — setdefault, not assignment —
+                    # so the address is the start of the span, not its end.
+                    kjv_addresses.setdefault(target_id, (code, kch, kvs))
                     attached_any = True
 
                 if attached_any:
                     per_book_attached[code] += 1
                 else:
                     per_book_unmapped[code] += 1
+
+    # Record each verse's address in the base text. Cleared for the tanakh first,
+    # so a verse that stops being a KJV target does not keep a stale address.
+    store.verses.clear_kjv_addresses("tanakh")
+    addressed = store.verses.set_kjv_addresses(kjv_addresses)
+    print(f"KJV addresses written for {addressed} OT verse(s)")
 
     # Build TranslationText rows. Multiple KJV verses targeting the same Heb verse
     # have their texts concatenated with MERGE_SEPARATOR.

@@ -116,7 +116,7 @@ scripts/
 - API docs: http://localhost:8000/docs
 
 ## Testing & linting
-- Backend tests: `cd backend && pytest` (129 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
+- Backend tests: `cd backend && pytest` (133 passing as of v0.2.0). Tests live in `backend/tests/`; pytest config in `backend/pyproject.toml`.
 - Single backend test: `cd backend && pytest tests/test_api.py::test_name` or by keyword `pytest -k verse_store`.
 - Frontend lint: `cd frontend && npm run lint` (ESLint 9 flat config).
 - Frontend build: `cd frontend && npm run build` (runs `tsc -b && vite build`). Passes.
@@ -153,7 +153,7 @@ scripts/
   (+5 rows: NUM 25:19, 1SA 21:1, 1KI 22:44, 1CH 12:5, ISA 64:1) and 3 reverse merges concatenate several KJV verses
   into a single row (−3 rows: ISA 63:19, ISA 64:1, NEH 7:67). 23,145 + 5 − 3 = 23,147.
 
-**Tests:** 129 passing.
+**Tests:** 133 passing.
 
 ### Phases complete (chronological)
 - **Phase 0** — scaffold, both servers operational
@@ -212,9 +212,15 @@ scripts/
   - **A second defect, found by the first.** `insert_translations` only inserts and updates, so a verse that STOPS being a target keeps whatever an earlier run attached. Correcting the map left the stale KJV text sitting on Heb 13:1 — nothing deleted it. The OT ingest now removes KJV rows it no longer targets, scoped to the tanakh, so a map correction propagates fully instead of only adding.
   - **Reconciliation result** (the check that found this): OSHB `KJV:` notes and `versification_kjv_to_heb.json` agree on 2,017 of 2,026 verses. Of the 9 disagreements, 4 are `extra_targets` merge cases, 4 are Psalm 13 (notes right, map wrong), and 1 is 1KI 22:21, where the note is a *partial-overlap* marker rather than a remapping — the Hebrew verse contains all of KJV 22:21 plus the opening clause of 22:22, and the existing attachment is correct. So the OSHB notes are not a verse-mapping table and cannot be used as one wholesale.
   - KJV OT rows 23,147 → 23,146 (the merged Psalm 13 pair). Tests 125 → 129, including a guard that nothing may target a superscription.
+- **Phase 2D-12** — **KJV addressing.** `verse_refs` gains `kjv_book`/`kjv_chapter`/`kjv_verse`, written by the KJV ingest, which is the only thing that knows the mapping. `book`/`chapter`/`verse` stay the *witness's* numbering. The verse page now heads with the KJV reference: `/verse/GEN.32.1` read "Genesis 32:1" while displaying the KJV text of Genesis 31:55, and now reads "Genesis 31:55" with "witness numbering: Genesis 32:1" beside it. 31,103 verses carry an address; the 69 without are the 67 Psalms superscriptions plus `3JN.1.15` and `REV.12.18`, which the SBLGNT has and the KJV does not — those head with witness numbering and say "no KJV verse here", which matters because Heb Psalms 13:1 and 13:2 would otherwise both display as "Psalms 13:1".
+  - `id_for_kjv_reference()` resolves a KJV reference back to a verse. The mapping is not a bijection — 5 KJV verses attach to two Hebrew verses each — so it orders by witness numbering and returns the start of the span rather than whichever row the engine returns first.
+  - `clear_kjv_addresses(canon)` runs before each KJV reseed, so a verse that stops being a target does not keep a stale address — the same failure that left stale translation rows behind.
+  - The KJV index is created after `_apply_migrations()`, not inside `SCHEMA_SQL`: on an existing database `CREATE TABLE IF NOT EXISTS` is a no-op, so the columns do not exist while the schema script runs.
+- **Phase 2D-11b** — **Isaiah 64:1 was carrying a duplicated KJV verse**, found by auditing all five `extra_targets` after the Psalm 13 fix. The `ISA` rule sent KJV 64:1 to Heb 63:19 *and* to Heb 64:1, on the note "covers Heb 63:19 + Heb 64:1 (continues)". But Heb 64:1 is כִּקְדֹחַ אֵשׁ הֲמָסִים, "As when the melting fire burneth", which is KJV 64:2 — and it already received KJV 64:2 through the `-1` offset, so the two merged. Its own OSHB note says `KJV:Isa.64.2`. It was the only one of the five whose Hebrew verse had its own KJV counterpart and the only one whose text came out merged; the other four are correct. Merges 4 → 3.
 
 ### Known gaps / deferred work
-- **Versification is still Hebrew-primary** — `versification_kjv_to_heb.json` maps KJV numbering *onto* the Hebrew spine, and verse IDs (`verse:GEN.32.1`) follow Hebrew numbering. Under Locked Decision 8 the KJV should be the addressing spine with the Hebrew mapped onto it. This is the largest piece of deferred work: it touches 31,172 node IDs, 2,770 edges, every `scripture_refs` entry in the seed files, and `nt_ot_quotes.json`, which deliberately uses Hebrew Psalms numbering. Not to be attempted without a migration plan and a reversible checkpoint.
+- **Navigation ordering is still witness-primary** — `/read` groups verses by the witness's chapter and `prev`/`next` walk witness numbering, so at a divergent boundary the chapter list shows a KJV reference from the neighbouring chapter (e.g. `/read/GEN/32` opens with "Genesis 31:55"). Display and lookup are KJV-first (Phase 2D-12); the ordering is not. Fixing it means grouping `chapter_verses`, `books_summary` chapter counts and prev/next by `kjv_chapter`/`kjv_verse`, and deciding where the 69 verses with no KJV address sort.
+- **Internal verse IDs remain witness-numbered** — `verse:GEN.32.1` still addresses the verse displayed as Genesis 31:55. The ID is an opaque key and nothing user-facing depends on its shape, so this is deliberate rather than outstanding. Rewriting the 1,967 divergent IDs would touch graph node keys, 2,770 edge endpoints, four SQLite tables, every `scripture_refs` entry in the seed files, and `nt_ot_quotes.json` (which uses Hebrew Psalms numbering) — for no change the user can see. Available if wanted; not needed by anything now.
 - **NT↔OT QUOTES — curated expansion in progress** — 144 high-confidence edges. Hebrews batch 1 done (44 edges); planned remaining batches: Romans (~25), Synoptics fill-in (~30), Pauline epistles fill-in (~30), Catholic epistles + Revelation (~25). Target ~250+. Also: no `ALLUDES_TO` / `PARALLEL_TO` edges seeded yet (Synoptic parallels, Kings↔Chronicles, Psalm parallels).
 
 ### Next candidates (pick direction next session)

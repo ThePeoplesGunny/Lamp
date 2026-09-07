@@ -60,8 +60,17 @@ CREATE TABLE IF NOT EXISTS verse_refs (
     -- accent and scribal notes, and the KJV: mapping markers that arrive in the
     -- OSHB source) live on `verses`. Two columns, one owner each, so the two
     -- ingest paths can never overwrite one another.
-    notes_json TEXT    NOT NULL DEFAULT '[]'
+    notes_json TEXT    NOT NULL DEFAULT '[]',
+    -- The verse's address in the KJV 1769, which is the base text (Locked
+    -- Decision 8). book/chapter/verse above are the WITNESS's own numbering —
+    -- Hebrew for the OT, where the two diverge for 2,027 verses. NULL means the
+    -- KJV has no verse here: the 66 Hebrew superscriptions numbered as v.1.
+    -- Written by the KJV ingest, which is the only thing that knows the mapping.
+    kjv_book    TEXT,
+    kjv_chapter INTEGER,
+    kjv_verse   INTEGER
 );
+
 
 CREATE INDEX IF NOT EXISTS idx_verse_refs_bcv   ON verse_refs(book, chapter, verse);
 CREATE INDEX IF NOT EXISTS idx_verse_refs_canon ON verse_refs(canon);
@@ -150,6 +159,12 @@ SCHEMA_MIGRATIONS: list[tuple[str, str, str]] = [
     ("verse_words", "text_plain",       "TEXT NOT NULL DEFAULT ''"),
     ("verse_words", "text_accented",    "TEXT NOT NULL DEFAULT ''"),
     ("verse_words", "sblgnt_index",     "INTEGER"),
+    # 2026-09-07 KJV addressing. Nullable additions, so ADD COLUMN is enough —
+    # unlike the identity/witness split, which changed foreign keys and needed
+    # its own create-copy-drop-rename.
+    ("verse_refs",  "kjv_book",         "TEXT"),
+    ("verse_refs",  "kjv_chapter",      "INTEGER"),
+    ("verse_refs",  "kjv_verse",        "INTEGER"),
 ]
 
 
@@ -166,6 +181,9 @@ VERSE_REF_COLUMNS: list[str] = [
     "verse",
     "canon",
     "notes_json",
+    "kjv_book",
+    "kjv_chapter",
+    "kjv_verse",
 ]
 
 VERSE_COLUMNS: list[str] = [
@@ -214,6 +232,7 @@ VERSE_UPSERT_SQL = _build_upsert_sql("verses", VERSE_COLUMNS)
 _VERSE_SELECT = (
     "r.id AS id, r.book AS book, r.chapter AS chapter, r.verse AS verse, "
     "r.canon AS canon, r.notes_json AS ref_notes_json, "
+    "r.kjv_book AS kjv_book, r.kjv_chapter AS kjv_chapter, r.kjv_verse AS kjv_verse, "
     "v.language AS language, "
     "v.text_canonical AS text_canonical, "
     "v.text_consonantal AS text_consonantal, v.text_pointed AS text_pointed, "
@@ -253,6 +272,13 @@ class VerseStore:
         self.conn.execute("PRAGMA foreign_keys=ON;")
         self.conn.executescript(SCHEMA_SQL)
         self._apply_migrations()
+        # Indexes over migration-added columns must come AFTER the migrations.
+        # On an existing database CREATE TABLE IF NOT EXISTS is a no-op, so those
+        # columns do not exist while SCHEMA_SQL runs.
+        self.conn.execute(
+            "CREATE INDEX IF NOT EXISTS idx_verse_refs_kjv "
+            "ON verse_refs(kjv_book, kjv_chapter, kjv_verse)"
+        )
         self.conn.commit()
         self._migrate_split_identity_from_witness()
 
@@ -393,7 +419,8 @@ class VerseStore:
         conn = self._require()
         rows = [
             (r.id, r.book, r.chapter, r.verse, str(r.canon),
-             json.dumps(r.notes, ensure_ascii=False))
+             json.dumps(r.notes, ensure_ascii=False),
+             r.kjv_book, r.kjv_chapter, r.kjv_verse)
             for r in refs
         ]
         if not rows:
@@ -563,6 +590,55 @@ class VerseStore:
     def count_witnesses(self) -> int:
         """Number of original-language witness rows — fewer than count_verses()."""
         return self._require().execute("SELECT COUNT(*) FROM verses").fetchone()[0]
+
+    def set_kjv_addresses(self, addresses: dict[str, tuple[str, int, int]]) -> int:
+        """Record each verse's address in the KJV base text.
+
+        Called by the KJV ingest, which is the only thing that knows the mapping.
+        Verses absent from `addresses` are left alone rather than nulled, so the
+        OT and NT ingests can each write their own half.
+        """
+        conn = self._require()
+        rows = [(b, c, v, vid) for vid, (b, c, v) in addresses.items()]
+        if not rows:
+            return 0
+        with conn:
+            conn.executemany(
+                "UPDATE verse_refs SET kjv_book=?, kjv_chapter=?, kjv_verse=? WHERE id=?",
+                rows,
+            )
+        return len(rows)
+
+    def clear_kjv_addresses(self, canon: str) -> int:
+        """Blank the KJV address for one canon before a reseed.
+
+        Without this a verse that stops being a KJV target keeps a stale address,
+        the same way translations kept stale rows before the OT ingest learned to
+        delete them.
+        """
+        conn = self._require()
+        with conn:
+            cur = conn.execute(
+                "UPDATE verse_refs SET kjv_book=NULL, kjv_chapter=NULL, kjv_verse=NULL "
+                "WHERE canon = ?",
+                (canon,),
+            )
+        return cur.rowcount
+
+    def id_for_kjv_reference(self, book: str, chapter: int, verse: int) -> str | None:
+        """Resolve a KJV reference to a verse id.
+
+        Not a bijection: 5 KJV verses attach to two Hebrew verses each
+        (`extra_targets`), so more than one row can claim the same address. The
+        ORDER BY makes the answer deterministic — the first Hebrew verse of the
+        span — rather than whichever row the engine returns first.
+        """
+        row = self._require().execute(
+            "SELECT id FROM verse_refs WHERE kjv_book=? AND kjv_chapter=? AND kjv_verse=? "
+            "ORDER BY chapter, verse LIMIT 1",
+            (book, chapter, verse),
+        ).fetchone()
+        return row[0] if row else None
 
     def verse_ids_without_witness(self) -> set[str]:
         """Verses that exist but have no original-language text.
@@ -810,6 +886,9 @@ def _row_to_verse(row: Any, word_rows: list[Any]) -> Verse:
         ),
         source=row["source"],
         source_tier=row["source_tier"],
+        kjv_book=row["kjv_book"],
+        kjv_chapter=row["kjv_chapter"],
+        kjv_verse=row["kjv_verse"],
         words=[_row_to_word(w) for w in word_rows],
     )
 
