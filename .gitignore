@@ -27,3 +27,8 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Per-machine session handoff state, written by the SessionEnd hook.
+# Machine-local: records HEAD, dirty files and a timestamp, so it churns every
+# session and would conflict across machines. The hook reads it from disk, not git.
+.claude/session_handoff.json
